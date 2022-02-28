@@ -6,4 +6,7 @@ proto:
 		-I${GOPATH}/src/github.com/gogo/googleapis/ \
 		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/ \
 		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-		--gogo_out=plugins=grpc:. proto/v1/*.proto
+		--go_out=:${GOPATH}/src/ \
+		--go-http_out=:${GOPATH}/src/ \
+		--go-grpc_out=:${GOPATH}/src/ \
+		proto/v1/*.proto
