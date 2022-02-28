@@ -7,8 +7,10 @@ package grpc.kit.api.proto.v1;
 
 // 引入依赖的外部proto文件
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "github.com/googleapis/googleapis/google/api/annotations.proto";
+//import "github.com/googleapis/googleapis/google/api/annotations.proto";
 import "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options/annotations.proto";
+
+option go_package = "github.com/grpc-kit/pkg/api;api";
 
 // 引入项目通用的proto文件
 //import "github.com/grpc-kit/api/proto/v1/example.proto";
