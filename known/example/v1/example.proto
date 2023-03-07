@@ -1,0 +1,49 @@
+// 此文件可做为其他proto编写的模版
+
+// 锁进：统一为 2 个空格
+// 注释：统一在属性前面添加
+// proto 包名格式：{公司代号}.api.{产品代码}.{应用短名}.{接口版本}
+// go 包名格式：{可引用 pb.go 包路径};{应用短名接口版本}
+
+syntax = "proto3";
+
+// TODO; 根据具体的微服务名称做更改
+package grpc_kit.api.known.example.v1;
+
+// TODO; 生成 go 代码的包名
+option go_package = "github.com/grpc-kit/pkg/api/known/example/v1;examplev1";
+
+// 引入第三方依赖的 proto 文件
+import "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2/options/annotations.proto";
+
+// ExampleRequest 这里是该类的描述
+message ExampleRequest {
+  // 设置结构体，如：必填字段，请求体示例
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      // 必填字段
+      required: ["name", "value"],
+    },
+    // 请求体示例
+    example: '{ "name": "test", "value": "test value", "age": 9 }'
+  };
+
+  // Name 该字段的备注
+  string name = 1;
+
+  // Value 该字段的备注
+  float value = 2;
+
+  // Age 年龄，设置字段
+  int32 age = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    default: "2", // 默认值为 2
+    example: "9", // 会体现在请求示例文档里
+    read_only: false, // 如果为 true 说明仅当响应体才存在，请求时不存在该字段
+    pattern: "^[0-9]$",
+  }];
+}
+
+// ExampleResponse 这里是描述
+message ExampleResponse {
+  string name = 1;
+}
