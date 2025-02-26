@@ -17,3 +17,6 @@ proto:
 		--go_out=. \
 		--go-grpc_out=require_unimplemented_servers=false:. \
 		known/status/v1/*.proto
+
+gen_ent:
+	go generate ./ent/
