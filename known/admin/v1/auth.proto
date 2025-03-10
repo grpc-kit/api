@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+// AuthLoginRequest 用于登录请求
+message AuthLoginRequest {
+  string username = 1;
+  string email = 2;
+  string mobile = 3;
+  string password = 9;
+}
+
+message AuthLoginResponse {
+  string token = 1;
+}
