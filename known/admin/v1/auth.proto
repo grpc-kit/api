@@ -7,10 +7,14 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 // AuthLoginRequest 用于登录请求
 message AuthLoginRequest {
+  // Username 系统识别的用户名全局唯一
   string username = 1;
+  // Email 用户邮箱地址
   string email = 2;
-  string mobile = 3;
-  string password = 9;
+  // PhoneNumber 用户手机号
+  string phone_number = 3;
+  // PasswordHash 用户密码在本地使用 sha256 哈希结果
+  string password_hash = 9;
 }
 
 message AuthLoginResponse {
