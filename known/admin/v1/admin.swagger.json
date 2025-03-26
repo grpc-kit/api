@@ -24,7 +24,7 @@
     "application/json"
   ],
   "paths": {
-    "/auth/local/login": {
+    "/builtin/admin/api/auth/local/login": {
       "get": {
         "operationId": "KnownAdmin_AuthLogin",
         "responses": {

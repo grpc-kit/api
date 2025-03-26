@@ -4,4 +4,4 @@ config_version: 3
 http:
   rules:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.AuthLogin
-    get: "/auth/local/login"
+    get: "/builtin/admin/api/auth/local/login"
