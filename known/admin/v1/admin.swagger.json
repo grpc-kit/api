@@ -26,12 +26,12 @@
   "paths": {
     "/builtin/admin/api/v1/auth/local/login": {
       "post": {
-        "operationId": "KnownAdmin_AuthLogin",
+        "operationId": "KnownAdmin_CreateAuthLogin",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1AuthLoginResponse"
+              "$ref": "#/definitions/v1CreateAuthLoginResponse"
             }
           },
           "4xx": {
@@ -53,7 +53,65 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1AuthLoginRequest"
+              "$ref": "#/definitions/v1CreateAuthLoginRequest"
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/auth/providers": {
+      "get": {
+        "operationId": "KnownAdmin_GetAuthProviders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthProvidersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "KnownAdmin_UpsertAuthProviders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpsertAuthProvidersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpsertAuthProvidersRequest"
             }
           }
         ]
@@ -61,7 +119,48 @@
     }
   },
   "definitions": {
-    "v1AuthLoginRequest": {
+    "AuthProviderProvider": {
+      "type": "string",
+      "enum": [
+        "LDAP",
+        "OIDC",
+        "OAUTH2",
+        "GITHUB",
+        "WECHAT",
+        "GOOGLE"
+      ],
+      "default": "LDAP"
+    },
+    "v1AuthProvider": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/AuthProviderProvider"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "client_secret": {
+          "type": "string"
+        },
+        "auth_url": {
+          "type": "string"
+        },
+        "token_url": {
+          "type": "string"
+        },
+        "user_info_url": {
+          "type": "string"
+        },
+        "scopes": {
+          "type": "string"
+        },
+        "redirect_url": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateAuthLoginRequest": {
       "type": "object",
       "properties": {
         "username": {
@@ -81,9 +180,9 @@
           "title": "PasswordHash 用户密码在本地使用 sha256 哈希结果"
         }
       },
-      "title": "AuthLoginRequest 用于登录请求"
+      "title": "CreateAuthLoginRequest 用于登录请求"
     },
-    "v1AuthLoginResponse": {
+    "v1CreateAuthLoginResponse": {
       "type": "object",
       "properties": {
         "token": {
@@ -91,8 +190,44 @@
         }
       }
     },
+    "v1GetAuthProvidersResponse": {
+      "type": "object",
+      "properties": {
+        "auth_providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1AuthProvider"
+          }
+        }
+      }
+    },
     "v1GetConfigResponse": {
       "type": "object"
+    },
+    "v1UpsertAuthProvidersRequest": {
+      "type": "object",
+      "properties": {
+        "auth_providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1AuthProvider"
+          }
+        }
+      }
+    },
+    "v1UpsertAuthProvidersResponse": {
+      "type": "object",
+      "properties": {
+        "auth_providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1AuthProvider"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {

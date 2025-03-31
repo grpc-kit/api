@@ -5,8 +5,8 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
-// AuthLoginRequest 用于登录请求
-message AuthLoginRequest {
+// CreateAuthLoginRequest 用于登录请求
+message CreateAuthLoginRequest {
   // Username 系统识别的用户名全局唯一
   string username = 1;
   // Email 用户邮箱地址
@@ -17,6 +17,42 @@ message AuthLoginRequest {
   string password_hash = 9;
 }
 
-message AuthLoginResponse {
+message CreateAuthLoginResponse {
   string token = 1;
+}
+
+message GetAuthProvidersRequest {
+
+}
+
+message AuthProvider {
+  enum Provider {
+    LDAP = 0;
+    OIDC = 1;
+    OAUTH2 = 2;
+    GITHUB = 3;
+    WECHAT = 4;
+    GOOGLE = 5;
+  }
+
+  Provider name = 1;
+  string client_id = 2;
+  string client_secret = 3;
+  string auth_url = 4;
+  string token_url = 5;
+  string user_info_url = 6;
+  string scopes = 7;
+  string redirect_url = 8;
+}
+
+message GetAuthProvidersResponse {
+  repeated AuthProvider auth_providers = 1;
+}
+
+message UpsertAuthProvidersRequest {
+  repeated AuthProvider auth_providers = 1;
+}
+
+message UpsertAuthProvidersResponse {
+  repeated AuthProvider auth_providers = 1;
 }
