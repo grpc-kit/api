@@ -119,9 +119,10 @@
     }
   },
   "definitions": {
-    "AuthProviderProvider": {
+    "AuthProviderProviderName": {
       "type": "string",
       "enum": [
+        "LOCAL",
         "LDAP",
         "OIDC",
         "OAUTH2",
@@ -129,19 +130,22 @@
         "WECHAT",
         "GOOGLE"
       ],
-      "default": "LDAP"
+      "default": "LOCAL"
     },
     "v1AuthProvider": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/AuthProviderProvider"
+          "$ref": "#/definitions/AuthProviderProviderName"
         },
         "client_id": {
           "type": "string"
         },
         "client_secret": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         },
         "auth_url": {
           "type": "string"
@@ -193,7 +197,7 @@
     "v1GetAuthProvidersResponse": {
       "type": "object",
       "properties": {
-        "auth_providers": {
+        "providers": {
           "type": "array",
           "items": {
             "type": "object",
@@ -208,7 +212,7 @@
     "v1UpsertAuthProvidersRequest": {
       "type": "object",
       "properties": {
-        "auth_providers": {
+        "providers": {
           "type": "array",
           "items": {
             "type": "object",
@@ -220,7 +224,7 @@
     "v1UpsertAuthProvidersResponse": {
       "type": "object",
       "properties": {
-        "auth_providers": {
+        "providers": {
           "type": "array",
           "items": {
             "type": "object",

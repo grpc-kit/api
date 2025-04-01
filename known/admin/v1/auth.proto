@@ -26,33 +26,35 @@ message GetAuthProvidersRequest {
 }
 
 message AuthProvider {
-  enum Provider {
-    LDAP = 0;
-    OIDC = 1;
-    OAUTH2 = 2;
-    GITHUB = 3;
-    WECHAT = 4;
-    GOOGLE = 5;
+  enum ProviderName {
+    LOCAL = 0;
+    LDAP = 1;
+    OIDC = 2;
+    OAUTH2 = 3;
+    GITHUB = 4;
+    WECHAT = 5;
+    GOOGLE = 6;
   }
 
-  Provider name = 1;
+  ProviderName name = 1;
   string client_id = 2;
   string client_secret = 3;
-  string auth_url = 4;
-  string token_url = 5;
-  string user_info_url = 6;
-  string scopes = 7;
-  string redirect_url = 8;
+  bool enabled = 4;
+  string auth_url = 5;
+  string token_url = 6;
+  string user_info_url = 7;
+  string scopes = 8;
+  string redirect_url = 9;
 }
 
 message GetAuthProvidersResponse {
-  repeated AuthProvider auth_providers = 1;
+  repeated AuthProvider providers = 1;
 }
 
 message UpsertAuthProvidersRequest {
-  repeated AuthProvider auth_providers = 1;
+  repeated AuthProvider providers = 1;
 }
 
 message UpsertAuthProvidersResponse {
-  repeated AuthProvider auth_providers = 1;
+  repeated AuthProvider providers = 1;
 }
