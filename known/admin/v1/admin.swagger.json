@@ -24,6 +24,51 @@
     "application/json"
   ],
   "paths": {
+    "/builtin/admin/api/v1/auth/callback/{provider_name}": {
+      "get": {
+        "operationId": "KnownAdmin_GetAuthCallback",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthCallbackResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "provider_name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/auth/login": {
       "post": {
         "operationId": "KnownAdmin_CreateAuthLogin",
@@ -147,6 +192,9 @@
         "enabled": {
           "type": "boolean"
         },
+        "issuer": {
+          "type": "string"
+        },
         "auth_url": {
           "type": "string"
         },
@@ -190,6 +238,17 @@
       "type": "object",
       "properties": {
         "token": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetAuthCallbackResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "token_type": {
           "type": "string"
         }
       }

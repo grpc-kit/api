@@ -13,4 +13,5 @@ service KnownAdmin {
   rpc CreateAuthLogin(CreateAuthLoginRequest) returns (CreateAuthLoginResponse);
   rpc GetAuthProviders(GetAuthProvidersRequest) returns(GetAuthProvidersResponse);
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
+  rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
 }
