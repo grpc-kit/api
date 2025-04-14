@@ -237,7 +237,10 @@
     "v1CreateAuthLoginResponse": {
       "type": "object",
       "properties": {
-        "token": {
+        "access_token": {
+          "type": "string"
+        },
+        "token_type": {
           "type": "string"
         }
       }

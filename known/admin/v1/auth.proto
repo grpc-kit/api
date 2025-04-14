@@ -18,7 +18,8 @@ message CreateAuthLoginRequest {
 }
 
 message CreateAuthLoginResponse {
-  string token = 1;
+  string access_token = 1;
+  string token_type = 2;
 }
 
 message GetAuthProvidersRequest {
