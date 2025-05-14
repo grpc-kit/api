@@ -227,6 +227,11 @@
           "type": "string",
           "title": "PhoneNumber 用户手机号"
         },
+        "expires_in": {
+          "type": "string",
+          "format": "int64",
+          "title": "ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒"
+        },
         "password_hash": {
           "type": "string",
           "title": "PasswordHash 用户密码在本地使用 sha256 哈希结果"
@@ -242,8 +247,13 @@
         },
         "token_type": {
           "type": "string"
+        },
+        "expires_in": {
+          "type": "string",
+          "format": "int64"
         }
-      }
+      },
+      "title": "CreateAuthLoginResponse 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
     },
     "v1GetAuthCallbackResponse": {
       "type": "object",
