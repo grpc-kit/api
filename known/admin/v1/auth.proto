@@ -14,7 +14,7 @@ message CreateAuthLoginRequest {
   // PhoneNumber 用户手机号
   string phone_number = 3;
   // ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒
-  int64 expires_in = 7;
+  int32 expires_in = 7;
   // PasswordHash 用户密码在本地使用 sha256 哈希结果
   string password_hash = 9;
 }
@@ -24,7 +24,7 @@ message CreateAuthLoginRequest {
 message CreateAuthLoginResponse {
   string access_token = 1;
   string token_type = 2;
-  int64 expires_in = 3;
+  int32 expires_in = 3;
 }
 
 message GetAuthProvidersRequest {

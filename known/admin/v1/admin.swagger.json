@@ -228,8 +228,8 @@
           "title": "PhoneNumber 用户手机号"
         },
         "expires_in": {
-          "type": "string",
-          "format": "int64",
+          "type": "integer",
+          "format": "int32",
           "title": "ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒"
         },
         "password_hash": {
@@ -249,8 +249,8 @@
           "type": "string"
         },
         "expires_in": {
-          "type": "string",
-          "format": "int64"
+          "type": "integer",
+          "format": "int32"
         }
       },
       "title": "CreateAuthLoginResponse 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
