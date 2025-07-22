@@ -192,22 +192,22 @@
         "enabled": {
           "type": "boolean"
         },
-        "issuer": {
-          "type": "string"
-        },
-        "auth_url": {
-          "type": "string"
-        },
-        "token_url": {
-          "type": "string"
-        },
-        "user_info_url": {
+        "redirect_uri": {
           "type": "string"
         },
         "scopes": {
           "type": "string"
         },
-        "redirect_url": {
+        "issuer": {
+          "type": "string"
+        },
+        "authorization_endpoint": {
+          "type": "string"
+        },
+        "token_endpoint": {
+          "type": "string"
+        },
+        "userinfo_endpoint": {
           "type": "string"
         }
       }

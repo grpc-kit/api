@@ -38,20 +38,20 @@ message AuthProvider {
     OIDC = 2;
     OAUTH2 = 3;
     GITHUB = 4;
-    WECHAT = 5;
-    GOOGLE = 6;
+    GOOGLE = 5;
+    WECHAT = 6;
   }
 
   ProviderName name = 1;
   string client_id = 2;
   string client_secret = 3;
   bool enabled = 4;
-  string issuer = 5;
-  string auth_url = 6;
-  string token_url = 7;
-  string user_info_url = 8;
-  string scopes = 9;
-  string redirect_url = 10;
+  string redirect_uri = 5;
+  string scopes = 6;
+  string issuer = 7;
+  string authorization_endpoint = 8;
+  string token_endpoint = 9;
+  string userinfo_endpoint = 10;
 }
 
 message GetAuthProvidersResponse {
