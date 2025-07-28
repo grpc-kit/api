@@ -5,23 +5,36 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+// Menu 用户后台菜单
 message Menu {
+  // ID 菜单 ID
   int32 id = 1;
+  // ParentID 父菜单 ID，为 0 表示顶级菜单
   int32 parent_id = 2;
+  // Name 菜单名称
   string name = 3;
+  // Path 菜单路径
   string path = 4;
+  // Locale 国际化标识
   string locale = 5;
+  // Icon 菜单图标，通常用于前端展示
   string icon = 6;
+  // SortWeight 菜单排序权重，数字越小越靠前
   int32 sort_weight = 7;
+  // Enabled 菜单是否启用
   bool enabled = 8;
+  // HideInMenu 是否在菜单列表中隐藏
   bool hide_in_menu = 9;
+  // HideChildrenInMenu 是否在菜单列表中隐藏子菜单
   bool hide_children_in_menu = 10;
+  // Children 子菜单列表
+  repeated Menu children = 11;
 }
 
-message GetMenusRequest {
+message ListMenusRequest {
 
 }
 
-message GetMenusResponse {
+message ListMenusResponse {
   repeated Menu menus = 1;
 }

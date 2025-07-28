@@ -27,7 +27,7 @@ message CreateAuthLoginResponse {
   int32 expires_in = 3;
 }
 
-message GetAuthProvidersRequest {
+message ListAuthProvidersRequest {
 
 }
 
@@ -54,7 +54,7 @@ message AuthProvider {
   string userinfo_endpoint = 10;
 }
 
-message GetAuthProvidersResponse {
+message ListAuthProvidersResponse {
   repeated AuthProvider providers = 1;
 }
 

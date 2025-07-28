@@ -12,8 +12,8 @@ import "known/admin/v1/config.proto";
 service KnownAdmin {
   rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
   rpc CreateAuthLogin(CreateAuthLoginRequest) returns (CreateAuthLoginResponse);
-  rpc GetAuthProviders(GetAuthProvidersRequest) returns(GetAuthProvidersResponse);
+  rpc ListAuthProviders(ListAuthProvidersRequest) returns(ListAuthProvidersResponse);
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
-  rpc GetMenus(GetMenusRequest) returns(GetMenusResponse);
+  rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
 }

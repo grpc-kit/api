@@ -6,12 +6,12 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthLogin
     post: "/builtin/admin/api/v1/auth/login"
     body: "*"
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthProviders
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListAuthProviders
     get: "/builtin/admin/api/v1/auth/providers"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpsertAuthProviders
     post: "/builtin/admin/api/v1/auth/providers"
     body: "*"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthCallback
     get: "/builtin/admin/api/v1/auth/callback/{provider_name}"
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetMenus
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListMenus
     get: "/builtin/admin/api/v1/menus"

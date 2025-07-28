@@ -106,12 +106,12 @@
     },
     "/builtin/admin/api/v1/auth/providers": {
       "get": {
-        "operationId": "KnownAdmin_GetAuthProviders",
+        "operationId": "KnownAdmin_ListAuthProviders",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetAuthProvidersResponse"
+              "$ref": "#/definitions/v1ListAuthProvidersResponse"
             }
           },
           "4xx": {
@@ -164,12 +164,12 @@
     },
     "/builtin/admin/api/v1/menus": {
       "get": {
-        "operationId": "KnownAdmin_GetMenus",
+        "operationId": "KnownAdmin_ListMenus",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetMenusResponse"
+              "$ref": "#/definitions/v1ListMenusResponse"
             }
           },
           "4xx": {
@@ -291,7 +291,10 @@
         }
       }
     },
-    "v1GetAuthProvidersResponse": {
+    "v1GetConfigResponse": {
+      "type": "object"
+    },
+    "v1ListAuthProvidersResponse": {
       "type": "object",
       "properties": {
         "providers": {
@@ -303,10 +306,7 @@
         }
       }
     },
-    "v1GetConfigResponse": {
-      "type": "object"
-    },
-    "v1GetMenusResponse": {
+    "v1ListMenusResponse": {
       "type": "object",
       "properties": {
         "menus": {
@@ -323,38 +323,57 @@
       "properties": {
         "id": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "ID 菜单 ID"
         },
         "parent_id": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "ParentID 父菜单 ID，为 0 表示顶级菜单"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "title": "Name 菜单名称"
         },
         "path": {
-          "type": "string"
+          "type": "string",
+          "title": "Path 菜单路径"
         },
         "locale": {
-          "type": "string"
+          "type": "string",
+          "title": "Locale 国际化标识"
         },
         "icon": {
-          "type": "string"
+          "type": "string",
+          "title": "Icon 菜单图标，通常用于前端展示"
         },
         "sort_weight": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "SortWeight 菜单排序权重，数字越小越靠前"
         },
         "enabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "Enabled 菜单是否启用"
         },
         "hide_in_menu": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "HideInMenu 是否在菜单列表中隐藏"
         },
         "hide_children_in_menu": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "HideChildrenInMenu 是否在菜单列表中隐藏子菜单"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Menu"
+          },
+          "title": "Children 子菜单列表"
         }
-      }
+      },
+      "title": "Menu 用户后台菜单"
     },
     "v1UpsertAuthProvidersRequest": {
       "type": "object",
