@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+message Menu {
+  int32 id = 1;
+  int32 parent_id = 2;
+  string name = 3;
+  string path = 4;
+  string locale = 5;
+  string icon = 6;
+  int32 sort_weight = 7;
+  bool enabled = 8;
+  bool hide_in_menu = 9;
+  bool hide_children_in_menu = 10;
+}
+
+message GetMenusRequest {
+
+}
+
+message GetMenusResponse {
+  repeated Menu menus = 1;
+}

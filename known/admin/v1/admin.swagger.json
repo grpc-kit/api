@@ -161,6 +161,31 @@
           }
         ]
       }
+    },
+    "/builtin/admin/api/v1/menus": {
+      "get": {
+        "operationId": "KnownAdmin_GetMenus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetMenusResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -172,8 +197,8 @@
         "OIDC",
         "OAUTH2",
         "GITHUB",
-        "WECHAT",
-        "GOOGLE"
+        "GOOGLE",
+        "WECHAT"
       ],
       "default": "LOCAL"
     },
@@ -280,6 +305,56 @@
     },
     "v1GetConfigResponse": {
       "type": "object"
+    },
+    "v1GetMenusResponse": {
+      "type": "object",
+      "properties": {
+        "menus": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Menu"
+          }
+        }
+      }
+    },
+    "v1Menu": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent_id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "sort_weight": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "hide_in_menu": {
+          "type": "boolean"
+        },
+        "hide_children_in_menu": {
+          "type": "boolean"
+        }
+      }
     },
     "v1UpsertAuthProvidersRequest": {
       "type": "object",

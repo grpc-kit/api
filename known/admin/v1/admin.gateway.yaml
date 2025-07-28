@@ -13,3 +13,5 @@ http:
     body: "*"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthCallback
     get: "/builtin/admin/api/v1/auth/callback/{provider_name}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetMenus
+    get: "/builtin/admin/api/v1/menus"
