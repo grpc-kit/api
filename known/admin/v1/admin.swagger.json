@@ -189,7 +189,7 @@
     }
   },
   "definitions": {
-    "AuthProviderProviderName": {
+    "AuthProviderProviderType": {
       "type": "string",
       "enum": [
         "LOCAL",
@@ -206,7 +206,10 @@
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/AuthProviderProviderName"
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/AuthProviderProviderType"
         },
         "client_id": {
           "type": "string"
