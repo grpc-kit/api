@@ -5,7 +5,7 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
-// CreateAuthLoginRequest 用于登录请求
+// CreateAuthLoginRequest 用于登录请求，所有用户均可
 message CreateAuthLoginRequest {
   // Username 系统识别的用户名全局唯一
   string username = 1;
@@ -22,6 +22,30 @@ message CreateAuthLoginRequest {
 // CreateAuthLoginResponse 登录成功响应
 // 参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5
 message CreateAuthLoginResponse {
+  string access_token = 1;
+  string token_type = 2;
+  int32 expires_in = 3;
+}
+
+// CreateAuthTokenRequest 用于创建 token，仅管理员或特定用户可建
+message CreateAuthTokenRequest {
+  // Appid 关联应用标识
+  string appid = 1;
+  // Username 系统识别的用户名全局唯一
+  string username = 2;
+  // Email 用户邮箱地址
+  string email = 3;
+  // PhoneNumber 用户手机号
+  string phone_number = 4;
+  // ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒
+  int32 expires_in = 7;
+  // PasswordHash 用户密码在本地使用 sha256 哈希结果
+  string password_hash = 9;
+}
+
+// CreateAuthTokenResponse 登录成功响应
+// 参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5
+message CreateAuthTokenResponse {
   string access_token = 1;
   string token_type = 2;
   int32 expires_in = 3;
