@@ -432,15 +432,14 @@
           "type": "string",
           "title": "Icon 菜单图标，通常用于前端展示"
         },
-        "sort_weight": {
+        "order_weight": {
           "type": "integer",
           "format": "int32",
-          "title": "SortWeight 菜单排序权重，数字越小越靠前"
+          "title": "OrderWeight 菜单排序权重，数字越小越靠前"
         },
-        "menu_type": {
-          "type": "integer",
-          "format": "int32",
-          "title": "MenuType 菜单用途，如 0=admin 表示后台"
+        "type": {
+          "$ref": "#/definitions/v1MenuType",
+          "title": "Type 菜单用途，如后台管理员、前台用户、APP 应用"
         },
         "enabled": {
           "type": "boolean",
@@ -464,6 +463,17 @@
         }
       },
       "title": "Menu 用户后台菜单"
+    },
+    "v1MenuType": {
+      "type": "string",
+      "enum": [
+        "MENU_TYPE_UNSPECIFIED",
+        "MENU_TYPE_ADMIN",
+        "MENU_TYPE_USER"
+      ],
+      "default": "MENU_TYPE_UNSPECIFIED",
+      "description": "- MENU_TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - MENU_TYPE_ADMIN: 后台菜单\n - MENU_TYPE_USER: 用户菜单",
+      "title": "MenuType 菜单类型"
     },
     "v1UpsertAuthProvidersRequest": {
       "type": "object",

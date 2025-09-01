@@ -5,6 +5,14 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+// MenuType 菜单类型
+enum MenuType {
+  MENU_TYPE_UNSPECIFIED = 0; // 未指定类型，保留为默认值
+  MENU_TYPE_ADMIN = 1;       // 后台菜单
+  MENU_TYPE_USER = 2;        // 用户菜单
+  // 可以根据需要扩展其他类型，如 MENU_TYPE_API = 3;
+}
+
 // Menu 用户后台菜单
 message Menu {
   // ID 菜单 ID
@@ -19,10 +27,10 @@ message Menu {
   string i18n_name = 5;
   // Icon 菜单图标，通常用于前端展示
   string icon = 6;
-  // SortWeight 菜单排序权重，数字越小越靠前
-  int32 sort_weight = 7;
-  // MenuType 菜单用途，如 0=admin 表示后台
-  int32 menu_type = 8;
+  // OrderWeight 菜单排序权重，数字越小越靠前
+  int32 order_weight = 7;
+  // Type 菜单用途，如后台管理员、前台用户、APP 应用
+  MenuType type = 8;
   // Enabled 菜单是否启用
   bool enabled = 9;
   // HideInMenu 是否在菜单列表中隐藏
