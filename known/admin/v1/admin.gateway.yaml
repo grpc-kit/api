@@ -18,3 +18,6 @@ http:
     get: "/builtin/admin/api/v1/auth/callback/{provider_name}"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListMenus
     get: "/builtin/admin/api/v1/menus"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartment
+    post: "/builtin/admin/api/v1/departments"
+    body: "department"

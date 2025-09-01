@@ -8,6 +8,7 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 import "known/admin/v1/auth.proto";
 import "known/admin/v1/menu.proto";
 import "known/admin/v1/config.proto";
+import "known/admin/v1/department.proto";
 
 service KnownAdmin {
   rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
@@ -17,4 +18,6 @@ service KnownAdmin {
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
   rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
+  // 部门相关
+  rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
 }
