@@ -424,9 +424,9 @@
           "type": "string",
           "title": "Path 菜单路径"
         },
-        "locale": {
+        "i18n_name": {
           "type": "string",
-          "title": "Locale 国际化标识"
+          "title": "I18NName 国际化名称"
         },
         "icon": {
           "type": "string",
@@ -436,6 +436,11 @@
           "type": "integer",
           "format": "int32",
           "title": "SortWeight 菜单排序权重，数字越小越靠前"
+        },
+        "menu_type": {
+          "type": "integer",
+          "format": "int32",
+          "title": "MenuType 菜单用途，如 0=admin 表示后台"
         },
         "enabled": {
           "type": "boolean",

@@ -15,20 +15,22 @@ message Menu {
   string name = 3;
   // Path 菜单路径
   string path = 4;
-  // Locale 国际化标识
-  string locale = 5;
+  // I18NName 国际化名称
+  string i18n_name = 5;
   // Icon 菜单图标，通常用于前端展示
   string icon = 6;
   // SortWeight 菜单排序权重，数字越小越靠前
   int32 sort_weight = 7;
+  // MenuType 菜单用途，如 0=admin 表示后台
+  int32 menu_type = 8;
   // Enabled 菜单是否启用
-  bool enabled = 8;
+  bool enabled = 9;
   // HideInMenu 是否在菜单列表中隐藏
-  bool hide_in_menu = 9;
+  bool hide_in_menu = 10;
   // HideChildrenInMenu 是否在菜单列表中隐藏子菜单
-  bool hide_children_in_menu = 10;
+  bool hide_children_in_menu = 11;
   // Children 子菜单列表
-  repeated Menu children = 11;
+  repeated Menu children = 12;
 }
 
 message ListMenusRequest {
