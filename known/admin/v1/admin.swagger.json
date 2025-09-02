@@ -198,6 +198,29 @@
       }
     },
     "/builtin/admin/api/v1/departments": {
+      "get": {
+        "operationId": "KnownAdmin_ListDepartments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListDepartmentsResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      },
       "post": {
         "summary": "部门相关",
         "operationId": "KnownAdmin_CreateDepartment",
@@ -447,6 +470,14 @@
             "$ref": "#/definitions/DepartmentLeader"
           },
           "title": "Leaders 部门领导列表"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Department"
+          },
+          "title": "Children 子部门列表"
         }
       },
       "title": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内"
@@ -488,6 +519,18 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1AuthProvider"
+          }
+        }
+      }
+    },
+    "v1ListDepartmentsResponse": {
+      "type": "object",
+      "properties": {
+        "departments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Department"
           }
         }
       }

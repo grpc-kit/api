@@ -21,3 +21,5 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartment
     post: "/builtin/admin/api/v1/departments"
     body: "department"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartments
+    get: "/builtin/admin/api/v1/departments"

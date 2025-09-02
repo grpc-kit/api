@@ -26,8 +26,19 @@ message Department {
   int32 order_weight = 5;
   // Leaders 部门领导列表
   repeated Leader leaders = 6;
+
+  // Children 子部门列表
+  repeated Department children = 7;
 }
 
 message CreateDepartmentRequest {
   Department department = 1;
+}
+
+message ListDepartmentsRequest {
+
+}
+
+message ListDepartmentsResponse {
+  repeated Department departments = 1;
 }

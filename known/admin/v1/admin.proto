@@ -20,4 +20,5 @@ service KnownAdmin {
   rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
   // 部门相关
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
+  rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
 }
