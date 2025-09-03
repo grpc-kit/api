@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+message SecurityKey {
+  string public_key = 1;
+}
+
+message CreateSecurityKeyRequest {
+
+}

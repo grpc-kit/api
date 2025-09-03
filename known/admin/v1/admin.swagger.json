@@ -256,6 +256,42 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/departments/{id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteDepartment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID 实体 ID",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/menus": {
       "get": {
         "operationId": "KnownAdmin_ListMenus",
@@ -279,6 +315,42 @@
             }
           }
         }
+      }
+    },
+    "/builtin/admin/api/v1/security/keys": {
+      "post": {
+        "summary": "安全相关",
+        "operationId": "KnownAdmin_CreateSecurityKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityKey"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateSecurityKeyRequest"
+            }
+          }
+        ]
       }
     }
   },
@@ -436,6 +508,9 @@
         }
       },
       "title": "CreateAuthTokenResponse 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
+    },
+    "v1CreateSecurityKeyRequest": {
+      "type": "object"
     },
     "v1Department": {
       "type": "object",
@@ -618,6 +693,14 @@
       "default": "MENU_TYPE_UNSPECIFIED",
       "description": "- MENU_TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - MENU_TYPE_ADMIN: 后台菜单\n - MENU_TYPE_USER: 用户菜单",
       "title": "MenuType 菜单类型"
+    },
+    "v1SecurityKey": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        }
+      }
     },
     "v1UpsertAuthProvidersRequest": {
       "type": "object",

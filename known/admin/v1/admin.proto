@@ -5,10 +5,13 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+import "google/protobuf/empty.proto";
+
 import "known/admin/v1/auth.proto";
 import "known/admin/v1/menu.proto";
 import "known/admin/v1/config.proto";
 import "known/admin/v1/department.proto";
+import "known/admin/v1/security.proto";
 
 service KnownAdmin {
   rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
@@ -21,4 +24,7 @@ service KnownAdmin {
   // 部门相关
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
+  rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
+  // 安全相关
+  rpc CreateSecurityKey(CreateSecurityKeyRequest) returns(SecurityKey);
 }

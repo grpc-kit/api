@@ -23,3 +23,8 @@ http:
     body: "department"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartments
     get: "/builtin/admin/api/v1/departments"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartment
+    delete: "/builtin/admin/api/v1/departments/{id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateSecurityKey
+    post: "/builtin/admin/api/v1/security/keys"
+    body: "*"

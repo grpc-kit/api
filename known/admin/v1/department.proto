@@ -42,3 +42,8 @@ message ListDepartmentsRequest {
 message ListDepartmentsResponse {
   repeated Department departments = 1;
 }
+
+message DeleteDepartmentRequest {
+  // ID 实体 ID
+  int32 id = 1;
+}
