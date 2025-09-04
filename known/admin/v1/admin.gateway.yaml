@@ -6,6 +6,7 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthLogin
     post: "/builtin/admin/api/v1/auth/login"
     body: "*"
+    # 认证相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthToken
     post: "/builtin/admin/api/v1/auth/token"
     body: "*"
@@ -16,8 +17,10 @@ http:
     body: "*"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthCallback
     get: "/builtin/admin/api/v1/auth/callback/{provider_name}"
+    # 菜单相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListMenus
     get: "/builtin/admin/api/v1/menus"
+    # 部门相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartment
     post: "/builtin/admin/api/v1/departments"
     body: "department"
@@ -25,6 +28,10 @@ http:
     get: "/builtin/admin/api/v1/departments"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartment
     delete: "/builtin/admin/api/v1/departments/{id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartment
+    patch: "/builtin/admin/api/v1/departments/{department.id}"
+    body: "department"
+    # 安全相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateSecurityKey
     post: "/builtin/admin/api/v1/security/keys"
     body: "*"

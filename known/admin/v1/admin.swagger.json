@@ -256,6 +256,87 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/departments/{department.id}": {
+      "patch": {
+        "operationId": "KnownAdmin_UpdateDepartment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Department"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "department.id",
+            "description": "ID 实体 ID",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "department",
+            "description": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "parent_id": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "ParentID 父 ID，为 0 表示顶级菜单"
+                },
+                "name": {
+                  "type": "string",
+                  "title": "Name 部门名称"
+                },
+                "i18n_name": {
+                  "$ref": "#/definitions/v1I18NName",
+                  "title": "I18nName 国际化名称"
+                },
+                "order_weight": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+                },
+                "leaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/DepartmentLeader"
+                  },
+                  "title": "Leaders 部门领导列表"
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/v1Department"
+                  },
+                  "title": "Children 子部门列表"
+                }
+              },
+              "title": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内"
+            }
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/departments/{id}": {
       "delete": {
         "operationId": "KnownAdmin_DeleteDepartment",
@@ -283,7 +364,6 @@
         "parameters": [
           {
             "name": "id",
-            "description": "ID 实体 ID",
             "in": "path",
             "required": true,
             "type": "integer",

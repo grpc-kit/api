@@ -25,6 +25,7 @@ service KnownAdmin {
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
   rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
+  rpc UpdateDepartment(UpdateDepartmentRequest) returns(Department);
   // 安全相关
   rpc CreateSecurityKey(CreateSecurityKeyRequest) returns(SecurityKey);
 }
