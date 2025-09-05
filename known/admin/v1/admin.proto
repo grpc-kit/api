@@ -7,6 +7,7 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/empty.proto";
 
+import "known/admin/v1/common.proto";
 import "known/admin/v1/auth.proto";
 import "known/admin/v1/menu.proto";
 import "known/admin/v1/config.proto";
@@ -26,6 +27,7 @@ service KnownAdmin {
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
   rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
   rpc UpdateDepartment(UpdateDepartmentRequest) returns(Department);
+  rpc ListDepartmentUsers(ListDepartmentUsersRequest) returns(ListDepartmentUsersResponse);
   // 安全相关
   rpc CreateSecurityKey(CreateSecurityKeyRequest) returns(SecurityKey);
 }

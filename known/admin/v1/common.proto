@@ -5,9 +5,76 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+// 引入 google 公共类型
+import "google/protobuf/timestamp.proto";
+
+// Gender 性别
+enum Gender {
+  GENDER_UNSPECIFIED = 0;
+  GENDER_MALE = 1;
+  GENDER_FEMALE = 2;
+}
+
+message Leader {
+  int32 type = 1;
+  int32 user_id = 2;
+}
+
 // I18NName 国际化名称
 message I18NName {
   string zh_cn = 1;
   string en_us = 2;
   string ja_jp = 3;
+}
+
+// Address 用户地址
+// https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim
+message Address {
+  string country = 1;
+  string postal_code = 2;
+  string region = 3;
+  string locality = 4;
+  string street_address = 5;
+}
+
+// Department 组织部门实体，树形结构，一个用户仅可在一个部门内
+message Department {
+  // ID 实体 ID
+  int32 id = 1;
+  // ParentID 父 ID，为 0 表示顶级菜单
+  int32 parent_id = 2;
+  // Name 部门名称
+  string name = 3;
+  // I18nName 国际化名称
+  I18NName i18n_name = 4;
+  // OrderWeight 菜单排序权重，数字越小越靠前
+  int32 order_weight = 5;
+  // Leaders 部门领导列表
+  repeated Leader leaders = 6;
+
+  // Children 子部门列表
+  repeated Department children = 7;
+}
+
+// User 用户实体
+message User {
+  // ID 用户 ID
+  int32 id = 1;
+  string username = 2;
+  string realname = 3;
+  string idcard = 4;
+  string nickname = 5;
+  string profile = 6;
+  string picture = 7;
+  string website = 8;
+  string email = 9;
+  bool email_verified = 10;
+  Gender gender = 11;
+  google.protobuf.Timestamp birthday = 12;
+  string zoneinfo = 13;
+  string locale = 14;
+  string phone_number = 15;
+  bool phone_number_verified = 16;
+  Address address = 17;
+  Department department = 18;
 }

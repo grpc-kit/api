@@ -9,30 +9,6 @@ import "google/protobuf/field_mask.proto";
 
 import "known/admin/v1/common.proto";
 
-// Department 组织部门实体，树形结构，一个用户仅可在一个部门内
-message Department {
-  message Leader {
-    int32 type = 1;
-    int32 user_id = 2;
-  }
-
-  // ID 实体 ID
-  int32 id = 1;
-  // ParentID 父 ID，为 0 表示顶级菜单
-  int32 parent_id = 2;
-  // Name 部门名称
-  string name = 3;
-  // I18nName 国际化名称
-  I18NName i18n_name = 4;
-  // OrderWeight 菜单排序权重，数字越小越靠前
-  int32 order_weight = 5;
-  // Leaders 部门领导列表
-  repeated Leader leaders = 6;
-
-  // Children 子部门列表
-  repeated Department children = 7;
-}
-
 message CreateDepartmentRequest {
   Department department = 1;
 }
@@ -53,4 +29,12 @@ message UpdateDepartmentRequest {
   Department department = 1;
 
   google.protobuf.FieldMask update_mask = 3;
+}
+
+message ListDepartmentUsersRequest {
+  int32 id = 1;
+}
+
+message ListDepartmentUsersResponse {
+
 }

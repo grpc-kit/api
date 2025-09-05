@@ -678,6 +678,9 @@
         }
       }
     },
+    "v1ListDepartmentUsersResponse": {
+      "type": "object"
+    },
     "v1ListDepartmentsResponse": {
       "type": "object",
       "properties": {
