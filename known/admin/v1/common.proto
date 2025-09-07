@@ -15,6 +15,17 @@ enum Gender {
   GENDER_FEMALE = 2;
 }
 
+// 用户状态（枚举值预计不会太频繁变化）
+// 可以根据业务再增加状态
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;  // 默认值／未知状态
+  USER_STATUS_PENDING = 1;      // 待激活／待验证
+  USER_STATUS_ACTIVE = 2;       // 正常启用状态
+  USER_STATUS_LOCKED = 3;       // 被锁定（如连续密码错误、账号风控等）
+  USER_STATUS_DISABLED = 4;     // 禁用（人工停用）
+  USER_STATUS_DELETED = 5;      // 软删除
+}
+
 message Leader {
   int32 type = 1;
   int32 user_id = 2;
@@ -56,25 +67,44 @@ message Department {
   repeated Department children = 7;
 }
 
-// User 用户实体
+// User 用户实体，表示系统中的账号信息。
 message User {
-  // ID 用户 ID
+  // ID 用户 ID，全局唯一标识。
   int32 id = 1;
+  // 用户名，系统登录凭证，通常唯一。
   string username = 2;
+  // 用户状态，表示当前账号的生命周期阶段。
+  UserStatus status = 19;
+  // 真实姓名，用于实名认证或后台展示。
   string realname = 3;
+  // 身份证号，用于身份验证（可选）。
   string idcard = 4;
+  // 昵称，用于社交或前端展示。
   string nickname = 5;
+  // 个人简介或签名。
   string profile = 6;
+  // 用户头像 URL。
   string picture = 7;
+  // 个人网站地址。
   string website = 8;
+  // 邮箱地址。
   string email = 9;
+  // 邮箱是否已验证。
   bool email_verified = 10;
+  // 性别。
   Gender gender = 11;
+  // 出生日期。
   google.protobuf.Timestamp birthday = 12;
+  // 时区信息（IANA 时区标识，例如 "Asia/Shanghai"）。
   string zoneinfo = 13;
+  // 用户偏好的语言与地区（例如 "zh-CN"、"en-US"）。
   string locale = 14;
+  // 手机号码。
   string phone_number = 15;
+  // 手机号码是否已验证。
   bool phone_number_verified = 16;
+  // 地址信息。
   Address address = 17;
+  // 所属部门。
   Department department = 18;
 }
