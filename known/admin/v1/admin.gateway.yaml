@@ -31,8 +31,15 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartment
     patch: "/builtin/admin/api/v1/departments/{department.id}"
     body: "department"
-  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartmentUsers
-  #  get: "/builtin/admin/api/v1/departments/{department.id}/users"
+    # 用户相关
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListUsers
+    get: "/builtin/admin/api/v1/users"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUser
+    post: "/builtin/admin/api/v1/users"
+    body: "user"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUser
+    patch: "/builtin/admin/api/v1/users/{user.id}"
+    body: "user"
     # 安全相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateSecurityKey
     post: "/builtin/admin/api/v1/security/keys"

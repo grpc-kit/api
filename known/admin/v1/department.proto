@@ -30,11 +30,3 @@ message UpdateDepartmentRequest {
 
   google.protobuf.FieldMask update_mask = 3;
 }
-
-message ListDepartmentUsersRequest {
-  int32 id = 1;
-}
-
-message ListDepartmentUsersResponse {
-
-}

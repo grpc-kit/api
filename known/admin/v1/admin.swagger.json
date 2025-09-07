@@ -318,7 +318,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "$ref": "#/definitions/DepartmentLeader"
+                    "$ref": "#/definitions/v1Leader"
                   },
                   "title": "Leaders 部门领导列表"
                 },
@@ -432,6 +432,230 @@
           }
         ]
       }
+    },
+    "/builtin/admin/api/v1/users": {
+      "get": {
+        "summary": "用户相关",
+        "operationId": "KnownAdmin_ListUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListUsersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "description": "Cursor-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "description": "Offset-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "过滤条件，采用 AIP-160 定义的标准 filter 语法。\n示例: `email=\"alice@example.com\" AND state=\"ACTIVE\"`",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"create_time desc, name asc\"\nAIP-132: order_by 是可选字段。",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "show_deleted",
+            "description": "是否包含已删除资源。\n- 默认 false，仅返回有效资源。\n- 设为 true 可返回软删除的用户。\nAIP-132: show_deleted 是可选字段。",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "view",
+            "description": "视图模式，决定返回数据的详细程度。\n- BASIC: 基本信息（默认）\n- FULL: 详细信息\nAIP-157: 建议支持。",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "USER_VIEW_UNSPECIFIED",
+              "USER_VIEW_BASIC",
+              "USER_VIEW_FULL"
+            ],
+            "default": "USER_VIEW_UNSPECIFIED"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1User"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1User"
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/users/{user.id}": {
+      "patch": {
+        "operationId": "KnownAdmin_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1User"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user.id",
+            "description": "ID 用户 ID",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "user",
+            "description": "User 用户实体",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "realname": {
+                  "type": "string"
+                },
+                "idcard": {
+                  "type": "string"
+                },
+                "nickname": {
+                  "type": "string"
+                },
+                "profile": {
+                  "type": "string"
+                },
+                "picture": {
+                  "type": "string"
+                },
+                "website": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "email_verified": {
+                  "type": "boolean"
+                },
+                "gender": {
+                  "$ref": "#/definitions/v1Gender"
+                },
+                "birthday": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "zoneinfo": {
+                  "type": "string"
+                },
+                "locale": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "phone_number_verified": {
+                  "type": "boolean"
+                },
+                "address": {
+                  "$ref": "#/definitions/v1Address"
+                },
+                "department": {
+                  "$ref": "#/definitions/v1Department"
+                }
+              },
+              "title": "User 用户实体"
+            }
+          }
+        ]
+      }
     }
   },
   "definitions": {
@@ -448,18 +672,36 @@
       ],
       "default": "LOCAL"
     },
-    "DepartmentLeader": {
+    "ListUsersRequestUserView": {
+      "type": "string",
+      "enum": [
+        "USER_VIEW_UNSPECIFIED",
+        "USER_VIEW_BASIC",
+        "USER_VIEW_FULL"
+      ],
+      "default": "USER_VIEW_UNSPECIFIED",
+      "title": "控制资源返回的详细程度。"
+    },
+    "v1Address": {
       "type": "object",
       "properties": {
-        "type": {
-          "type": "integer",
-          "format": "int32"
+        "country": {
+          "type": "string"
         },
-        "user_id": {
-          "type": "integer",
-          "format": "int32"
+        "postal_code": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "locality": {
+          "type": "string"
+        },
+        "street_address": {
+          "type": "string"
         }
-      }
+      },
+      "title": "Address 用户地址\nhttps://openid.net/specs/openid-connect-core-1_0.html#AddressClaim"
     },
     "v1AuthProvider": {
       "type": "object",
@@ -622,7 +864,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/DepartmentLeader"
+            "$ref": "#/definitions/v1Leader"
           },
           "title": "Leaders 部门领导列表"
         },
@@ -636,6 +878,16 @@
         }
       },
       "title": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内"
+    },
+    "v1Gender": {
+      "type": "string",
+      "enum": [
+        "GENDER_UNSPECIFIED",
+        "GENDER_MALE",
+        "GENDER_FEMALE"
+      ],
+      "default": "GENDER_UNSPECIFIED",
+      "title": "Gender 性别"
     },
     "v1GetAuthCallbackResponse": {
       "type": "object",
@@ -666,6 +918,19 @@
       },
       "title": "I18NName 国际化名称"
     },
+    "v1Leader": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "user_id": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "v1ListAuthProvidersResponse": {
       "type": "object",
       "properties": {
@@ -677,9 +942,6 @@
           }
         }
       }
-    },
-    "v1ListDepartmentUsersResponse": {
-      "type": "object"
     },
     "v1ListDepartmentsResponse": {
       "type": "object",
@@ -702,6 +964,28 @@
             "type": "object",
             "$ref": "#/definitions/v1Menu"
           }
+        }
+      }
+    },
+    "v1ListUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1User"
+          },
+          "title": "符合查询条件的用户资源。"
+        },
+        "next_page_token": {
+          "type": "string",
+          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
     },
@@ -808,6 +1092,69 @@
           }
         }
       }
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ID 用户 ID"
+        },
+        "username": {
+          "type": "string"
+        },
+        "realname": {
+          "type": "string"
+        },
+        "idcard": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "picture": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "email_verified": {
+          "type": "boolean"
+        },
+        "gender": {
+          "$ref": "#/definitions/v1Gender"
+        },
+        "birthday": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "zoneinfo": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "phone_number_verified": {
+          "type": "boolean"
+        },
+        "address": {
+          "$ref": "#/definitions/v1Address"
+        },
+        "department": {
+          "$ref": "#/definitions/v1Department"
+        }
+      },
+      "title": "User 用户实体"
     }
   },
   "securityDefinitions": {
