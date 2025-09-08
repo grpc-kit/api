@@ -584,7 +584,7 @@
         "parameters": [
           {
             "name": "user.id",
-            "description": "ID 用户 ID，全局唯一标识。",
+            "description": "ID 用户 ID，全局唯一标识",
             "in": "path",
             "required": true,
             "type": "integer",
@@ -592,7 +592,7 @@
           },
           {
             "name": "user",
-            "description": "User 用户实体，表示系统中的账号信息。",
+            "description": "User 用户实体，表示系统中的账号信息",
             "in": "body",
             "required": true,
             "schema": {
@@ -600,79 +600,79 @@
               "properties": {
                 "username": {
                   "type": "string",
-                  "title": "用户名，系统登录凭证，通常唯一。"
+                  "title": "用户名，系统登录凭证，通常唯一"
                 },
                 "status": {
                   "$ref": "#/definitions/v1UserStatus",
-                  "title": "用户状态，表示当前账号的生命周期阶段。"
+                  "title": "用户状态，表示当前账号的生命周期阶段"
                 },
                 "realname": {
                   "type": "string",
-                  "title": "真实姓名，用于实名认证或后台展示。"
+                  "title": "真实姓名，用于实名认证或后台展示"
                 },
                 "idcard": {
                   "type": "string",
-                  "title": "身份证号，用于身份验证（可选）。"
+                  "title": "身份证号，用于身份验证（可选）"
                 },
                 "nickname": {
                   "type": "string",
-                  "title": "昵称，用于社交或前端展示。"
+                  "title": "昵称，用于社交或前端展示"
                 },
                 "profile": {
                   "type": "string",
-                  "title": "个人简介或签名。"
+                  "title": "个人简介或签名"
                 },
                 "picture": {
                   "type": "string",
-                  "title": "用户头像 URL。"
+                  "title": "用户头像 URL"
                 },
                 "website": {
                   "type": "string",
-                  "title": "个人网站地址。"
+                  "title": "个人网站地址"
                 },
                 "email": {
                   "type": "string",
-                  "title": "邮箱地址。"
+                  "title": "邮箱地址"
                 },
                 "email_verified": {
                   "type": "boolean",
-                  "title": "邮箱是否已验证。"
+                  "title": "邮箱是否已验证"
                 },
                 "gender": {
                   "$ref": "#/definitions/v1Gender",
-                  "title": "性别。"
+                  "title": "性别"
                 },
                 "birthday": {
                   "type": "string",
                   "format": "date-time",
-                  "title": "出生日期。"
+                  "title": "出生日期"
                 },
                 "zoneinfo": {
                   "type": "string",
-                  "title": "时区信息（IANA 时区标识，例如 \"Asia/Shanghai\"）。"
+                  "title": "时区信息（IANA 时区标识，例如 \"Asia/Shanghai\"）"
                 },
                 "locale": {
                   "type": "string",
-                  "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）。"
+                  "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）"
                 },
                 "phone_number": {
-                  "type": "string",
-                  "title": "手机号码。"
+                  "$ref": "#/definitions/v1PhoneNumber",
+                  "title": "手机号码"
                 },
                 "phone_number_verified": {
                   "type": "boolean",
-                  "title": "手机号码是否已验证。"
+                  "title": "手机号码是否已验证"
                 },
                 "address": {
                   "$ref": "#/definitions/v1Address",
-                  "title": "地址信息。"
+                  "title": "地址信息"
                 },
                 "department": {
                   "$ref": "#/definitions/v1Department",
-                  "title": "所属部门。"
+                  "title": "所属部门"
                 }
               },
-              "title": "User 用户实体，表示系统中的账号信息。"
+              "title": "User 用户实体，表示系统中的账号信息"
             }
           }
         ]
@@ -1082,6 +1082,20 @@
       "description": "- MENU_TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - MENU_TYPE_ADMIN: 后台菜单\n - MENU_TYPE_USER: 用户菜单",
       "title": "MenuType 菜单类型"
     },
+    "v1PhoneNumber": {
+      "type": "object",
+      "properties": {
+        "country_code": {
+          "type": "string",
+          "title": "国家码，字符串更通用，例如 \"86\", \"1\""
+        },
+        "national_number": {
+          "type": "string",
+          "title": "本地号码，字符串存储，避免丢失前导零"
+        }
+      },
+      "title": "PhoneNumber 手机号，以 E.164 格式存储（E.164 = '+' + 国家码 + 本地号码）总长度 ≤ 15 位，如：+8613812345678"
+    },
     "v1SecurityKey": {
       "type": "object",
       "properties": {
@@ -1120,83 +1134,83 @@
         "id": {
           "type": "integer",
           "format": "int32",
-          "title": "ID 用户 ID，全局唯一标识。"
+          "title": "ID 用户 ID，全局唯一标识"
         },
         "username": {
           "type": "string",
-          "title": "用户名，系统登录凭证，通常唯一。"
+          "title": "用户名，系统登录凭证，通常唯一"
         },
         "status": {
           "$ref": "#/definitions/v1UserStatus",
-          "title": "用户状态，表示当前账号的生命周期阶段。"
+          "title": "用户状态，表示当前账号的生命周期阶段"
         },
         "realname": {
           "type": "string",
-          "title": "真实姓名，用于实名认证或后台展示。"
+          "title": "真实姓名，用于实名认证或后台展示"
         },
         "idcard": {
           "type": "string",
-          "title": "身份证号，用于身份验证（可选）。"
+          "title": "身份证号，用于身份验证（可选）"
         },
         "nickname": {
           "type": "string",
-          "title": "昵称，用于社交或前端展示。"
+          "title": "昵称，用于社交或前端展示"
         },
         "profile": {
           "type": "string",
-          "title": "个人简介或签名。"
+          "title": "个人简介或签名"
         },
         "picture": {
           "type": "string",
-          "title": "用户头像 URL。"
+          "title": "用户头像 URL"
         },
         "website": {
           "type": "string",
-          "title": "个人网站地址。"
+          "title": "个人网站地址"
         },
         "email": {
           "type": "string",
-          "title": "邮箱地址。"
+          "title": "邮箱地址"
         },
         "email_verified": {
           "type": "boolean",
-          "title": "邮箱是否已验证。"
+          "title": "邮箱是否已验证"
         },
         "gender": {
           "$ref": "#/definitions/v1Gender",
-          "title": "性别。"
+          "title": "性别"
         },
         "birthday": {
           "type": "string",
           "format": "date-time",
-          "title": "出生日期。"
+          "title": "出生日期"
         },
         "zoneinfo": {
           "type": "string",
-          "title": "时区信息（IANA 时区标识，例如 \"Asia/Shanghai\"）。"
+          "title": "时区信息（IANA 时区标识，例如 \"Asia/Shanghai\"）"
         },
         "locale": {
           "type": "string",
-          "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）。"
+          "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）"
         },
         "phone_number": {
-          "type": "string",
-          "title": "手机号码。"
+          "$ref": "#/definitions/v1PhoneNumber",
+          "title": "手机号码"
         },
         "phone_number_verified": {
           "type": "boolean",
-          "title": "手机号码是否已验证。"
+          "title": "手机号码是否已验证"
         },
         "address": {
           "$ref": "#/definitions/v1Address",
-          "title": "地址信息。"
+          "title": "地址信息"
         },
         "department": {
           "$ref": "#/definitions/v1Department",
-          "title": "所属部门。"
+          "title": "所属部门"
         }
       },
-      "title": "User 用户实体，表示系统中的账号信息。"
+      "title": "User 用户实体，表示系统中的账号信息"
     },
     "v1UserStatus": {
       "type": "string",

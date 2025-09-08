@@ -48,6 +48,14 @@ message Address {
   string street_address = 5;
 }
 
+// PhoneNumber 手机号，以 E.164 格式存储（E.164 = '+' + 国家码 + 本地号码）总长度 ≤ 15 位，如：+8613812345678
+message PhoneNumber {
+  // 国家码，字符串更通用，例如 "86", "1"
+  string country_code = 1;
+  // 本地号码，字符串存储，避免丢失前导零
+  string national_number = 2;
+}
+
 // Department 组织部门实体，树形结构，一个用户仅可在一个部门内
 message Department {
   // ID 实体 ID
@@ -67,44 +75,44 @@ message Department {
   repeated Department children = 7;
 }
 
-// User 用户实体，表示系统中的账号信息。
+// User 用户实体，表示系统中的账号信息
 message User {
-  // ID 用户 ID，全局唯一标识。
+  // ID 用户 ID，全局唯一标识
   int32 id = 1;
-  // 用户名，系统登录凭证，通常唯一。
+  // 用户名，系统登录凭证，通常唯一
   string username = 2;
-  // 用户状态，表示当前账号的生命周期阶段。
+  // 用户状态，表示当前账号的生命周期阶段
   UserStatus status = 19;
-  // 真实姓名，用于实名认证或后台展示。
+  // 真实姓名，用于实名认证或后台展示
   string realname = 3;
-  // 身份证号，用于身份验证（可选）。
+  // 身份证号，用于身份验证（可选）
   string idcard = 4;
-  // 昵称，用于社交或前端展示。
+  // 昵称，用于社交或前端展示
   string nickname = 5;
-  // 个人简介或签名。
+  // 个人简介或签名
   string profile = 6;
-  // 用户头像 URL。
+  // 用户头像 URL
   string picture = 7;
-  // 个人网站地址。
+  // 个人网站地址
   string website = 8;
-  // 邮箱地址。
+  // 邮箱地址
   string email = 9;
-  // 邮箱是否已验证。
+  // 邮箱是否已验证
   bool email_verified = 10;
-  // 性别。
+  // 性别
   Gender gender = 11;
-  // 出生日期。
+  // 出生日期
   google.protobuf.Timestamp birthday = 12;
-  // 时区信息（IANA 时区标识，例如 "Asia/Shanghai"）。
+  // 时区信息（IANA 时区标识，例如 "Asia/Shanghai"）
   string zoneinfo = 13;
-  // 用户偏好的语言与地区（例如 "zh-CN"、"en-US"）。
+  // 用户偏好的语言与地区（例如 "zh-CN"、"en-US"）
   string locale = 14;
-  // 手机号码。
-  string phone_number = 15;
-  // 手机号码是否已验证。
+  // 手机号码
+  PhoneNumber phone_number = 15;
+  // 手机号码是否已验证
   bool phone_number_verified = 16;
-  // 地址信息。
+  // 地址信息
   Address address = 17;
-  // 所属部门。
+  // 所属部门
   Department department = 18;
 }
