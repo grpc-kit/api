@@ -753,6 +753,29 @@
       "default": "USER_VIEW_UNSPECIFIED",
       "title": "控制资源返回的详细程度。"
     },
+    "OAuth2JSONWebKeysKey": {
+      "type": "object",
+      "properties": {
+        "kty": {
+          "type": "string"
+        },
+        "use": {
+          "type": "string"
+        },
+        "alg": {
+          "type": "string"
+        },
+        "e": {
+          "type": "string"
+        },
+        "n": {
+          "type": "string"
+        },
+        "kid": {
+          "type": "string"
+        }
+      }
+    },
     "v1Address": {
       "type": "object",
       "properties": {
@@ -1173,7 +1196,16 @@
       "title": "OAuth2Discovery 提供内置 oidc 服务\nhttps://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata"
     },
     "v1OAuth2JSONWebKeys": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/OAuth2JSONWebKeysKey"
+          }
+        }
+      }
     },
     "v1PhoneNumber": {
       "type": "object",

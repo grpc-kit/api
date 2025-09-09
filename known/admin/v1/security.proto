@@ -54,5 +54,14 @@ message CreateSecurityKeyRequest {
 }
 
 message OAuth2JSONWebKeys {
+  message Key {
+    string kty = 1;
+    string use = 2;
+    string alg = 3;
+    string e = 4;
+    string n = 5;
+    string kid = 6;
+  }
 
+  repeated Key keys = 1;
 }
