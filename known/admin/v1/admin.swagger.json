@@ -397,6 +397,56 @@
         }
       }
     },
+    "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration": {
+      "get": {
+        "operationId": "KnownAdmin_GetOAuth2Discovery",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OAuth2Discovery"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/oatuh2/certs": {
+      "get": {
+        "operationId": "KnownAdmin_GetOAuth2Certs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OAuth2Certs"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/builtin/admin/api/v1/security/keys": {
       "post": {
         "summary": "安全相关",
@@ -1081,6 +1131,49 @@
       "default": "MENU_TYPE_UNSPECIFIED",
       "description": "- MENU_TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - MENU_TYPE_ADMIN: 后台菜单\n - MENU_TYPE_USER: 用户菜单",
       "title": "MenuType 菜单类型"
+    },
+    "v1OAuth2Certs": {
+      "type": "object"
+    },
+    "v1OAuth2Discovery": {
+      "type": "object",
+      "properties": {
+        "issuer": {
+          "type": "string"
+        },
+        "authorization_endpoint": {
+          "type": "string"
+        },
+        "token_endpoint": {
+          "type": "string"
+        },
+        "jwks_uri": {
+          "type": "string",
+          "title": "string userinfo_endpoint = 4;"
+        },
+        "response_types_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "string registration_endpoint = 6;\nstring scopes_supported = 7;"
+        },
+        "subject_types_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "string response_modes_supported = 9;\nstring grant_types_supported = 10;\nstring acr_values_supported = 11;"
+        },
+        "id_token_signing_alg_values_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "string id_token_encryption_alg_values_supported = 14;\n string id_token_encryption_enc_values_supported = 15;\n string userinfo_signing_alg_values_supported = 16;\n string userinfo_encryption_alg_values_supported = 17;\n string userinfo_encryption_enc_values_supported = 18;\n string request_object_signing_alg_values_supported = 19;\n string request_object_encryption_alg_values_supported = 20;\n string request_object_encryption_enc_values_supported = 21;\n string token_endpoint_auth_methods_supported = 22;\n string token_endpoint_auth_signing_alg_values_supported = 23;\n string display_values_supported = 24;\n string claim_types_supported = 25;\n string claims_supported = 26;\n string service_documentation = 27;\n string claims_locales_supported = 28;\n string ui_locales_supported = 29;\n string claims_parameter_supported = 30;\n string request_parameter_supported = 31;\n string request_uri_parameter_supported = 32;\n string require_request_uri_registration = 33;\n string op_policy_uri = 34;\n string op_tos_uri = 35;"
+        }
+      },
+      "title": "OAuth2Discovery 提供内置 oidc 服务\nhttps://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata"
     },
     "v1PhoneNumber": {
       "type": "object",
