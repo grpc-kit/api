@@ -5,6 +5,46 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+// DiscoveryOpenidConfiguration 提供内置 oidc 服务
+// https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+message DiscoveryOpenidConfiguration {
+  string issuer = 1;
+  string authorization_endpoint = 2;
+  string token_endpoint = 3;
+  // string userinfo_endpoint = 4;
+  string jwks_uri = 5;
+  // string registration_endpoint = 6;
+  // string scopes_supported = 7;
+  repeated string response_types_supported = 8;
+  // string response_modes_supported = 9;
+  // string grant_types_supported = 10;
+  // string acr_values_supported = 11;
+  repeated string subject_types_supported = 12;
+  repeated string id_token_signing_alg_values_supported = 13;
+  // string id_token_encryption_alg_values_supported = 14;
+  // string id_token_encryption_enc_values_supported = 15;
+  // string userinfo_signing_alg_values_supported = 16;
+  // string userinfo_encryption_alg_values_supported = 17;
+  // string userinfo_encryption_enc_values_supported = 18;
+  // string request_object_signing_alg_values_supported = 19;
+  // string request_object_encryption_alg_values_supported = 20;
+  // string request_object_encryption_enc_values_supported = 21;
+  // string token_endpoint_auth_methods_supported = 22;
+  // string token_endpoint_auth_signing_alg_values_supported = 23;
+  // string display_values_supported = 24;
+  // string claim_types_supported = 25;
+  // string claims_supported = 26;
+  // string service_documentation = 27;
+  // string claims_locales_supported = 28;
+  // string ui_locales_supported = 29;
+  // string claims_parameter_supported = 30;
+  // string request_parameter_supported = 31;
+  // string request_uri_parameter_supported = 32;
+  // string require_request_uri_registration = 33;
+  // string op_policy_uri = 34;
+  // string op_tos_uri = 35;
+}
+
 message SecurityKey {
   string public_key = 1;
 }
