@@ -44,7 +44,7 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateSecurityKey
     post: "/builtin/admin/api/v1/security/keys"
     body: "*"
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetOAuth2Certs
-    get: "/builtin/admin/api/v1/oatuh2/certs"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetOAuth2Discovery
     get: "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetOAuth2JSONWebKeys
+    get: "/builtin/admin/api/v1/oatuh2/jwks"

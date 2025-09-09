@@ -53,6 +53,6 @@ message CreateSecurityKeyRequest {
 
 }
 
-message OAuth2Certs {
+message OAuth2JSONWebKeys {
 
 }

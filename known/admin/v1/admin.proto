@@ -34,6 +34,6 @@ service KnownAdmin {
   rpc UpdateUser(UpdateUserRequest) returns(User);
   // 安全相关
   rpc CreateSecurityKey(CreateSecurityKeyRequest) returns(SecurityKey);
-  rpc GetOAuth2Certs(google.protobuf.Empty) returns(OAuth2Certs);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
+  rpc GetOAuth2JSONWebKeys(google.protobuf.Empty) returns(OAuth2JSONWebKeys);
 }

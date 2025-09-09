@@ -422,14 +422,14 @@
         }
       }
     },
-    "/builtin/admin/api/v1/oatuh2/certs": {
+    "/builtin/admin/api/v1/oatuh2/jwks": {
       "get": {
-        "operationId": "KnownAdmin_GetOAuth2Certs",
+        "operationId": "KnownAdmin_GetOAuth2JSONWebKeys",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1OAuth2Certs"
+              "$ref": "#/definitions/v1OAuth2JSONWebKeys"
             }
           },
           "4xx": {
@@ -1132,9 +1132,6 @@
       "description": "- MENU_TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - MENU_TYPE_ADMIN: 后台菜单\n - MENU_TYPE_USER: 用户菜单",
       "title": "MenuType 菜单类型"
     },
-    "v1OAuth2Certs": {
-      "type": "object"
-    },
     "v1OAuth2Discovery": {
       "type": "object",
       "properties": {
@@ -1174,6 +1171,9 @@
         }
       },
       "title": "OAuth2Discovery 提供内置 oidc 服务\nhttps://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata"
+    },
+    "v1OAuth2JSONWebKeys": {
+      "type": "object"
     },
     "v1PhoneNumber": {
       "type": "object",
