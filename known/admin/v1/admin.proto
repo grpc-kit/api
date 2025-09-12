@@ -14,15 +14,18 @@ import "known/admin/v1/config.proto";
 import "known/admin/v1/department.proto";
 import "known/admin/v1/security.proto";
 import "known/admin/v1/user.proto";
+import "known/admin/v1/roles.proto";
 
 service KnownAdmin {
   rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
+  // 认证鉴权
   rpc CreateAuthLogin(CreateAuthLoginRequest) returns (CreateAuthLoginResponse);
   rpc CreateAuthToken(CreateAuthTokenRequest) returns (CreateAuthTokenResponse);
   rpc ListAuthProviders(ListAuthProvidersRequest) returns(ListAuthProvidersResponse);
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
   rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
+  rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);
   // 部门相关
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);

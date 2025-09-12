@@ -116,3 +116,14 @@ message User {
   // 所属部门
   Department department = 18;
 }
+
+// Role 角色实体，表示用户在系统上的权限和功能
+message Role {
+  // ID 角色 ID，全局唯一标识
+  int32 id = 1;
+  // Name 角色名称
+  string name = 2;
+  // I18NName 角色国际化名称
+  I18NName i18n_name = 3;
+  string description = 4;
+}
