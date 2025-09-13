@@ -41,6 +41,8 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUser
     patch: "/builtin/admin/api/v1/users/{user.id}"
     body: "user"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetUser
+    get: "/builtin/admin/api/v1/users/{id}"
     # 安全相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateSecurityKey
     post: "/builtin/admin/api/v1/security/keys"

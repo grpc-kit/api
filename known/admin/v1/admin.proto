@@ -32,9 +32,10 @@ service KnownAdmin {
   rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
   rpc UpdateDepartment(UpdateDepartmentRequest) returns(Department);
   // 用户相关
-  rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
+  rpc GetUser(GetUserRequest) returns(User);
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
+  rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
   // 安全相关
   rpc CreateSecurityKey(CreateSecurityKeyRequest) returns(SecurityKey);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);

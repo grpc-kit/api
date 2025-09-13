@@ -511,7 +511,6 @@
     },
     "/builtin/admin/api/v1/users": {
       "get": {
-        "summary": "用户相关",
         "operationId": "KnownAdmin_ListUsers",
         "responses": {
           "200": {
@@ -630,6 +629,49 @@
             "schema": {
               "$ref": "#/definitions/v1User"
             }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/users/{id}": {
+      "get": {
+        "summary": "用户相关",
+        "operationId": "KnownAdmin_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1User"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID 用户 ID，全局唯一标识",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "username",
+            "description": "用户名，系统登录凭证，通常唯一",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       }
