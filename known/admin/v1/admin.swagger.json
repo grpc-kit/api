@@ -130,12 +130,12 @@
         }
       },
       "post": {
-        "operationId": "KnownAdmin_UpsertAuthProviders",
+        "operationId": "KnownAdmin_CreateAuthProvider",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1UpsertAuthProvidersResponse"
+              "$ref": "#/definitions/v1AuthProvider"
             }
           },
           "4xx": {
@@ -153,11 +153,11 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "provider",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1UpsertAuthProvidersRequest"
+              "$ref": "#/definitions/v1AuthProvider"
             }
           }
         ]
@@ -193,6 +193,42 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1CreateAuthTokenRequest"
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/credentials": {
+      "post": {
+        "summary": "rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);\n安全相关",
+        "operationId": "KnownAdmin_CreateCredential",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Credential"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "credential",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Credential"
             }
           }
         ]
@@ -473,42 +509,6 @@
         }
       }
     },
-    "/builtin/admin/api/v1/security/keys": {
-      "post": {
-        "summary": "安全相关",
-        "operationId": "KnownAdmin_CreateSecurityKey",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SecurityKey"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1CreateSecurityKeyRequest"
-            }
-          }
-        ]
-      }
-    },
     "/builtin/admin/api/v1/users": {
       "get": {
         "operationId": "KnownAdmin_ListUsers",
@@ -721,7 +721,7 @@
                   "title": "用户名，系统登录凭证，通常唯一"
                 },
                 "status": {
-                  "$ref": "#/definitions/v1UserStatus",
+                  "$ref": "#/definitions/UserUserStatus",
                   "title": "用户状态，表示当前账号的生命周期阶段"
                 },
                 "realname": {
@@ -757,7 +757,7 @@
                   "title": "邮箱是否已验证"
                 },
                 "gender": {
-                  "$ref": "#/definitions/v1Gender",
+                  "$ref": "#/definitions/UserGender",
                   "title": "性别"
                 },
                 "birthday": {
@@ -788,6 +788,14 @@
                 "department": {
                   "$ref": "#/definitions/v1Department",
                   "title": "所属部门"
+                },
+                "identities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/UserIdentity"
+                  },
+                  "title": "认证信息"
                 }
               },
               "title": "User 用户实体，表示系统中的账号信息"
@@ -801,6 +809,7 @@
     "AuthProviderProviderType": {
       "type": "string",
       "enum": [
+        "PROVIDER_TYPE_UNSPECIFIED",
         "LOCAL",
         "LDAP",
         "OIDC",
@@ -809,7 +818,25 @@
         "GOOGLE",
         "WECHAT"
       ],
-      "default": "LOCAL"
+      "default": "PROVIDER_TYPE_UNSPECIFIED",
+      "title": "ProviderType 身份提供商类型"
+    },
+    "CredentialCredentialType": {
+      "type": "string",
+      "enum": [
+        "CREDENTIAL_TYPE_UNSPECIFIED",
+        "API_KEY",
+        "JWT",
+        "JWKS",
+        "RSA",
+        "ECDSA",
+        "ED25519",
+        "SSH_KEY",
+        "X509",
+        "LICENSE"
+      ],
+      "default": "CREDENTIAL_TYPE_UNSPECIFIED",
+      "title": "- API_KEY: 普通 API key\n - JWT: JSON Web Token\n - JWKS: JSON Web Key Set\n - RSA: RSA 密钥对\n - ECDSA: ECDSA 密钥对\n - ED25519: Ed25519 密钥对\n - SSH_KEY: SSH 公私钥\n - X509: 证书\n - LICENSE: 软件 License"
     },
     "ListUsersRequestUserView": {
       "type": "string",
@@ -844,6 +871,44 @@
         }
       }
     },
+    "UserGender": {
+      "type": "string",
+      "enum": [
+        "GENDER_UNSPECIFIED",
+        "MALE",
+        "FEMALE"
+      ],
+      "default": "GENDER_UNSPECIFIED",
+      "title": "Gender 用户性别"
+    },
+    "UserIdentity": {
+      "type": "object",
+      "properties": {
+        "provider_name": {
+          "type": "string"
+        },
+        "provider_user_id": {
+          "type": "string"
+        },
+        "password_hash": {
+          "type": "string"
+        }
+      }
+    },
+    "UserUserStatus": {
+      "type": "string",
+      "enum": [
+        "USER_STATUS_UNSPECIFIED",
+        "PENDING",
+        "ACTIVE",
+        "LOCKED",
+        "DISABLED",
+        "DELETED"
+      ],
+      "default": "USER_STATUS_UNSPECIFIED",
+      "description": "- USER_STATUS_UNSPECIFIED: 默认值／未知状态\n - PENDING: 待激活／待验证\n - ACTIVE: 正常启用状态\n - LOCKED: 被锁定（如连续密码错误、账号风控等）\n - DISABLED: 禁用（人工停用）\n - DELETED: 软删除",
+      "title": "用户状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
+    },
     "v1Address": {
       "type": "object",
       "properties": {
@@ -868,40 +933,57 @@
     "v1AuthProvider": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ID 全局唯一标识"
+        },
         "name": {
-          "type": "string"
+          "type": "string",
+          "title": "Name 身份提供商名称，全局唯一"
         },
         "type": {
-          "$ref": "#/definitions/AuthProviderProviderType"
+          "$ref": "#/definitions/AuthProviderProviderType",
+          "title": "Type 身份提供商类型"
         },
         "client_id": {
-          "type": "string"
+          "type": "string",
+          "title": "ClientID 身份提供商客户端 ID"
         },
         "client_secret": {
-          "type": "string"
+          "type": "string",
+          "title": "ClientSecret 身份提供商客户端密钥"
         },
         "enabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "Enabled 身份提供商是否启用"
         },
         "redirect_uri": {
-          "type": "string"
+          "type": "string",
+          "title": "RedirectURI 身份提供商回调地址"
         },
         "scopes": {
-          "type": "string"
+          "type": "string",
+          "title": "Scopes 身份提供商授权范围"
         },
         "issuer": {
-          "type": "string"
+          "type": "string",
+          "title": "Issuer 身份提供商标识"
         },
         "authorization_endpoint": {
-          "type": "string"
+          "type": "string",
+          "title": "身份提供商授权端点"
         },
         "token_endpoint": {
-          "type": "string"
+          "type": "string",
+          "title": "身份提供商令牌端点"
         },
         "userinfo_endpoint": {
-          "type": "string"
+          "type": "string",
+          "title": "身份提供商用户信息端点"
         }
-      }
+      },
+      "title": "AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务"
     },
     "v1CreateAuthLoginRequest": {
       "type": "object",
@@ -993,8 +1075,43 @@
       },
       "title": "CreateAuthTokenResponse 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
     },
-    "v1CreateSecurityKeyRequest": {
-      "type": "object"
+    "v1Credential": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Name 凭据名称"
+        },
+        "type": {
+          "$ref": "#/definitions/CredentialCredentialType",
+          "title": "凭据类型"
+        },
+        "appid": {
+          "type": "string",
+          "title": "Appid 凭据关联的应用 ID"
+        },
+        "appkey": {
+          "type": "string",
+          "title": "Appkey 凭据关联的密钥"
+        },
+        "public_key": {
+          "type": "string",
+          "title": "公钥"
+        },
+        "private_key": {
+          "type": "string",
+          "title": "私钥"
+        },
+        "usage": {
+          "type": "string"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "过期时间"
+        }
+      },
+      "title": "Credential 存储凭证信息"
     },
     "v1Department": {
       "type": "object",
@@ -1040,16 +1157,6 @@
         }
       },
       "title": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内"
-    },
-    "v1Gender": {
-      "type": "string",
-      "enum": [
-        "GENDER_UNSPECIFIED",
-        "GENDER_MALE",
-        "GENDER_FEMALE"
-      ],
-      "default": "GENDER_UNSPECIFIED",
-      "title": "Gender 性别"
     },
     "v1GetAuthCallbackResponse": {
       "type": "object",
@@ -1323,26 +1430,6 @@
       },
       "title": "Role 角色实体，表示用户在系统上的权限和功能"
     },
-    "v1SecurityKey": {
-      "type": "object",
-      "properties": {
-        "public_key": {
-          "type": "string"
-        }
-      }
-    },
-    "v1UpsertAuthProvidersRequest": {
-      "type": "object",
-      "properties": {
-        "providers": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1AuthProvider"
-          }
-        }
-      }
-    },
     "v1UpsertAuthProvidersResponse": {
       "type": "object",
       "properties": {
@@ -1368,7 +1455,7 @@
           "title": "用户名，系统登录凭证，通常唯一"
         },
         "status": {
-          "$ref": "#/definitions/v1UserStatus",
+          "$ref": "#/definitions/UserUserStatus",
           "title": "用户状态，表示当前账号的生命周期阶段"
         },
         "realname": {
@@ -1404,7 +1491,7 @@
           "title": "邮箱是否已验证"
         },
         "gender": {
-          "$ref": "#/definitions/v1Gender",
+          "$ref": "#/definitions/UserGender",
           "title": "性别"
         },
         "birthday": {
@@ -1435,23 +1522,17 @@
         "department": {
           "$ref": "#/definitions/v1Department",
           "title": "所属部门"
+        },
+        "identities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/UserIdentity"
+          },
+          "title": "认证信息"
         }
       },
       "title": "User 用户实体，表示系统中的账号信息"
-    },
-    "v1UserStatus": {
-      "type": "string",
-      "enum": [
-        "USER_STATUS_UNSPECIFIED",
-        "USER_STATUS_PENDING",
-        "USER_STATUS_ACTIVE",
-        "USER_STATUS_LOCKED",
-        "USER_STATUS_DISABLED",
-        "USER_STATUS_DELETED"
-      ],
-      "default": "USER_STATUS_UNSPECIFIED",
-      "description": "- USER_STATUS_UNSPECIFIED: 默认值／未知状态\n - USER_STATUS_PENDING: 待激活／待验证\n - USER_STATUS_ACTIVE: 正常启用状态\n - USER_STATUS_LOCKED: 被锁定（如连续密码错误、账号风控等）\n - USER_STATUS_DISABLED: 禁用（人工停用）\n - USER_STATUS_DELETED: 软删除",
-      "title": "用户状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
     }
   },
   "securityDefinitions": {
