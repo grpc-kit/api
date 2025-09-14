@@ -26,6 +26,7 @@ service KnownAdmin {
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
   rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
   rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);
+  rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
   // 部门相关
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
@@ -36,8 +37,9 @@ service KnownAdmin {
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
+  // rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);
   // 安全相关
-  rpc CreateSecurityKey(CreateSecurityKeyRequest) returns(SecurityKey);
+  rpc CreateCredential(CreateCredentialRequest) returns(Credential);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
   rpc GetOAuth2JSONWebKeys(google.protobuf.Empty) returns(OAuth2JSONWebKeys);
 }

@@ -77,6 +77,12 @@ message User {
     DELETED = 5;      // 软删除
   }
 
+  message Identity {
+    string provider_name = 1;
+    string provider_user_id = 2;
+    string password_hash = 3;
+  }
+
   // ID 用户 ID，全局唯一标识
   int32 id = 1;
   // 用户名，系统登录凭证，通常唯一
@@ -115,6 +121,8 @@ message User {
   Address address = 17;
   // 所属部门
   Department department = 18;
+  // 认证信息
+  repeated Identity identities = 20;
 }
 
 // Role 角色实体，表示用户在系统上的权限和功能
@@ -166,4 +174,51 @@ message AuthProvider {
   string token_endpoint = 11;
   // 身份提供商用户信息端点
   string userinfo_endpoint = 12;
+}
+
+// Credential 存储凭证信息
+message Credential {
+  enum CredentialType {
+    CREDENTIAL_TYPE_UNSPECIFIED = 0;
+    API_KEY = 1;      // 普通 API key
+    JWT = 2;          // JSON Web Token
+    JWKS = 3;         // JSON Web Key Set
+    RSA = 4;          // RSA 密钥对
+    ECDSA = 5;        // ECDSA 密钥对
+    ED25519 = 6;      // Ed25519 密钥对
+    SSH_KEY = 7;      // SSH 公私钥
+    X509 = 8;         // 证书
+    LICENSE = 9;      // 软件 License
+  }
+
+  // Name 凭据名称
+  string name = 1;
+  // 凭据类型
+  CredentialType type = 2;
+  // Appid 凭据关联的应用 ID
+  string appid = 3;
+  // Appkey 凭据关联的密钥
+  string appkey = 4;
+  // 公钥
+  string public_key = 5;
+  // 私钥
+  string private_key = 6;
+
+  string usage = 7;
+
+  // 过期时间
+  google.protobuf.Timestamp expires_at = 8;
+}
+
+message OAuth2JSONWebKeys {
+  message Key {
+    string kty = 1;
+    string use = 2;
+    string alg = 3;
+    string e = 4;
+    string n = 5;
+    string kid = 6;
+  }
+
+  repeated Key keys = 1;
 }

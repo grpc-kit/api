@@ -5,6 +5,8 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+import "known/admin/v1/common.proto";
+
 // OAuth2Discovery 提供内置 oidc 服务
 // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
 message OAuth2Discovery {
@@ -45,23 +47,6 @@ message OAuth2Discovery {
   // string op_tos_uri = 35;
 }
 
-message SecurityKey {
-  string public_key = 1;
-}
-
-message CreateSecurityKeyRequest {
-
-}
-
-message OAuth2JSONWebKeys {
-  message Key {
-    string kty = 1;
-    string use = 2;
-    string alg = 3;
-    string e = 4;
-    string n = 5;
-    string kid = 6;
-  }
-
-  repeated Key keys = 1;
+message CreateCredentialRequest {
+  Credential credential = 1;
 }
