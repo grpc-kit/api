@@ -62,9 +62,8 @@ message Resource {
   // Type 菜单类型
   enum Type {
     TYPE_UNSPECIFIED = 0; // 未指定类型，保留为默认值
-    TYPE_DEPARTMENT = 1; // 部门组织
-    TYPE_MENU_ADMIN = 2;       // 后台菜单
-    TYPE_MENU_USER = 3;        // 用户菜单
+    TYPE_MENU_ADMIN = 1;       // 后台菜单
+    TYPE_MENU_USER = 2;        // 用户菜单
     // 可以根据需要扩展其他类型，如 MENU_TYPE_API = 3;
   }
 
