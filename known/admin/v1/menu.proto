@@ -5,46 +5,12 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
-// MenuType 菜单类型
-enum MenuType {
-  MENU_TYPE_UNSPECIFIED = 0; // 未指定类型，保留为默认值
-  MENU_TYPE_ADMIN = 1;       // 后台菜单
-  MENU_TYPE_USER = 2;        // 用户菜单
-  // 可以根据需要扩展其他类型，如 MENU_TYPE_API = 3;
-}
-
-// Menu 用户后台菜单
-message Menu {
-  // ID 菜单 ID
-  int32 id = 1;
-  // ParentID 父菜单 ID，为 0 表示顶级菜单
-  int32 parent_id = 2;
-  // Name 菜单名称
-  string name = 3;
-  // Path 菜单路径
-  string path = 4;
-  // I18NName 国际化名称
-  string i18n_name = 5;
-  // Icon 菜单图标，通常用于前端展示
-  string icon = 6;
-  // OrderWeight 菜单排序权重，数字越小越靠前
-  int32 order_weight = 7;
-  // Type 菜单用途，如后台管理员、前台用户、APP 应用
-  MenuType type = 8;
-  // Enabled 菜单是否启用
-  bool enabled = 9;
-  // HideInMenu 是否在菜单列表中隐藏
-  bool hide_in_menu = 10;
-  // HideChildrenInMenu 是否在菜单列表中隐藏子菜单
-  bool hide_children_in_menu = 11;
-  // Children 子菜单列表
-  repeated Menu children = 12;
-}
+import "known/admin/v1/common.proto";
 
 message ListMenusRequest {
 
 }
 
 message ListMenusResponse {
-  repeated Menu menus = 1;
+  repeated Resource menus = 1;
 }

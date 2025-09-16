@@ -758,7 +758,7 @@
                   "title": "用户名，系统登录凭证，通常唯一"
                 },
                 "status": {
-                  "$ref": "#/definitions/UserUserStatus",
+                  "$ref": "#/definitions/v1UserStatus",
                   "title": "用户状态，表示当前账号的生命周期阶段"
                 },
                 "realname": {
@@ -843,38 +843,6 @@
     }
   },
   "definitions": {
-    "AuthProviderProviderType": {
-      "type": "string",
-      "enum": [
-        "PROVIDER_TYPE_UNSPECIFIED",
-        "LOCAL",
-        "LDAP",
-        "OIDC",
-        "OAUTH2",
-        "GITHUB",
-        "GOOGLE",
-        "WECHAT"
-      ],
-      "default": "PROVIDER_TYPE_UNSPECIFIED",
-      "title": "ProviderType 身份提供商类型"
-    },
-    "CredentialCredentialType": {
-      "type": "string",
-      "enum": [
-        "CREDENTIAL_TYPE_UNSPECIFIED",
-        "API_KEY",
-        "JWT",
-        "JWKS",
-        "RSA",
-        "ECDSA",
-        "ED25519",
-        "SSH_KEY",
-        "X509",
-        "LICENSE"
-      ],
-      "default": "CREDENTIAL_TYPE_UNSPECIFIED",
-      "title": "- API_KEY: 普通 API key\n - JWT: JSON Web Token\n - JWKS: JSON Web Key Set\n - RSA: RSA 密钥对\n - ECDSA: ECDSA 密钥对\n - ED25519: Ed25519 密钥对\n - SSH_KEY: SSH 公私钥\n - X509: 证书\n - LICENSE: 软件 License"
-    },
     "ListUsersRequestUserView": {
       "type": "string",
       "enum": [
@@ -912,8 +880,8 @@
       "type": "string",
       "enum": [
         "GENDER_UNSPECIFIED",
-        "MALE",
-        "FEMALE"
+        "GENDER_MALE",
+        "GENDER_FEMALE"
       ],
       "default": "GENDER_UNSPECIFIED",
       "title": "Gender 用户性别"
@@ -931,20 +899,6 @@
           "type": "string"
         }
       }
-    },
-    "UserUserStatus": {
-      "type": "string",
-      "enum": [
-        "USER_STATUS_UNSPECIFIED",
-        "PENDING",
-        "ACTIVE",
-        "LOCKED",
-        "DISABLED",
-        "DELETED"
-      ],
-      "default": "USER_STATUS_UNSPECIFIED",
-      "description": "- USER_STATUS_UNSPECIFIED: 默认值／未知状态\n - PENDING: 待激活／待验证\n - ACTIVE: 正常启用状态\n - LOCKED: 被锁定（如连续密码错误、账号风控等）\n - DISABLED: 禁用（人工停用）\n - DELETED: 软删除",
-      "title": "用户状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
     },
     "v1Address": {
       "type": "object",
@@ -980,7 +934,7 @@
           "title": "Name 身份提供商名称，全局唯一"
         },
         "type": {
-          "$ref": "#/definitions/AuthProviderProviderType",
+          "$ref": "#/definitions/v1AuthProviderType",
           "title": "Type 身份提供商类型"
         },
         "client_id": {
@@ -1021,6 +975,21 @@
         }
       },
       "title": "AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务"
+    },
+    "v1AuthProviderType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "TYPE_LOCAL",
+        "TYPE_LDAP",
+        "TYPE_OIDC",
+        "TYPE_OAUTH2",
+        "TYPE_GITHUB",
+        "TYPE_GOOGLE",
+        "TYPE_WECHAT"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "title": "Type 身份提供商类型"
     },
     "v1CreateAuthLoginRequest": {
       "type": "object",
@@ -1123,7 +1092,7 @@
           "title": "Name 凭据名称"
         },
         "type": {
-          "$ref": "#/definitions/CredentialCredentialType",
+          "$ref": "#/definitions/v1CredentialType",
           "title": "凭据类型"
         },
         "appid": {
@@ -1152,6 +1121,23 @@
         }
       },
       "title": "Credential 存储凭证信息"
+    },
+    "v1CredentialType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "TYPE_API_KEY",
+        "TYPE_JWT",
+        "TYPE_JWKS",
+        "TYPE_RSA",
+        "TYPE_ECDSA",
+        "TYPE_ED25519",
+        "TYPE_SSH_KEY",
+        "TYPE_X509",
+        "TYPE_LICENSE"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "title": "- TYPE_API_KEY: 普通 API key\n - TYPE_JWT: JSON Web Token\n - TYPE_JWKS: JSON Web Key Set\n - TYPE_RSA: RSA 密钥对\n - TYPE_ECDSA: ECDSA 密钥对\n - TYPE_ED25519: Ed25519 密钥对\n - TYPE_SSH_KEY: SSH 公私钥\n - TYPE_X509: 证书\n - TYPE_LICENSE: 软件 License"
     },
     "v1Department": {
       "type": "object",
@@ -1271,7 +1257,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/v1Menu"
+            "$ref": "#/definitions/v1Resource"
           }
         }
       }
@@ -1309,78 +1295,6 @@
           "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
-    },
-    "v1Menu": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32",
-          "title": "ID 菜单 ID"
-        },
-        "parent_id": {
-          "type": "integer",
-          "format": "int32",
-          "title": "ParentID 父菜单 ID，为 0 表示顶级菜单"
-        },
-        "name": {
-          "type": "string",
-          "title": "Name 菜单名称"
-        },
-        "path": {
-          "type": "string",
-          "title": "Path 菜单路径"
-        },
-        "i18n_name": {
-          "type": "string",
-          "title": "I18NName 国际化名称"
-        },
-        "icon": {
-          "type": "string",
-          "title": "Icon 菜单图标，通常用于前端展示"
-        },
-        "order_weight": {
-          "type": "integer",
-          "format": "int32",
-          "title": "OrderWeight 菜单排序权重，数字越小越靠前"
-        },
-        "type": {
-          "$ref": "#/definitions/v1MenuType",
-          "title": "Type 菜单用途，如后台管理员、前台用户、APP 应用"
-        },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enabled 菜单是否启用"
-        },
-        "hide_in_menu": {
-          "type": "boolean",
-          "title": "HideInMenu 是否在菜单列表中隐藏"
-        },
-        "hide_children_in_menu": {
-          "type": "boolean",
-          "title": "HideChildrenInMenu 是否在菜单列表中隐藏子菜单"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1Menu"
-          },
-          "title": "Children 子菜单列表"
-        }
-      },
-      "title": "Menu 用户后台菜单"
-    },
-    "v1MenuType": {
-      "type": "string",
-      "enum": [
-        "MENU_TYPE_UNSPECIFIED",
-        "MENU_TYPE_ADMIN",
-        "MENU_TYPE_USER"
-      ],
-      "default": "MENU_TYPE_UNSPECIFIED",
-      "description": "- MENU_TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - MENU_TYPE_ADMIN: 后台菜单\n - MENU_TYPE_USER: 用户菜单",
-      "title": "MenuType 菜单类型"
     },
     "v1OAuth2Discovery": {
       "type": "object",
@@ -1448,6 +1362,79 @@
       },
       "title": "PhoneNumber 手机号，以 E.164 格式存储（E.164 = '+' + 国家码 + 本地号码）总长度 ≤ 15 位，如：+8613812345678"
     },
+    "v1Resource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ID 菜单 ID"
+        },
+        "parent_id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ParentID 父菜单 ID，为 0 表示顶级菜单"
+        },
+        "name": {
+          "type": "string",
+          "title": "Name 菜单名称"
+        },
+        "path": {
+          "type": "string",
+          "title": "Path 菜单路径"
+        },
+        "i18n_name": {
+          "type": "string",
+          "title": "I18NName 国际化名称"
+        },
+        "icon": {
+          "type": "string",
+          "title": "Icon 菜单图标，通常用于前端展示"
+        },
+        "order_weight": {
+          "type": "integer",
+          "format": "int32",
+          "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+        },
+        "type": {
+          "$ref": "#/definitions/v1ResourceType",
+          "title": "Type 菜单用途，如后台管理员、前台用户、APP 应用"
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled 菜单是否启用"
+        },
+        "hide_in_menu": {
+          "type": "boolean",
+          "title": "HideInMenu 是否在菜单列表中隐藏"
+        },
+        "hide_children_in_menu": {
+          "type": "boolean",
+          "title": "HideChildrenInMenu 是否在菜单列表中隐藏子菜单"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Resource"
+          },
+          "title": "Children 子菜单列表"
+        }
+      },
+      "title": "Resource 资源定义，如：菜单等"
+    },
+    "v1ResourceType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "TYPE_DEPARTMENT",
+        "TYPE_MENU_ADMIN",
+        "TYPE_MENU_USER"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "description": "- TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - TYPE_DEPARTMENT: 部门组织\n - TYPE_MENU_ADMIN: 后台菜单\n - TYPE_MENU_USER: 用户菜单",
+      "title": "Type 菜单类型"
+    },
     "v1Role": {
       "type": "object",
       "properties": {
@@ -1495,7 +1482,7 @@
           "title": "用户名，系统登录凭证，通常唯一"
         },
         "status": {
-          "$ref": "#/definitions/UserUserStatus",
+          "$ref": "#/definitions/v1UserStatus",
           "title": "用户状态，表示当前账号的生命周期阶段"
         },
         "realname": {
@@ -1573,6 +1560,20 @@
         }
       },
       "title": "User 用户实体，表示系统中的账号信息"
+    },
+    "v1UserStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_PENDING",
+        "STATUS_ACTIVE",
+        "STATUS_LOCKED",
+        "STATUS_DISABLED",
+        "STATUS_DELETED"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态\n - STATUS_PENDING: 待激活／待验证\n - STATUS_ACTIVE: 正常启用状态\n - STATUS_LOCKED: 被锁定（如连续密码错误、账号风控等）\n - STATUS_DISABLED: 禁用（人工停用）\n - STATUS_DELETED: 软删除",
+      "title": "用户状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
     }
   },
   "securityDefinitions": {
