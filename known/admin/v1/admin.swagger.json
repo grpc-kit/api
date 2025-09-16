@@ -765,7 +765,7 @@
                   "type": "string",
                   "title": "真实姓名，用于实名认证或后台展示"
                 },
-                "idcard": {
+                "national_id": {
                   "type": "string",
                   "title": "身份证号，用于身份验证（可选）"
                 },
@@ -1488,7 +1488,7 @@
           "type": "string",
           "title": "真实姓名，用于实名认证或后台展示"
         },
-        "idcard": {
+        "national_id": {
           "type": "string",
           "title": "身份证号，用于身份验证（可选）"
         },
