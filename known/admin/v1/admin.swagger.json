@@ -1427,12 +1427,11 @@
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_DEPARTMENT",
         "TYPE_MENU_ADMIN",
         "TYPE_MENU_USER"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - TYPE_DEPARTMENT: 部门组织\n - TYPE_MENU_ADMIN: 后台菜单\n - TYPE_MENU_USER: 用户菜单",
+      "description": "- TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - TYPE_MENU_ADMIN: 后台菜单\n - TYPE_MENU_USER: 用户菜单",
       "title": "Type 菜单类型"
     },
     "v1Role": {
