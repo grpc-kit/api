@@ -15,6 +15,7 @@ import "known/admin/v1/department.proto";
 import "known/admin/v1/security.proto";
 import "known/admin/v1/user.proto";
 import "known/admin/v1/roles.proto";
+import "known/admin/v1/database.proto";
 
 service KnownAdmin {
   rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
@@ -42,4 +43,6 @@ service KnownAdmin {
   rpc CreateCredential(CreateCredentialRequest) returns(Credential);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
   rpc GetOAuth2JSONWebKeys(google.protobuf.Empty) returns(OAuth2JSONWebKeys);
+  // 数据库相关
+  rpc CreateDatabaseInitialize(CreateDatabaseInitializeRequest) returns(google.protobuf.Empty);
 }

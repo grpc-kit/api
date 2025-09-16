@@ -234,6 +234,43 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/database/initialize": {
+      "post": {
+        "summary": "数据库相关",
+        "operationId": "KnownAdmin_CreateDatabaseInitialize",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateDatabaseInitializeRequest"
+            }
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/departments": {
       "get": {
         "operationId": "KnownAdmin_ListDepartments",
@@ -1074,6 +1111,9 @@
         }
       },
       "title": "CreateAuthTokenResponse 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
+    },
+    "v1CreateDatabaseInitializeRequest": {
+      "type": "object"
     },
     "v1Credential": {
       "type": "object",
