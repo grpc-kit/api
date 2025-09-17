@@ -26,8 +26,11 @@ service KnownAdmin {
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
   rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
-  rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);
   rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
+  // 角色相关
+  rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);
+  rpc ListRoleUsers(ListRoleUsersRequest) returns(ListRoleUsersResponse);
+  rpc DeleteRoleUser(DeleteRoleUserRequest) returns(google.protobuf.Empty);
   // 部门相关
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);

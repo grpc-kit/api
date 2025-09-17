@@ -523,6 +523,7 @@
     },
     "/builtin/admin/api/v1/roles": {
       "get": {
+        "summary": "角色相关",
         "operationId": "KnownAdmin_ListRoles",
         "responses": {
           "200": {
@@ -544,6 +545,119 @@
             }
           }
         }
+      }
+    },
+    "/builtin/admin/api/v1/roles/{parent}/users": {
+      "get": {
+        "operationId": "KnownAdmin_ListRoleUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRoleUsersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "description": "Cursor-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "description": "Offset-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "过滤条件，采用 AIP-160 定义的标准 filter 语法。\n示例: `email=\"alice@example.com\" AND state=\"ACTIVE\"`",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"create_time desc, name asc\"\nAIP-132: order_by 是可选字段。",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/roles/{parent}/users/{user_id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteRoleUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
       }
     },
     "/builtin/admin/api/v1/users": {
@@ -1259,6 +1373,28 @@
             "type": "object",
             "$ref": "#/definitions/v1Resource"
           }
+        }
+      }
+    },
+    "v1ListRoleUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1User"
+          },
+          "title": "符合查询条件的用户资源。"
+        },
+        "next_page_token": {
+          "type": "string",
+          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
     },
