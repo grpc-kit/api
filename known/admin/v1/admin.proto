@@ -28,6 +28,9 @@ service KnownAdmin {
   rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
   rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
   // 角色相关
+  rpc CreateRole(CreateRoleRequest) returns(Role);
+  rpc UpdateRole(UpdateRoleRequest) returns(Role);
+  rpc DeleteRole(DeleteRoleRequest) returns(google.protobuf.Empty);
   rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);
   rpc ListRoleUsers(ListRoleUsersRequest) returns(ListRoleUsersResponse);
   rpc DeleteRoleUser(DeleteRoleUserRequest) returns(google.protobuf.Empty);

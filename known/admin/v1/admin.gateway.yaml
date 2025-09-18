@@ -29,6 +29,14 @@ http:
     get: "/builtin/admin/api/v1/roles/{parent}/users"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleUser
     delete: "/builtin/admin/api/v1/roles/{parent}/users/{user_id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRole
+    post: "/builtin/admin/api/v1/roles"
+    body: "role"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateRole
+    patch: "/builtin/admin/api/v1/roles/{role.id}"
+    body: "role"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRole
+    delete: "/builtin/admin/api/v1/roles/{id}"
     # 部门相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartment
     post: "/builtin/admin/api/v1/departments"

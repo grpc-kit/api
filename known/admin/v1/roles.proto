@@ -5,7 +5,23 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+import "google/protobuf/field_mask.proto";
+
 import "known/admin/v1/common.proto";
+
+message CreateRoleRequest {
+  Role role = 1;
+}
+
+message UpdateRoleRequest {
+  Role role = 1;
+
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message DeleteRoleRequest {
+  int32 id = 1;
+}
 
 message ListRolesRequest {
 }

@@ -523,7 +523,6 @@
     },
     "/builtin/admin/api/v1/roles": {
       "get": {
-        "summary": "角色相关",
         "operationId": "KnownAdmin_ListRoles",
         "responses": {
           "200": {
@@ -545,6 +544,75 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "角色相关",
+        "operationId": "KnownAdmin_CreateRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Role"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Role"
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/roles/{id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
       }
     },
     "/builtin/admin/api/v1/roles/{parent}/users": {
@@ -656,6 +724,69 @@
             "required": true,
             "type": "integer",
             "format": "int32"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/roles/{role.id}": {
+      "patch": {
+        "operationId": "KnownAdmin_UpdateRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Role"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role.id",
+            "description": "ID 角色 ID，全局唯一标识",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "role",
+            "description": "Role 角色实体，表示用户在系统上的权限和功能",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "title": "Name 角色名称"
+                },
+                "i18n_name": {
+                  "$ref": "#/definitions/v1I18NName",
+                  "title": "I18NName 角色国际化名称"
+                },
+                "order_weight": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "title": "Role 角色实体，表示用户在系统上的权限和功能"
+            }
           }
         ]
       }
@@ -1585,6 +1716,11 @@
         "i18n_name": {
           "$ref": "#/definitions/v1I18NName",
           "title": "I18NName 角色国际化名称"
+        },
+        "order_weight": {
+          "type": "integer",
+          "format": "int32",
+          "title": "OrderWeight 菜单排序权重，数字越小越靠前"
         },
         "description": {
           "type": "string"
