@@ -37,6 +37,9 @@ http:
     body: "role"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRole
     delete: "/builtin/admin/api/v1/roles/{id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.AssignRoleToUser
+    post: "/builtin/admin/api/v1/roles/{role_id}:assign"
+    body: "*"
     # 部门相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartment
     post: "/builtin/admin/api/v1/departments"

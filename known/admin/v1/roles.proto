@@ -83,3 +83,9 @@ message DeleteRoleUserRequest {
 
   int32 user_id = 2;
 }
+
+message AssignRoleToUserRequest {
+  int32 role_id = 1;
+
+  repeated User users = 2;
+}

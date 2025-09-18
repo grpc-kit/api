@@ -34,6 +34,7 @@ service KnownAdmin {
   rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);
   rpc ListRoleUsers(ListRoleUsersRequest) returns(ListRoleUsersResponse);
   rpc DeleteRoleUser(DeleteRoleUserRequest) returns(google.protobuf.Empty);
+  rpc AssignRoleToUser(AssignRoleToUserRequest) returns(google.protobuf.Empty);
   // 部门相关
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
