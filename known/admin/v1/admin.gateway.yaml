@@ -23,6 +23,14 @@ http:
     # 资源管理
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListResources
     get: "/builtin/admin/api/v1/resources"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateResource
+    post: "/builtin/admin/api/v1/resources"
+    body: "resource"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateResource
+    patch: "/builtin/admin/api/v1/resources/{resource.id}"
+    body: "resource"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteResource
+    delete: "/builtin/admin/api/v1/resources/{id}"
     # 角色相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoles
     get: "/builtin/admin/api/v1/roles"

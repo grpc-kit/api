@@ -28,6 +28,9 @@ service KnownAdmin {
   rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
   // 资源管理
   rpc ListResources(ListResourcesRequest) returns(ListResourcesResponse);
+  rpc CreateResource(CreateResourceRequest) returns(Resource);
+  rpc UpdateResource(UpdateResourceRequest) returns(Resource);
+  rpc DeleteResource(DeleteResourceRequest) returns(google.protobuf.Empty);
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);
   rpc UpdateRole(UpdateRoleRequest) returns(Role);
