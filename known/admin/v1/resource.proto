@@ -7,10 +7,10 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "known/admin/v1/common.proto";
 
-message ListMenusRequest {
+message ListResourcesRequest {
 
 }
 
-message ListMenusResponse {
-  repeated Resource menus = 1;
+message ListResourcesResponse {
+  repeated Resource resources = 1;
 }

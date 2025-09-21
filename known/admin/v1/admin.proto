@@ -9,7 +9,7 @@ import "google/protobuf/empty.proto";
 
 import "known/admin/v1/common.proto";
 import "known/admin/v1/auth.proto";
-import "known/admin/v1/menu.proto";
+import "known/admin/v1/resource.proto";
 import "known/admin/v1/config.proto";
 import "known/admin/v1/department.proto";
 import "known/admin/v1/security.proto";
@@ -25,8 +25,9 @@ service KnownAdmin {
   rpc ListAuthProviders(ListAuthProvidersRequest) returns(ListAuthProvidersResponse);
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
-  rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
   rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
+  // 资源管理
+  rpc ListResources(ListResourcesRequest) returns(ListResourcesResponse);
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);
   rpc UpdateRole(UpdateRoleRequest) returns(Role);

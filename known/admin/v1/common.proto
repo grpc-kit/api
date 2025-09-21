@@ -59,38 +59,57 @@ message Department {
 
 // Resource 资源定义，如：菜单等
 message Resource {
-  // Type 菜单类型
+  // Type 资源类型
   enum Type {
-    TYPE_UNSPECIFIED = 0; // 未指定类型，保留为默认值
-    TYPE_MENU_ADMIN = 1;       // 后台菜单
-    TYPE_MENU_USER = 2;        // 用户菜单
-    // 可以根据需要扩展其他类型，如 MENU_TYPE_API = 3;
+    TYPE_UNSPECIFIED = 0;
+    TYPE_DIRECTORY = 1; // 目录，在前端菜单树中，只起到“目录”作用，不直接绑定路由/组件
+    TYPE_MENU = 2;      // 菜单
+    TYPE_BUTTON = 3;    // 按钮
+    TYPE_API = 4;       // API
   }
 
-  // ID 菜单 ID
+  // Scope 资源作用域
+  enum Scope {
+    SCOPE_UNSPECIFIED = 0;
+    SCOPE_ADMIN = 1; // 后台
+    SCOPE_USER = 2;  // 前台
+    SCOPE_APP = 3;   // 移动端
+  }
+
+  // ID 资源 ID
   int32 id = 1;
-  // ParentID 父菜单 ID，为 0 表示顶级菜单
+  // ParentID 父资源 ID，为 0 表示顶级资源
   int32 parent_id = 2;
-  // Name 菜单名称
+  // Name 资源名称
   string name = 3;
-  // Path 菜单路径
-  string path = 4;
   // I18NName 国际化名称
-  string i18n_name = 5;
-  // Icon 菜单图标，通常用于前端展示
-  string icon = 6;
-  // OrderWeight 菜单排序权重，数字越小越靠前
-  int32 order_weight = 7;
-  // Type 菜单用途，如后台管理员、前台用户、APP 应用
-  Type type = 8;
-  // Enabled 菜单是否启用
-  bool enabled = 9;
-  // HideInMenu 是否在菜单列表中隐藏
-  bool hide_in_menu = 10;
-  // HideChildrenInMenu 是否在菜单列表中隐藏子菜单
-  bool hide_children_in_menu = 11;
-  // Children 子菜单列表
-  repeated Resource children = 12;
+  I18NName i18n_name = 4;
+  // OrderWeight 资源排序权重，数字越小越靠前
+  int32 order_weight = 5;
+  // Type 资源用途，如后台管理员、前台用户、APP 应用
+  Type type = 6;
+  // Scope 资源作用域
+  Scope scope = 7;
+  // Enabled 资源是否启用
+  bool enabled = 8;
+  // Hidden 是否在资源列表中隐藏
+  bool hidden = 9;
+  // HideChildren 是否在资源列表中隐藏子项
+  bool hide_children = 10;
+
+  // Path 资源路径
+  string path = 11;
+  // Icon 资源图标，通常用于前端展示
+  string icon = 12;
+  string component = 13;
+  repeated string permissions = 14;
+
+  // Children 子资源列表
+  repeated Resource children = 15;
+
+  string description = 16;
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
 }
 
 // User 用户实体，表示系统中的账号信息

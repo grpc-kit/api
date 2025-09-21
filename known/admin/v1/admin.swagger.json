@@ -446,31 +446,6 @@
         ]
       }
     },
-    "/builtin/admin/api/v1/menus": {
-      "get": {
-        "operationId": "KnownAdmin_ListMenus",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ListMenusResponse"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration": {
       "get": {
         "operationId": "KnownAdmin_GetOAuth2Discovery",
@@ -504,6 +479,32 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OAuth2JSONWebKeys"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/resources": {
+      "get": {
+        "summary": "资源管理",
+        "operationId": "KnownAdmin_ListResources",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListResourcesResponse"
             }
           },
           "4xx": {
@@ -1173,6 +1174,18 @@
         }
       }
     },
+    "ResourceScope": {
+      "type": "string",
+      "enum": [
+        "SCOPE_UNSPECIFIED",
+        "SCOPE_ADMIN",
+        "SCOPE_USER",
+        "SCOPE_APP"
+      ],
+      "default": "SCOPE_UNSPECIFIED",
+      "description": "- SCOPE_ADMIN: 后台\n - SCOPE_USER: 前台\n - SCOPE_APP: 移动端",
+      "title": "Scope 资源作用域"
+    },
     "UserGender": {
       "type": "string",
       "enum": [
@@ -1547,10 +1560,10 @@
         }
       }
     },
-    "v1ListMenusResponse": {
+    "v1ListResourcesResponse": {
       "type": "object",
       "properties": {
-        "menus": {
+        "resources": {
           "type": "array",
           "items": {
             "type": "object",
@@ -1687,49 +1700,62 @@
         "id": {
           "type": "integer",
           "format": "int32",
-          "title": "ID 菜单 ID"
+          "title": "ID 资源 ID"
         },
         "parent_id": {
           "type": "integer",
           "format": "int32",
-          "title": "ParentID 父菜单 ID，为 0 表示顶级菜单"
+          "title": "ParentID 父资源 ID，为 0 表示顶级资源"
         },
         "name": {
           "type": "string",
-          "title": "Name 菜单名称"
-        },
-        "path": {
-          "type": "string",
-          "title": "Path 菜单路径"
+          "title": "Name 资源名称"
         },
         "i18n_name": {
-          "type": "string",
+          "$ref": "#/definitions/v1I18NName",
           "title": "I18NName 国际化名称"
-        },
-        "icon": {
-          "type": "string",
-          "title": "Icon 菜单图标，通常用于前端展示"
         },
         "order_weight": {
           "type": "integer",
           "format": "int32",
-          "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+          "title": "OrderWeight 资源排序权重，数字越小越靠前"
         },
         "type": {
           "$ref": "#/definitions/v1ResourceType",
-          "title": "Type 菜单用途，如后台管理员、前台用户、APP 应用"
+          "title": "Type 资源用途，如后台管理员、前台用户、APP 应用"
+        },
+        "scope": {
+          "$ref": "#/definitions/ResourceScope",
+          "title": "Scope 资源作用域"
         },
         "enabled": {
           "type": "boolean",
-          "title": "Enabled 菜单是否启用"
+          "title": "Enabled 资源是否启用"
         },
-        "hide_in_menu": {
+        "hidden": {
           "type": "boolean",
-          "title": "HideInMenu 是否在菜单列表中隐藏"
+          "title": "Hidden 是否在资源列表中隐藏"
         },
-        "hide_children_in_menu": {
+        "hide_children": {
           "type": "boolean",
-          "title": "HideChildrenInMenu 是否在菜单列表中隐藏子菜单"
+          "title": "HideChildren 是否在资源列表中隐藏子项"
+        },
+        "path": {
+          "type": "string",
+          "title": "Path 资源路径"
+        },
+        "icon": {
+          "type": "string",
+          "title": "Icon 资源图标，通常用于前端展示"
+        },
+        "component": {
+          "type": "string"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "children": {
           "type": "array",
@@ -1737,7 +1763,18 @@
             "type": "object",
             "$ref": "#/definitions/v1Resource"
           },
-          "title": "Children 子菜单列表"
+          "title": "Children 子资源列表"
+        },
+        "description": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
         }
       },
       "title": "Resource 资源定义，如：菜单等"
@@ -1746,12 +1783,14 @@
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_MENU_ADMIN",
-        "TYPE_MENU_USER"
+        "TYPE_DIRECTORY",
+        "TYPE_MENU",
+        "TYPE_BUTTON",
+        "TYPE_API"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 未指定类型，保留为默认值\n - TYPE_MENU_ADMIN: 后台菜单\n - TYPE_MENU_USER: 用户菜单",
-      "title": "Type 菜单类型"
+      "description": "- TYPE_DIRECTORY: 目录，在前端菜单树中，只起到“目录”作用，不直接绑定路由/组件\n - TYPE_MENU: 菜单\n - TYPE_BUTTON: 按钮\n - TYPE_API: API",
+      "title": "Type 资源类型"
     },
     "v1Role": {
       "type": "object",
