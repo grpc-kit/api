@@ -21,14 +21,6 @@ message CreateAuthLoginRequest {
   string password_hash = 9;
 }
 
-// CreateAuthLoginResponse 登录成功响应
-// 参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5
-message CreateAuthLoginResponse {
-  string access_token = 1;
-  string token_type = 2;
-  int32 expires_in = 3;
-}
-
 // CreateAuthTokenRequest 用于创建 token，仅管理员或特定用户可建
 message CreateAuthTokenRequest {
   // Appid 关联应用标识
@@ -43,14 +35,6 @@ message CreateAuthTokenRequest {
   int32 expires_in = 7;
   // PasswordHash 用户密码在本地使用 sha256 哈希结果
   string password_hash = 9;
-}
-
-// CreateAuthTokenResponse 登录成功响应
-// 参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5
-message CreateAuthTokenResponse {
-  string access_token = 1;
-  string token_type = 2;
-  int32 expires_in = 3;
 }
 
 message ListAuthProvidersRequest {

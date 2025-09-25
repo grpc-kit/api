@@ -279,3 +279,11 @@ message OAuth2JSONWebKeys {
 
   repeated Key keys = 1;
 }
+
+// AuthToken 登录成功响应
+// 参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5
+message AuthToken {
+  string access_token = 1;
+  string token_type = 2;
+  int32 expires_in = 3;
+}

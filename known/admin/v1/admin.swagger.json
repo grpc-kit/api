@@ -77,7 +77,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateAuthLoginResponse"
+              "$ref": "#/definitions/v1AuthToken"
             }
           },
           "4xx": {
@@ -170,7 +170,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateAuthTokenResponse"
+              "$ref": "#/definitions/v1AuthToken"
             }
           },
           "4xx": {
@@ -1549,6 +1549,22 @@
       "default": "TYPE_UNSPECIFIED",
       "title": "Type 身份提供商类型"
     },
+    "v1AuthToken": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "token_type": {
+          "type": "string"
+        },
+        "expires_in": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "AuthToken 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
+    },
     "v1CreateAuthLoginRequest": {
       "type": "object",
       "properties": {
@@ -1575,22 +1591,6 @@
         }
       },
       "title": "CreateAuthLoginRequest 用于登录请求，所有用户均可"
-    },
-    "v1CreateAuthLoginResponse": {
-      "type": "object",
-      "properties": {
-        "access_token": {
-          "type": "string"
-        },
-        "token_type": {
-          "type": "string"
-        },
-        "expires_in": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "title": "CreateAuthLoginResponse 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
     },
     "v1CreateAuthTokenRequest": {
       "type": "object",
@@ -1622,22 +1622,6 @@
         }
       },
       "title": "CreateAuthTokenRequest 用于创建 token，仅管理员或特定用户可建"
-    },
-    "v1CreateAuthTokenResponse": {
-      "type": "object",
-      "properties": {
-        "access_token": {
-          "type": "string"
-        },
-        "token_type": {
-          "type": "string"
-        },
-        "expires_in": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "title": "CreateAuthTokenResponse 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
     },
     "v1CreateDatabaseInitializeRequest": {
       "type": "object"

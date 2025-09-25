@@ -20,8 +20,8 @@ import "known/admin/v1/database.proto";
 service KnownAdmin {
   rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
   // 认证鉴权
-  rpc CreateAuthLogin(CreateAuthLoginRequest) returns (CreateAuthLoginResponse);
-  rpc CreateAuthToken(CreateAuthTokenRequest) returns (CreateAuthTokenResponse);
+  rpc CreateAuthLogin(CreateAuthLoginRequest) returns (AuthToken);
+  rpc CreateAuthToken(CreateAuthTokenRequest) returns (AuthToken);
   rpc ListAuthProviders(ListAuthProvidersRequest) returns(ListAuthProvidersResponse);
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
