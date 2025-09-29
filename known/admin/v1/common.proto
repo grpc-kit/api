@@ -193,6 +193,50 @@ message Role {
   string description = 5;
 }
 
+// Group 群组实体，表示一类相同维度的用户集合
+message Group {
+  // 群组状态（枚举值预计不会太频繁变化）
+  // 可以根据业务再增加状态
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 默认值／未知状态
+    STATUS_PENDING = 1;      // 待激活／待验证
+    STATUS_ACTIVE = 2;       // 正常启用状态
+    STATUS_ARCHIVED = 3;     // 被归档（如成员不允许在变更等）
+    STATUS_DISABLED = 4;     // 禁用（人工停用）
+    STATUS_DELETED = 5;      // 软删除
+  }
+
+  // ID 群组 ID，全局唯一标识
+  int32 id = 1;
+  // Name 群组名称
+  string name = 2;
+  // Status 群组状态
+  Status status = 3;
+  // I18NName 群组国际化名称
+  I18NName i18n_name = 4;
+  // OrderWeight 菜单排序权重，数字越小越靠前
+  int32 order_weight = 5;
+  string description = 6;
+}
+
+// UserGroup 用户群组关系
+message UserGroup {
+  // 可以根据业务再增加状态
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 默认值／未知状态
+    STATUS_PENDING = 1;      // 待激活／待验证
+    STATUS_ACTIVE = 2;       // 正常启用状态
+    STATUS_REJECTED = 3;     // 被拒绝加入
+    STATUS_DISABLED = 4;     // 禁用（人工停用）
+    STATUS_INVITED = 5;     //  被邀请加入
+  }
+
+  // ID 用户群组关系 ID，全局唯一标识
+  int32 id = 1;
+  int32 user_id = 2;
+  int32 group_id = 3;
+}
+
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
 message AuthProvider {
   // Type 身份提供商类型
