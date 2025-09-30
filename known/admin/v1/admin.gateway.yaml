@@ -74,6 +74,21 @@ http:
   #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUserIdentity
   #  post: "/builtin/admin/api/v1/users/{id}/identities"
   #  body: "identity"
+    # 群组相关
+  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGroups
+  #  get: "/builtin/admin/api/v1/groups"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateGroup
+    post: "/builtin/admin/api/v1/groups"
+    body: "group"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGroups
+    get: "/builtin/admin/api/v1/groups"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateGroup
+    patch: "/builtin/admin/api/v1/groups/{group.id}"
+    body: "group"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteGroup
+    delete: "/builtin/admin/api/v1/groups/{id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGroupMembers
+    get: "/builtin/admin/api/v1/groups/{parent}/members"
     # 安全相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateCredential
     post: "/builtin/admin/api/v1/credentials"

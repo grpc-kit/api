@@ -15,6 +15,7 @@ import "known/admin/v1/department.proto";
 import "known/admin/v1/security.proto";
 import "known/admin/v1/user.proto";
 import "known/admin/v1/roles.proto";
+import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
 
 service KnownAdmin {
@@ -50,6 +51,12 @@ service KnownAdmin {
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
   // rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);
+  // 群组相关
+  rpc CreateGroup(CreateGroupRequest) returns(Group);
+  rpc ListGroups(ListGroupsRequest) returns(ListGroupsResponse);
+  rpc UpdateGroup(UpdateGroupRequest) returns(Group);
+  rpc DeleteGroup(DeleteGroupRequest) returns(google.protobuf.Empty);
+  rpc ListGroupMembers(ListGroupMembersRequest) returns(ListGroupMembersResponse);
   // 安全相关
   rpc CreateCredential(CreateCredentialRequest) returns(Credential);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
