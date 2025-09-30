@@ -76,3 +76,34 @@ message ListGroupMembersResponse {
   // AIP-132: total_size 是可选字段。
   int32 total_size = 3;
 }
+
+message CreateGroupMembersRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  repeated UserGroup group_members = 2;
+}
+
+message CreateGroupMembersResponse {
+}
+
+message DeleteGroupMemberRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+  
+  int32 user_id = 2;
+}
+
+message UpdateGroupMemberRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+  
+  int32 user_id = 2;
+
+  UserGroup group_member = 3;
+
+  google.protobuf.FieldMask update_mask = 4;
+}

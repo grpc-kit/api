@@ -89,6 +89,14 @@ http:
     delete: "/builtin/admin/api/v1/groups/{id}"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGroupMembers
     get: "/builtin/admin/api/v1/groups/{parent}/members"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateGroupMembers
+    post: "/builtin/admin/api/v1/groups/{parent}/members"
+    body: "group_members"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteGroupMember
+    delete: "/builtin/admin/api/v1/groups/{parent}/members/{user_id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateGroupMember
+    patch: "/builtin/admin/api/v1/groups/{parent}/members/{user_id}"
+    body: "group_member"
     # 安全相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateCredential
     post: "/builtin/admin/api/v1/credentials"

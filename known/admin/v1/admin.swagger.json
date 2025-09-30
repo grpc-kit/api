@@ -732,6 +732,139 @@
             "type": "string"
           }
         ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_CreateGroupMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateGroupMembersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "group_members",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1UserGroup"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/groups/{parent}/members/{user_id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteGroupMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "KnownAdmin_UpdateGroupMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserGroup"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "group_member",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UserGroup"
+            }
+          }
+        ]
       }
     },
     "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration": {
@@ -1941,6 +2074,9 @@
     "v1CreateDatabaseInitializeRequest": {
       "type": "object"
     },
+    "v1CreateGroupMembersResponse": {
+      "type": "object"
+    },
     "v1Credential": {
       "type": "object",
       "properties": {
@@ -2603,16 +2739,24 @@
           "format": "int32",
           "title": "UserID 用户 ID，关联用户表"
         },
+        "username": {
+          "type": "string",
+          "title": "Username 用户名，来自用户表"
+        },
+        "nickname": {
+          "type": "string",
+          "title": "Nickname 用户昵称，来自用户表"
+        },
         "group_id": {
           "type": "integer",
           "format": "int32",
           "title": "GroupID 群组 ID，关联群组表"
         },
-        "role": {
+        "member_role": {
           "$ref": "#/definitions/v1UserGroupRole",
           "title": "Role 用户在群组中的角色"
         },
-        "status": {
+        "member_status": {
           "$ref": "#/definitions/v1UserGroupStatus",
           "title": "Status 用户群组关系状态"
         },
@@ -2661,12 +2805,6 @@
         "description": {
           "type": "string",
           "title": "Description 群组描述，详细说明群组的目的和用途"
-        },
-        "username": {
-          "type": "string"
-        },
-        "nickname": {
-          "type": "string"
         }
       },
       "title": "UserGroup 用户群组关系\n该模型用于描述用户与群组之间的关联关系，支持多状态管理和角色定义"

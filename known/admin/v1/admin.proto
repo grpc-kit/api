@@ -57,6 +57,9 @@ service KnownAdmin {
   rpc UpdateGroup(UpdateGroupRequest) returns(Group);
   rpc DeleteGroup(DeleteGroupRequest) returns(google.protobuf.Empty);
   rpc ListGroupMembers(ListGroupMembersRequest) returns(ListGroupMembersResponse);
+  rpc CreateGroupMembers(CreateGroupMembersRequest) returns(CreateGroupMembersResponse);
+  rpc DeleteGroupMember(DeleteGroupMemberRequest) returns(google.protobuf.Empty);
+  rpc UpdateGroupMember(UpdateGroupMemberRequest) returns(UserGroup);
   // 安全相关
   rpc CreateCredential(CreateCredentialRequest) returns(Credential);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);

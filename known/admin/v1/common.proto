@@ -278,32 +278,34 @@ message UserGroup {
   int32 id = 1;
   // UserID 用户 ID，关联用户表
   int32 user_id = 2;
+  // Username 用户名，来自用户表
+  string username = 3;
+  // Nickname 用户昵称，来自用户表
+  string nickname = 4;
   // GroupID 群组 ID，关联群组表
-  int32 group_id = 3;
+  int32 group_id = 5;
   // Role 用户在群组中的角色
-  Role role = 4;
+  Role member_role = 6;
   // Status 用户群组关系状态
-  Status status = 5;
+  Status member_status = 7;
   // JoinedAt 用户加入群组的时间
-  google.protobuf.Timestamp joined_at = 6;
+  google.protobuf.Timestamp joined_at = 8;
   // ExpiredAt 关系有效期，用于临时成员管理，0表示永久有效
-  google.protobuf.Timestamp expired_at = 7;
+  google.protobuf.Timestamp expired_at = 9;
   // CreatedBy 创建者 ID，记录创建该关系的用户
-  int32 created_by = 8;
+  int32 created_by = 10;
   // UpdatedBy 最后更新者 ID，记录最后修改该关系的用户
-  int32 updated_by = 9;
+  int32 updated_by = 11;
   // CreatedAt 创建时间，记录关系的创建时间戳
-  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp created_at = 12;
   // UpdatedAt 更新时间，记录关系的最后修改时间戳
-  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp updated_at = 13;
   // DeletedAt 删除时间，用于软删除机制
-  google.protobuf.Timestamp deleted_at = 12;
+  google.protobuf.Timestamp deleted_at = 14;
   // Metadata 元数据，用于存储自定义属性，支持业务扩展
-  map<string, string> metadata = 13;
+  map<string, string> metadata = 15;
   // Description 群组描述，详细说明群组的目的和用途
-  string description = 14;
-  string username = 15;
-  string nickname = 16;
+  string description = 16;
 }
 
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
