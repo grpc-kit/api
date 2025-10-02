@@ -117,8 +117,9 @@ message User {
   // Gender 用户性别
   enum Gender {
     GENDER_UNSPECIFIED = 0;
-    GENDER_MALE = 1;
-    GENDER_FEMALE = 2;
+    GENDER_MALE = 1;        // 男性
+    GENDER_FEMALE = 2;      // 女性
+    GENDER_OTHER = 3;       // 其他
   }
 
   // 用户状态（枚举值预计不会太频繁变化）
@@ -129,55 +130,75 @@ message User {
     STATUS_ACTIVE = 2;       // 正常启用状态
     STATUS_LOCKED = 3;       // 被锁定（如连续密码错误、账号风控等）
     STATUS_DISABLED = 4;     // 禁用（人工停用）
-    STATUS_DELETED = 5;      // 软删除
+    STATUS_EXPIRED = 5;      // 过期等（订阅过期、账号注销等）
   }
 
   message Identity {
     string provider_name = 1;
     string provider_user_id = 2;
     string password_hash = 3;
+    google.protobuf.Timestamp linked_at = 4;
   }
 
-  // ID 用户 ID，全局唯一标识
-  int32 id = 1;
-  // 用户名，系统登录凭证，通常唯一
+  // 以下字段为非敏感/可直接输出（适合公开展示或普通资料页）
+
+  // ID 用户 ID，全局唯一标识，使用 int64 序列化为 json 为 string 类型
+  int64 id = 1;
+  // 用户名，系统登录凭证，必须唯一
   string username = 2;
-  // 用户状态，表示当前账号的生命周期阶段
-  Status status = 19;
-  // 真实姓名，用于实名认证或后台展示
-  string realname = 3;
-  // 身份证号，用于身份验证（可选）
-  string national_id = 4;
   // 昵称，用于社交或前端展示
-  string nickname = 5;
+  string nickname = 3;
   // 个人简介或签名
-  string profile = 6;
+  string profile = 4;
   // 用户头像 URL
-  string picture = 7;
+  string picture = 5;
   // 个人网站地址
-  string website = 8;
-  // 邮箱地址
-  string email = 9;
-  // 邮箱是否已验证
-  bool email_verified = 10;
-  // 性别
-  Gender gender = 11;
-  // 出生日期
-  google.protobuf.Timestamp birthday = 12;
+  string website = 6;
   // 时区信息（IANA 时区标识，例如 "Asia/Shanghai"）
-  string zoneinfo = 13;
+  string zoneinfo = 7;
   // 用户偏好的语言与地区（例如 "zh-CN"、"en-US"）
-  string locale = 14;
-  // 手机号码
-  PhoneNumber phone_number = 15;
-  // 手机号码是否已验证
-  bool phone_number_verified = 16;
-  // 地址信息
-  Address address = 17;
+  string locale = 8;
+
+  // 以下字段受限输出（仅本人或具备权限的管理员可见，外部或公共接口谨慎返回）
+
+  // 用户状态，表示当前账号的生命周期阶段
+  Status status = 9;
+  // 性别
+  Gender gender = 10;
   // 所属部门
-  Department department = 18;
+  Department department = 11;
+  // 邮箱是否已验证
+  bool email_verified = 12;
+  // 手机号码是否已验证
+  bool phone_number_verified = 13;
+  // 最后登录时间
+  google.protobuf.Timestamp last_login_at = 14;
+  // 创建时间
+  google.protobuf.Timestamp created_at = 15;
+  // 更新时间
+  google.protobuf.Timestamp updated_at = 16;
+  // 删除时间
+  google.protobuf.Timestamp deleted_at = 17;
   // 认证信息
-  repeated Identity identities = 20;
+  repeated Identity identities = 18;
+
+  // 敏感字段（默认不直接对外输出，需权限并建议脱敏）
+
+  // 真实姓名，用于实名认证或后台展示
+  string realname = 19;
+  // 身份证号，用于身份验证（可选）
+  string national_id = 20;
+  // 邮箱地址
+  string email = 21;
+  // 出生日期
+  google.protobuf.Timestamp birthday = 22;
+  // 手机号码
+  PhoneNumber phone_number = 23;
+  // 地址信息
+  Address address = 24;
+
+  // 自定义元数据，用于存储额外的用户信息（如 JSON 字符串）
+  map<string, string> metadata = 25;
 }
 
 // Role 角色实体，表示用户在系统上的权限和功能
