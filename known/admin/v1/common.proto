@@ -133,11 +133,21 @@ message User {
     STATUS_EXPIRED = 5;      // 过期等（订阅过期、账号注销等）
   }
 
-  message Identity {
-    string provider_name = 1;
-    string provider_user_id = 2;
-    string password_hash = 3;
-    google.protobuf.Timestamp linked_at = 4;
+  // 用户的系统类型或所属边界
+  enum Type {
+    TYPE_UNSPECIFIED = 0;  // 默认值
+
+    // 外部用户 / 业务伙伴
+    TYPE_CUSTOMER = 1;     // 前台用户 / 消费者
+    TYPE_MERCHANT = 2;     // 商户 / 卖家
+    TYPE_SUPPLIER = 3;     // 供应商 / 合作方
+
+    // 内部用户 / 员工
+    TYPE_EMPLOYEE = 10;    // 后台用户 / 内部员工
+    TYPE_ADMIN = 11;       // 系统管理员
+
+    // 系统账户 (为安全和区分，编号拉开)
+    TYPE_SYSTEM = 99;      // 系统集成账户 / 机器人
   }
 
   // 以下字段为非敏感/可直接输出（适合公开展示或普通资料页）
@@ -161,26 +171,23 @@ message User {
 
   // 以下字段受限输出（仅本人或具备权限的管理员可见，外部或公共接口谨慎返回）
 
+  // 用户的基础身份类型，后端自动维护更新，非人为更新
+  Type type = 9;
   // 用户状态，表示当前账号的生命周期阶段
-  Status status = 9;
+  Status status = 10;
   // 性别
-  Gender gender = 10;
-  // 所属部门
-  Department department = 11;
+  Gender gender = 11;
   // 邮箱是否已验证
   bool email_verified = 12;
   // 手机号码是否已验证
   bool phone_number_verified = 13;
-  // 最后登录时间
-  google.protobuf.Timestamp last_login_at = 14;
+
   // 创建时间
   google.protobuf.Timestamp created_at = 15;
   // 更新时间
   google.protobuf.Timestamp updated_at = 16;
   // 删除时间
   google.protobuf.Timestamp deleted_at = 17;
-  // 认证信息
-  repeated Identity identities = 18;
 
   // 敏感字段（默认不直接对外输出，需权限并建议脱敏）
 

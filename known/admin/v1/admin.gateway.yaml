@@ -71,6 +71,9 @@ http:
     body: "user"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetUser
     get: "/builtin/admin/api/v1/users/{id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUserPassword
+    put: "/builtin/admin/api/v1/users/{user_id}/password"
+    body: "*"
   #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUserIdentity
   #  post: "/builtin/admin/api/v1/users/{id}/identities"
   #  body: "identity"
