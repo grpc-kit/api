@@ -60,6 +60,8 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartment
     patch: "/builtin/admin/api/v1/departments/{department.id}"
     body: "department"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartmentMembers
+    get: "/builtin/admin/api/v1/departments/{parent}/members"
     # 用户相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListUsers
     get: "/builtin/admin/api/v1/users"

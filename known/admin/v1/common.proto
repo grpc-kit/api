@@ -8,11 +8,6 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 // 引入 google 公共类型
 import "google/protobuf/timestamp.proto";
 
-message Leader {
-  int32 type = 1;
-  int32 user_id = 2;
-}
-
 // I18NName 国际化名称
 message I18NName {
   string zh_cn = 1;
@@ -51,7 +46,7 @@ message Department {
   // OrderWeight 菜单排序权重，数字越小越靠前
   int32 order_weight = 5;
   // Leaders 部门领导列表
-  repeated Leader leaders = 6;
+  repeated UserDepartment leaders = 6;
 
   // Children 子部门列表
   repeated Department children = 7;
@@ -334,6 +329,53 @@ message UserGroup {
   map<string, string> metadata = 15;
   // Description 群组描述，详细说明群组的目的和用途
   string description = 16;
+}
+
+// UserDepartment 用户部门关系
+// 用于描述用户与部门之间的多对多关系，支持角色、状态与扩展属性。
+message UserDepartment {
+  // 部门角色枚举
+  enum Role {
+    ROLE_UNSPECIFIED = 0;  // 未指定
+    ROLE_OWNER = 1;        // 部门负责人
+    ROLE_ADMIN = 2;        // 管理员
+    ROLE_MEMBER = 3;       // 普通成员
+    ROLE_ASSISTANT = 4;    // 助理
+  }
+
+  // 成员状态枚举
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 未指定
+    STATUS_ACTIVE = 1;       // 正常
+    STATUS_DISABLED = 2;     // 已禁用
+    STATUS_LEFT = 3;         // 已离开
+    STATUS_PENDING = 4;      // 待加入（申请中）
+  }
+
+  // ID 用户部门关系 ID
+  int32 id = 1;
+  // 用户 ID
+  int64 user_id = 2;
+  // 用户名
+  string username = 3;
+  // 用户昵称
+  string nickname = 4;
+  // 部门 ID
+  int32 department_id = 5;
+  // 成员角色
+  Role member_role = 6;
+  // 成员状态
+  Status member_status = 7;
+  // 过期时间
+  google.protobuf.Timestamp expired_at = 8;
+  // 创建时间
+  google.protobuf.Timestamp created_at = 9;
+  // 更新时间
+  google.protobuf.Timestamp updated_at = 10;
+  // 元数据
+  map<string, string> metadata = 11;
+  // Description 详细说明、业务用途说明、对外展示的内容，通常较长
+  string description = 12;
 }
 
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
