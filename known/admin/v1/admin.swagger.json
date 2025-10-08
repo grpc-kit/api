@@ -392,7 +392,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "$ref": "#/definitions/v1Leader"
+                    "$ref": "#/definitions/v1UserDepartment"
                   },
                   "title": "Leaders 部门领导列表"
                 },
@@ -442,6 +442,77 @@
             "required": true,
             "type": "integer",
             "format": "int32"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/departments/{parent}/members": {
+      "get": {
+        "operationId": "KnownAdmin_ListDepartmentMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListDepartmentMembersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "description": "Cursor-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "description": "Offset-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "过滤条件，采用 AIP-160 定义的标准 filter 语法。\n示例: `email=\"alice@example.com\" AND state=\"ACTIVE\"`",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"create_time desc, name asc\"\nAIP-132: order_by 是可选字段。",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       }
@@ -2221,7 +2292,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/v1Leader"
+            "$ref": "#/definitions/v1UserDepartment"
           },
           "title": "Leaders 部门领导列表"
         },
@@ -2378,19 +2449,6 @@
       },
       "title": "I18NName 国际化名称"
     },
-    "v1Leader": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "user_id": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
     "v1ListAuthProvidersResponse": {
       "type": "object",
       "properties": {
@@ -2400,6 +2458,28 @@
             "type": "object",
             "$ref": "#/definitions/v1AuthProvider"
           }
+        }
+      }
+    },
+    "v1ListDepartmentMembersResponse": {
+      "type": "object",
+      "properties": {
+        "department_members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1UserDepartment"
+          },
+          "title": "符合查询条件的用户资源。"
+        },
+        "next_page_token": {
+          "type": "string",
+          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
     },
@@ -2798,6 +2878,95 @@
         }
       },
       "title": "User 用户实体，表示系统中的账号信息"
+    },
+    "v1UserDepartment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ID 用户部门关系 ID"
+        },
+        "user_id": {
+          "type": "string",
+          "format": "int64",
+          "title": "用户 ID"
+        },
+        "username": {
+          "type": "string",
+          "title": "用户名"
+        },
+        "nickname": {
+          "type": "string",
+          "title": "用户昵称"
+        },
+        "department_id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "部门 ID"
+        },
+        "member_role": {
+          "$ref": "#/definitions/v1UserDepartmentRole",
+          "title": "成员角色"
+        },
+        "member_status": {
+          "$ref": "#/definitions/v1UserDepartmentStatus",
+          "title": "成员状态"
+        },
+        "expired_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "过期时间"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "更新时间"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "元数据"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description 详细说明、业务用途说明、对外展示的内容，通常较长"
+        }
+      },
+      "title": "UserDepartment 用户部门关系\n用于描述用户与部门之间的多对多关系，支持角色、状态与扩展属性。"
+    },
+    "v1UserDepartmentRole": {
+      "type": "string",
+      "enum": [
+        "ROLE_UNSPECIFIED",
+        "ROLE_OWNER",
+        "ROLE_ADMIN",
+        "ROLE_MEMBER",
+        "ROLE_ASSISTANT"
+      ],
+      "default": "ROLE_UNSPECIFIED",
+      "description": "- ROLE_UNSPECIFIED: 未指定\n - ROLE_OWNER: 部门负责人\n - ROLE_ADMIN: 管理员\n - ROLE_MEMBER: 普通成员\n - ROLE_ASSISTANT: 助理",
+      "title": "部门角色枚举"
+    },
+    "v1UserDepartmentStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_ACTIVE",
+        "STATUS_DISABLED",
+        "STATUS_LEFT",
+        "STATUS_PENDING"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "- STATUS_UNSPECIFIED: 未指定\n - STATUS_ACTIVE: 正常\n - STATUS_DISABLED: 已禁用\n - STATUS_LEFT: 已离开\n - STATUS_PENDING: 待加入（申请中）",
+      "title": "成员状态枚举"
     },
     "v1UserGroup": {
       "type": "object",
