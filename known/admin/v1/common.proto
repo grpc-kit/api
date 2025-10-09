@@ -33,23 +33,132 @@ message PhoneNumber {
   string national_number = 2;
 }
 
-// Department 组织部门实体，树形结构，一个用户仅可在一个部门内
+// Department 组织部门实体，支持树形层级结构的企业组织架构管理
+// 设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理
+// 支持国际化、状态管理、财务集成等企业级功能
 message Department {
-  // ID 实体 ID
+  // ID 部门唯一标识符，系统自动生成
+  // 用于数据库主键和跨系统引用，建议使用自增整型
   int32 id = 1;
-  // ParentID 父 ID，为 0 表示顶级菜单
+  
+  // ParentID 父部门ID，构建树形组织结构
+  // 值为 0 表示顶级部门（如：总公司、集团总部）
+  // 支持多级嵌套，建议层级深度不超过 6 级以保证查询性能
   int32 parent_id = 2;
-  // Name 部门名称
+  
+  // Name 部门名称，用于系统内部显示和业务逻辑
+  // 要求：长度 1-100 字符，同级部门名称不可重复
+  // 示例："技术研发部"、"市场营销部"、"人力资源部"
   string name = 3;
-  // I18nName 国际化名称
+  
+  // I18nName 国际化名称配置，支持多语言环境
+  // 用于跨国企业的多语言界面显示
+  // 包含语言代码和对应翻译文本的映射关系
   I18NName i18n_name = 4;
-  // OrderWeight 菜单排序权重，数字越小越靠前
+  
+  // OrderWeight 部门排序权重，用于同级部门的显示顺序
+  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
+  // 默认值：100，范围：1-9999
   int32 order_weight = 5;
-  // Leaders 部门领导列表
-  repeated UserDepartment leaders = 6;
+  
+  // Managers 部门管理者列表，包含各级管理人员和负责人
+  // 通过 UserDepartment 关系表维护，支持精细化角色区分
+  // 支持的管理角色：部门经理、副经理、主管、组长等
+  // 可根据 UserDepartment.member_role 字段区分具体的管理职责和权限级别
+  repeated UserDepartment managers = 6;
 
-  // Children 子部门列表
+  // Children 直接子部门列表，用于构建完整的组织树
+  // 仅包含直接下级，避免深度递归查询
+  // 建议在需要完整树结构时通过专门的服务接口获取
   repeated Department children = 7;
+
+  // Status 部门运营状态，用于生命周期管理
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
+    STATUS_ACTIVE = 1;       // 正常运营 - 部门正常工作，可分配员工和任务
+    STATUS_INACTIVE = 2;     // 暂停运营 - 临时停止业务，员工可能被临时调配
+    STATUS_DISSOLVED = 3;    // 已解散 - 部门正式撤销，员工需重新分配
+    STATUS_MERGING = 4;      // 合并中 - 正在与其他部门合并，处于过渡状态
+  }
+  Status status = 8;
+
+  // Type 部门类型分类，用于业务逻辑和权限控制
+  enum Type {
+    TYPE_UNSPECIFIED = 0;  // 未指定类型
+    TYPE_BUSINESS = 1;     // 业务部门 - 直接产生收入的核心业务单位
+    TYPE_SUPPORT = 2;      // 支持部门 - 为业务部门提供服务支撑（如：IT、HR）
+    TYPE_MANAGEMENT = 3;   // 管理部门 - 负责决策和监督的管理层级
+    TYPE_VIRTUAL = 4;      // 虚拟部门 - 项目组、临时团队等非固定组织
+  }
+  Type type = 9;
+
+  // Email 部门公共邮箱地址，用于对外联系和内部通知
+  // 格式：标准邮箱格式，如 "tech@company.com"
+  // 用途：部门公告、外部合作、客户联系等
+  string email = 10;
+  
+  // PhoneNumber 部门联系电话，支持国际化电话号码格式
+  // 包含国家代码、区号、号码等完整信息
+  // 用于紧急联系、业务咨询等场景
+  PhoneNumber phone_number = 11;
+  
+  // Address 部门办公地址，支持结构化地址信息
+  // 包含国家、省市、详细地址等信息
+  // 用于邮寄、拜访、资产管理等业务场景
+  Address address = 12;
+
+  // CostCenterCode 成本中心编码，用于财务核算和成本控制
+  // 格式：企业自定义编码规则，如 "CC-TECH-001"
+  // 用途：预算分配、成本归集、财务报表等
+  // 与 ERP 系统集成时的重要标识字段
+  string cost_center_code = 13;
+  
+  // BudgetCode 预算编码，用于预算管理和费用控制
+  // 格式：与财务系统对应的预算科目编码
+  // 用途：年度预算、费用审批、财务分析等
+  // 支持多维度预算管理（如：人员预算、设备预算等）
+  string budget_code = 14;
+
+  // MaxMembers 部门最大成员数限制，用于人员规模控制
+  // 值为 0 表示无限制，正整数表示具体限制
+  // 用途：组织规模控制、人力成本管理、办公空间规划
+  int32 max_members = 15;
+  
+  // ExternalID 外部系统标识符，用于第三方系统集成
+  // 如：ERP 系统部门编码、OA 系统部门 ID 等
+  // 支持数据同步和跨系统业务流程
+  string external_id = 16;
+  
+  // Metadata 扩展元数据，存储自定义业务属性
+  // 键值对格式，支持灵活的业务扩展需求
+  // 示例：{"location": "北京", "floor": "15F", "capacity": "50"}
+  map<string, string> metadata = 17;
+
+  // CreatedBy 创建者用户ID，记录部门创建人
+  // 用于审计追踪和权限验证
+  int32 created_by = 18;
+  
+  // UpdatedBy 最后更新者用户ID，记录最近修改人
+  // 用于变更追踪和责任确认
+  int32 updated_by = 19;
+  
+  // CreatedAt 创建时间戳，记录部门建立时间
+  // 使用 UTC 时间，精确到毫秒级别
+  google.protobuf.Timestamp created_at = 20;
+  
+  // UpdatedAt 最后更新时间戳，记录最近修改时间
+  // 用于数据同步和缓存失效判断
+  google.protobuf.Timestamp updated_at = 21;
+  
+  // DeletedAt 软删除时间戳，支持数据恢复
+  // 非空表示已删除，空值表示正常状态
+  // 实现软删除机制，保护重要组织数据
+  google.protobuf.Timestamp deleted_at = 22;
+
+  // Description 部门描述信息，详细说明部门职责和业务范围
+  // 用于组织介绍、职责说明、业务范围描述等
+  // 建议长度：500 字符以内，支持富文本格式
+  string description = 23;
 }
 
 // Resource 资源定义，如：菜单等
@@ -331,51 +440,175 @@ message UserGroup {
   string description = 16;
 }
 
-// UserDepartment 用户部门关系
-// 用于描述用户与部门之间的多对多关系，支持角色、状态与扩展属性。
+// UserDepartment 用户部门关系实体，支持企业级组织管理
+// 用于描述用户与部门之间的多对多关系，支持复杂的角色层级、状态管理、
+// 审计追踪、汇报关系等企业级功能，满足大型组织的精细化管理需求
 message UserDepartment {
-  // 部门角色枚举
+  // Role 部门角色枚举，定义用户在部门中的职责和权限层级
   enum Role {
-    ROLE_UNSPECIFIED = 0;  // 未指定
-    ROLE_OWNER = 1;        // 部门负责人
-    ROLE_ADMIN = 2;        // 管理员
-    ROLE_MEMBER = 3;       // 普通成员
-    ROLE_ASSISTANT = 4;    // 助理
+    ROLE_UNSPECIFIED = 0;  // 未指定角色（系统默认值）
+    ROLE_OWNER = 1;        // 部门负责人 - 拥有部门最高管理权限
+    ROLE_DEPUTY = 2;       // 副负责人 - 协助负责人管理部门，拥有大部分管理权限
+    ROLE_MANAGER = 3;      // 经理 - 负责具体业务管理和团队领导
+    ROLE_SUPERVISOR = 4;   // 主管 - 负责日常业务监督和指导
+    ROLE_LEAD = 5;         // 组长 - 负责小组或项目的直接管理
+    ROLE_SENIOR = 6;       // 高级成员 - 资深员工，可能承担指导职责
+    ROLE_MEMBER = 7;       // 普通成员 - 标准部门员工
+    ROLE_INTERN = 8;       // 实习生 - 临时学习和工作的人员
+    ROLE_CONSULTANT = 9;   // 顾问 - 提供专业建议和指导的外部专家
+    ROLE_CONTRACTOR = 10;  // 外包人员 - 临时合作的外部工作人员
+    ROLE_ASSISTANT = 11;   // 助理 - 提供行政和事务支持的人员
   }
 
-  // 成员状态枚举
+  // Status 成员状态枚举，管理用户在部门中的生命周期状态
   enum Status {
-    STATUS_UNSPECIFIED = 0;  // 未指定
-    STATUS_ACTIVE = 1;       // 正常
-    STATUS_DISABLED = 2;     // 已禁用
-    STATUS_LEFT = 3;         // 已离开
-    STATUS_PENDING = 4;      // 待加入（申请中）
+    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
+    STATUS_ACTIVE = 1;       // 正常状态 - 用户正常工作，拥有完整权限
+    STATUS_DISABLED = 2;     // 已禁用 - 临时禁用，保留关系但无法访问
+    STATUS_LEFT = 3;         // 已离开 - 用户已离职或调离，保留历史记录
+    STATUS_PENDING = 4;      // 待加入 - 申请中或等待审批的状态
+    STATUS_SUSPENDED = 5;    // 暂停 - 临时暂停工作，如休假、停职等
+    STATUS_TRANSFERRING = 6; // 调动中 - 正在进行部门间调动的过渡状态
   }
 
-  // ID 用户部门关系 ID
+  // ID 用户部门关系唯一标识符，系统自动生成
+  // 用于数据库主键和关系追踪，支持历史记录查询
   int32 id = 1;
-  // 用户 ID
+
+  // UserID 用户唯一标识符，建立与用户实体的关联
+  // 支持一个用户在多个部门中拥有不同角色和权限
   int64 user_id = 2;
-  // 用户名
+
+  // Username 用户名，用于快速识别和显示
+  // 冗余字段，避免频繁关联查询，提升查询性能
+  // 建议与用户主表保持同步更新
   string username = 3;
-  // 用户昵称
+
+  // Nickname 用户昵称或显示名称，用于友好的界面展示
+  // 支持中文名称、英文名称等多种显示格式
+  // 用于组织架构图、通讯录等场景的显示
   string nickname = 4;
-  // 部门 ID
+
+  // DepartmentID 部门唯一标识符，建立与部门实体的关联
+  // 支持用户在多个部门中的复杂组织关系
   int32 department_id = 5;
-  // 成员角色
+
+  // MemberRole 用户在该部门中的角色，决定权限和职责范围
+  // 支持角色继承和权限控制，可用于业务逻辑判断
+  // 角色变更需要审批流程和历史记录追踪
   Role member_role = 6;
-  // 成员状态
+
+  // MemberStatus 用户在该部门中的当前状态，用于生命周期管理
+  // 支持状态流转和业务流程控制
+  // 状态变更会影响用户的访问权限和业务操作
   Status member_status = 7;
-  // 过期时间
-  google.protobuf.Timestamp expired_at = 8;
-  // 创建时间
-  google.protobuf.Timestamp created_at = 9;
-  // 更新时间
-  google.protobuf.Timestamp updated_at = 10;
-  // 元数据
-  map<string, string> metadata = 11;
-  // Description 详细说明、业务用途说明、对外展示的内容，通常较长
-  string description = 12;
+
+  // CreatedBy 创建者用户ID，记录是谁添加了这个部门关系
+  // 用于审计追踪、权限验证、责任确认等合规场景
+  // 在批量导入时可能为系统管理员ID
+  int64 created_by = 8;
+
+  // UpdatedBy 最后更新者用户ID，记录最近一次修改的操作人
+  // 用于变更追踪、责任确认、审计日志等场景
+  int64 updated_by = 9;
+
+  // ExpiredAt 关系到期时间，支持临时性的部门关系
+  // 用于项目组、临时调配、实习期等有时限的组织关系
+  // 到期后系统可自动调整状态或发送提醒
+  // google.protobuf.Timestamp expired_at = 8;
+
+  // CreatedAt 关系创建时间，记录用户加入部门的时间
+  // 用于统计分析、考勤计算、工龄统计等业务场景
+  google.protobuf.Timestamp created_at = 10;
+
+  // UpdatedAt 关系最后更新时间，记录最近一次修改的时间
+  // 用于数据同步、缓存失效、变更追踪等技术场景
+  google.protobuf.Timestamp updated_at = 11;
+
+  // Metadata 扩展元数据，存储自定义业务属性
+  // 键值对格式，支持灵活的业务扩展需求
+  // 示例：{"seat_number": "A-101", "phone_ext": "8001", "skill_tags": "Java,Python"}
+  map<string, string> metadata = 12;
+
+  // Description 详细说明信息，描述用户在部门中的具体职责
+  // 用于职责说明、工作内容描述、特殊安排说明等
+  // 建议长度：500 字符以内，支持富文本格式
+  string description = 13;
+
+  // ApprovedBy 审批者用户ID，记录批准该关系的管理者
+  // 用于审批流程追踪、权限验证、合规管理等场景
+  // 在自动加入的情况下可能为空或系统ID
+  // int32 approved_by = 15;
+
+  // ApprovedAt 审批时间，记录关系被正式批准的时间
+  // 用于审批流程管理、生效时间控制、合规追踪等场景
+  // google.protobuf.Timestamp approved_at = 16;
+
+  // IsPrimaryDepartment 是否为用户的主部门标识
+  // true: 主部门（用户的主要工作部门，影响薪资、考勤等）
+  // false: 兼职部门（用户的兼职或协作部门）
+  // 一个用户只能有一个主部门，但可以有多个兼职部门
+  // bool is_primary_department = 17;
+  
+  // StartDate 在该部门的开始工作时间，可能与创建时间不同
+  // 用于工龄计算、绩效评估、薪资调整等HR业务场景
+  // 支持预设生效时间和批量调整场景
+  // google.protobuf.Timestamp start_date = 18;
+  
+  // EndDate 在该部门的结束工作时间，用于离职或调离记录
+  // 非空表示已结束关系，空值表示当前仍在该部门
+  // 用于历史记录保存和数据归档管理
+  // google.protobuf.Timestamp end_date = 19;
+
+  // PositionTitle 职位名称，描述用户在部门中的具体职位
+  // 示例："高级软件工程师"、"产品经理"、"财务专员"
+  // 用于组织架构展示、职业发展规划、薪资管理等场景
+  // string position_title = 20;
+  
+  // PositionLevel 职级等级，数值化的职位层级
+  // 范围：1-20，数值越大级别越高
+  // 用于薪资体系、晋升管理、权限控制等场景
+  // int32 position_level = 21;
+  
+  // EmployeeID 员工工号，企业内部的唯一员工标识
+  // 格式：企业自定义，如 "EMP001234"、"2024001"
+  // 用于考勤系统、薪资系统、ERP系统等的数据对接
+  // string employee_id = 22;
+
+  // DirectManagerID 直接上级用户ID，建立汇报关系
+  // 用于组织架构管理、审批流程、权限继承等场景
+  // 支持矩阵式管理和复杂的汇报关系
+  // int64 direct_manager_id = 23;
+  
+  // Permissions 在该部门的具体权限列表，细粒度权限控制
+  // 格式：权限代码数组，如 ["dept.read", "dept.member.manage"]
+  // 用于RBAC权限控制、功能访问限制、数据安全等场景
+  // repeated string permissions = 24;
+  
+  // AccessLevel 访问级别，数值化的权限等级
+  // 范围：1-10，数值越大权限越高
+  // 用于简化权限判断、快速权限过滤等场景
+  // int32 access_level = 25;
+
+  // CostCenter 成本中心编码，可能与部门成本中心不同
+  // 用于个人成本归集、项目成本分摊、财务核算等场景
+  // 支持矩阵式组织中的复杂成本分配
+  // string cost_center = 26;
+  
+  // WorkLocation 工作地点，描述用户的主要工作场所
+  // 示例："北京总部"、"上海分公司"、"远程办公"
+  // 用于办公管理、差旅报销、资产分配等场景
+  // string work_location = 27;
+  
+  // IsFullTime 是否全职工作标识
+  // true: 全职员工，false: 兼职员工
+  // 用于薪资计算、福利分配、工时管理等HR场景
+  // bool is_full_time = 28;
+  
+  // WorkSchedule 工作时间安排，描述工作时间模式
+  // 示例："9:00-18:00"、"弹性工作制"、"轮班制A"
+  // 用于考勤管理、排班安排、工时统计等场景
+  // string work_schedule = 29;
 }
 
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务

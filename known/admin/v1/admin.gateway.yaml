@@ -49,20 +49,38 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.AssignRoleToUser
     post: "/builtin/admin/api/v1/roles/{role_id}:assign"
     body: "*"
-    # 部门相关
+
+    # 部门管理
+    ## 创建部门
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartment
     post: "/builtin/admin/api/v1/departments"
     body: "department"
+    ## 部门列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartments
     get: "/builtin/admin/api/v1/departments"
+    ## 删除部门
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartment
     delete: "/builtin/admin/api/v1/departments/{id}"
+    ## 更新部门
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartment
     patch: "/builtin/admin/api/v1/departments/{department.id}"
     body: "department"
+    ## 获取部门成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartmentMembers
     get: "/builtin/admin/api/v1/departments/{parent}/members"
-    # 用户相关
+    ## 添加部门成员，通过该接口让用户加入多个部门
+  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartmentMembers
+  #  post: "/builtin/admin/api/v1/departments/{parent}/members"
+  #  body: "department_members"
+    ## 更新部门成员，通过该接口更新指定部门成员
+  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartmentMembers
+  #  patch: "/builtin/admin/api/v1/departments/{parent}/members"
+  #  body: "department_members"
+    ## 移除部门成员
+  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartmentMember
+  #  delete: "/builtin/admin/api/v1/departments/{parent}/members/{user_id}"
+
+    # 用户管理
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListUsers
     get: "/builtin/admin/api/v1/users"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUser
@@ -76,6 +94,7 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUserPassword
     put: "/builtin/admin/api/v1/users/{user_id}/password"
     body: "*"
+
   #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUserIdentity
   #  post: "/builtin/admin/api/v1/users/{id}/identities"
   #  body: "identity"

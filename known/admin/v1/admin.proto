@@ -40,12 +40,14 @@ service KnownAdmin {
   rpc ListRoleUsers(ListRoleUsersRequest) returns(ListRoleUsersResponse);
   rpc DeleteRoleUser(DeleteRoleUserRequest) returns(google.protobuf.Empty);
   rpc AssignRoleToUser(AssignRoleToUserRequest) returns(google.protobuf.Empty);
-  // 部门相关
+
+  // 部门管理
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
   rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
   rpc UpdateDepartment(UpdateDepartmentRequest) returns(Department);
   rpc ListDepartmentMembers(ListDepartmentMembersRequest) returns(ListDepartmentMembersResponse);
+
   // 用户相关
   rpc GetUser(GetUserRequest) returns(User);
   rpc CreateUser(CreateUserRequest) returns(User);

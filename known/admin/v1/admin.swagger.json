@@ -296,7 +296,7 @@
         }
       },
       "post": {
-        "summary": "部门相关",
+        "summary": "部门管理",
         "operationId": "KnownAdmin_CreateDepartment",
         "responses": {
           "200": {
@@ -356,7 +356,7 @@
         "parameters": [
           {
             "name": "department.id",
-            "description": "ID 实体 ID",
+            "description": "ID 部门唯一标识符，系统自动生成\n用于数据库主键和跨系统引用，建议使用自增整型",
             "in": "path",
             "required": true,
             "type": "integer",
@@ -364,7 +364,7 @@
           },
           {
             "name": "department",
-            "description": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内",
+            "description": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能",
             "in": "body",
             "required": true,
             "schema": {
@@ -373,28 +373,28 @@
                 "parent_id": {
                   "type": "integer",
                   "format": "int32",
-                  "title": "ParentID 父 ID，为 0 表示顶级菜单"
+                  "title": "ParentID 父部门ID，构建树形组织结构\n值为 0 表示顶级部门（如：总公司、集团总部）\n支持多级嵌套，建议层级深度不超过 6 级以保证查询性能"
                 },
                 "name": {
                   "type": "string",
-                  "title": "Name 部门名称"
+                  "title": "Name 部门名称，用于系统内部显示和业务逻辑\n要求：长度 1-100 字符，同级部门名称不可重复\n示例：\"技术研发部\"、\"市场营销部\"、\"人力资源部\""
                 },
                 "i18n_name": {
                   "$ref": "#/definitions/v1I18NName",
-                  "title": "I18nName 国际化名称"
+                  "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
                 },
                 "order_weight": {
                   "type": "integer",
                   "format": "int32",
-                  "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+                  "title": "OrderWeight 部门排序权重，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
-                "leaders": {
+                "managers": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "$ref": "#/definitions/v1UserDepartment"
                   },
-                  "title": "Leaders 部门领导列表"
+                  "title": "Managers 部门管理者列表，包含各级管理人员和负责人\n通过 UserDepartment 关系表维护，支持精细化角色区分\n支持的管理角色：部门经理、副经理、主管、组长等\n可根据 UserDepartment.member_role 字段区分具体的管理职责和权限级别"
                 },
                 "children": {
                   "type": "array",
@@ -402,10 +402,81 @@
                     "type": "object",
                     "$ref": "#/definitions/v1Department"
                   },
-                  "title": "Children 子部门列表"
+                  "title": "Children 直接子部门列表，用于构建完整的组织树\n仅包含直接下级，避免深度递归查询\n建议在需要完整树结构时通过专门的服务接口获取"
+                },
+                "status": {
+                  "$ref": "#/definitions/v1DepartmentStatus"
+                },
+                "type": {
+                  "$ref": "#/definitions/v1DepartmentType"
+                },
+                "email": {
+                  "type": "string",
+                  "title": "Email 部门公共邮箱地址，用于对外联系和内部通知\n格式：标准邮箱格式，如 \"tech@company.com\"\n用途：部门公告、外部合作、客户联系等"
+                },
+                "phone_number": {
+                  "$ref": "#/definitions/v1PhoneNumber",
+                  "title": "PhoneNumber 部门联系电话，支持国际化电话号码格式\n包含国家代码、区号、号码等完整信息\n用于紧急联系、业务咨询等场景"
+                },
+                "address": {
+                  "$ref": "#/definitions/v1Address",
+                  "title": "Address 部门办公地址，支持结构化地址信息\n包含国家、省市、详细地址等信息\n用于邮寄、拜访、资产管理等业务场景"
+                },
+                "cost_center_code": {
+                  "type": "string",
+                  "title": "CostCenterCode 成本中心编码，用于财务核算和成本控制\n格式：企业自定义编码规则，如 \"CC-TECH-001\"\n用途：预算分配、成本归集、财务报表等\n与 ERP 系统集成时的重要标识字段"
+                },
+                "budget_code": {
+                  "type": "string",
+                  "title": "BudgetCode 预算编码，用于预算管理和费用控制\n格式：与财务系统对应的预算科目编码\n用途：年度预算、费用审批、财务分析等\n支持多维度预算管理（如：人员预算、设备预算等）"
+                },
+                "max_members": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "MaxMembers 部门最大成员数限制，用于人员规模控制\n值为 0 表示无限制，正整数表示具体限制\n用途：组织规模控制、人力成本管理、办公空间规划"
+                },
+                "external_id": {
+                  "type": "string",
+                  "title": "ExternalID 外部系统标识符，用于第三方系统集成\n如：ERP 系统部门编码、OA 系统部门 ID 等\n支持数据同步和跨系统业务流程"
+                },
+                "metadata": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Metadata 扩展元数据，存储自定义业务属性\n键值对格式，支持灵活的业务扩展需求\n示例：{\"location\": \"北京\", \"floor\": \"15F\", \"capacity\": \"50\"}"
+                },
+                "created_by": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+                },
+                "updated_by": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "title": "CreatedAt 创建时间戳，记录部门建立时间\n使用 UTC 时间，精确到毫秒级别"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "title": "UpdatedAt 最后更新时间戳，记录最近修改时间\n用于数据同步和缓存失效判断"
+                },
+                "deleted_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "title": "DeletedAt 软删除时间戳，支持数据恢复\n非空表示已删除，空值表示正常状态\n实现软删除机制，保护重要组织数据"
+                },
+                "description": {
+                  "type": "string",
+                  "title": "Description 部门描述信息，详细说明部门职责和业务范围\n用于组织介绍、职责说明、业务范围描述等\n建议长度：500 字符以内，支持富文本格式"
                 }
               },
-              "title": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内"
+              "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
             }
           }
         ]
@@ -2268,33 +2339,33 @@
         "id": {
           "type": "integer",
           "format": "int32",
-          "title": "ID 实体 ID"
+          "title": "ID 部门唯一标识符，系统自动生成\n用于数据库主键和跨系统引用，建议使用自增整型"
         },
         "parent_id": {
           "type": "integer",
           "format": "int32",
-          "title": "ParentID 父 ID，为 0 表示顶级菜单"
+          "title": "ParentID 父部门ID，构建树形组织结构\n值为 0 表示顶级部门（如：总公司、集团总部）\n支持多级嵌套，建议层级深度不超过 6 级以保证查询性能"
         },
         "name": {
           "type": "string",
-          "title": "Name 部门名称"
+          "title": "Name 部门名称，用于系统内部显示和业务逻辑\n要求：长度 1-100 字符，同级部门名称不可重复\n示例：\"技术研发部\"、\"市场营销部\"、\"人力资源部\""
         },
         "i18n_name": {
           "$ref": "#/definitions/v1I18NName",
-          "title": "I18nName 国际化名称"
+          "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
         },
         "order_weight": {
           "type": "integer",
           "format": "int32",
-          "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+          "title": "OrderWeight 部门排序权重，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
-        "leaders": {
+        "managers": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1UserDepartment"
           },
-          "title": "Leaders 部门领导列表"
+          "title": "Managers 部门管理者列表，包含各级管理人员和负责人\n通过 UserDepartment 关系表维护，支持精细化角色区分\n支持的管理角色：部门经理、副经理、主管、组长等\n可根据 UserDepartment.member_role 字段区分具体的管理职责和权限级别"
         },
         "children": {
           "type": "array",
@@ -2302,10 +2373,107 @@
             "type": "object",
             "$ref": "#/definitions/v1Department"
           },
-          "title": "Children 子部门列表"
+          "title": "Children 直接子部门列表，用于构建完整的组织树\n仅包含直接下级，避免深度递归查询\n建议在需要完整树结构时通过专门的服务接口获取"
+        },
+        "status": {
+          "$ref": "#/definitions/v1DepartmentStatus"
+        },
+        "type": {
+          "$ref": "#/definitions/v1DepartmentType"
+        },
+        "email": {
+          "type": "string",
+          "title": "Email 部门公共邮箱地址，用于对外联系和内部通知\n格式：标准邮箱格式，如 \"tech@company.com\"\n用途：部门公告、外部合作、客户联系等"
+        },
+        "phone_number": {
+          "$ref": "#/definitions/v1PhoneNumber",
+          "title": "PhoneNumber 部门联系电话，支持国际化电话号码格式\n包含国家代码、区号、号码等完整信息\n用于紧急联系、业务咨询等场景"
+        },
+        "address": {
+          "$ref": "#/definitions/v1Address",
+          "title": "Address 部门办公地址，支持结构化地址信息\n包含国家、省市、详细地址等信息\n用于邮寄、拜访、资产管理等业务场景"
+        },
+        "cost_center_code": {
+          "type": "string",
+          "title": "CostCenterCode 成本中心编码，用于财务核算和成本控制\n格式：企业自定义编码规则，如 \"CC-TECH-001\"\n用途：预算分配、成本归集、财务报表等\n与 ERP 系统集成时的重要标识字段"
+        },
+        "budget_code": {
+          "type": "string",
+          "title": "BudgetCode 预算编码，用于预算管理和费用控制\n格式：与财务系统对应的预算科目编码\n用途：年度预算、费用审批、财务分析等\n支持多维度预算管理（如：人员预算、设备预算等）"
+        },
+        "max_members": {
+          "type": "integer",
+          "format": "int32",
+          "title": "MaxMembers 部门最大成员数限制，用于人员规模控制\n值为 0 表示无限制，正整数表示具体限制\n用途：组织规模控制、人力成本管理、办公空间规划"
+        },
+        "external_id": {
+          "type": "string",
+          "title": "ExternalID 外部系统标识符，用于第三方系统集成\n如：ERP 系统部门编码、OA 系统部门 ID 等\n支持数据同步和跨系统业务流程"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Metadata 扩展元数据，存储自定义业务属性\n键值对格式，支持灵活的业务扩展需求\n示例：{\"location\": \"北京\", \"floor\": \"15F\", \"capacity\": \"50\"}"
+        },
+        "created_by": {
+          "type": "integer",
+          "format": "int32",
+          "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+        },
+        "updated_by": {
+          "type": "integer",
+          "format": "int32",
+          "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "CreatedAt 创建时间戳，记录部门建立时间\n使用 UTC 时间，精确到毫秒级别"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "UpdatedAt 最后更新时间戳，记录最近修改时间\n用于数据同步和缓存失效判断"
+        },
+        "deleted_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "DeletedAt 软删除时间戳，支持数据恢复\n非空表示已删除，空值表示正常状态\n实现软删除机制，保护重要组织数据"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description 部门描述信息，详细说明部门职责和业务范围\n用于组织介绍、职责说明、业务范围描述等\n建议长度：500 字符以内，支持富文本格式"
         }
       },
-      "title": "Department 组织部门实体，树形结构，一个用户仅可在一个部门内"
+      "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
+    },
+    "v1DepartmentStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_ACTIVE",
+        "STATUS_INACTIVE",
+        "STATUS_DISSOLVED",
+        "STATUS_MERGING"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - STATUS_ACTIVE: 正常运营 - 部门正常工作，可分配员工和任务\n - STATUS_INACTIVE: 暂停运营 - 临时停止业务，员工可能被临时调配\n - STATUS_DISSOLVED: 已解散 - 部门正式撤销，员工需重新分配\n - STATUS_MERGING: 合并中 - 正在与其他部门合并，处于过渡状态",
+      "title": "Status 部门运营状态，用于生命周期管理"
+    },
+    "v1DepartmentType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "TYPE_BUSINESS",
+        "TYPE_SUPPORT",
+        "TYPE_MANAGEMENT",
+        "TYPE_VIRTUAL"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_BUSINESS: 业务部门 - 直接产生收入的核心业务单位\n - TYPE_SUPPORT: 支持部门 - 为业务部门提供服务支撑（如：IT、HR）\n - TYPE_MANAGEMENT: 管理部门 - 负责决策和监督的管理层级\n - TYPE_VIRTUAL: 虚拟部门 - 项目组、临时团队等非固定组织",
+      "title": "Type 部门类型分类，用于业务逻辑和权限控制"
     },
     "v1GetAuthCallbackResponse": {
       "type": "object",
@@ -2885,75 +3053,87 @@
         "id": {
           "type": "integer",
           "format": "int32",
-          "title": "ID 用户部门关系 ID"
+          "title": "ID 用户部门关系唯一标识符，系统自动生成\n用于数据库主键和关系追踪，支持历史记录查询"
         },
         "user_id": {
           "type": "string",
           "format": "int64",
-          "title": "用户 ID"
+          "title": "UserID 用户唯一标识符，建立与用户实体的关联\n支持一个用户在多个部门中拥有不同角色和权限"
         },
         "username": {
           "type": "string",
-          "title": "用户名"
+          "title": "Username 用户名，用于快速识别和显示\n冗余字段，避免频繁关联查询，提升查询性能\n建议与用户主表保持同步更新"
         },
         "nickname": {
           "type": "string",
-          "title": "用户昵称"
+          "title": "Nickname 用户昵称或显示名称，用于友好的界面展示\n支持中文名称、英文名称等多种显示格式\n用于组织架构图、通讯录等场景的显示"
         },
         "department_id": {
           "type": "integer",
           "format": "int32",
-          "title": "部门 ID"
+          "title": "DepartmentID 部门唯一标识符，建立与部门实体的关联\n支持用户在多个部门中的复杂组织关系"
         },
         "member_role": {
           "$ref": "#/definitions/v1UserDepartmentRole",
-          "title": "成员角色"
+          "title": "MemberRole 用户在该部门中的角色，决定权限和职责范围\n支持角色继承和权限控制，可用于业务逻辑判断\n角色变更需要审批流程和历史记录追踪"
         },
         "member_status": {
           "$ref": "#/definitions/v1UserDepartmentStatus",
-          "title": "成员状态"
+          "title": "MemberStatus 用户在该部门中的当前状态，用于生命周期管理\n支持状态流转和业务流程控制\n状态变更会影响用户的访问权限和业务操作"
         },
-        "expired_at": {
+        "created_by": {
           "type": "string",
-          "format": "date-time",
-          "title": "过期时间"
+          "format": "int64",
+          "title": "CreatedBy 创建者用户ID，记录是谁添加了这个部门关系\n用于审计追踪、权限验证、责任确认等合规场景\n在批量导入时可能为系统管理员ID"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "UpdatedBy 最后更新者用户ID，记录最近一次修改的操作人\n用于变更追踪、责任确认、审计日志等场景"
         },
         "created_at": {
           "type": "string",
           "format": "date-time",
-          "title": "创建时间"
+          "title": "CreatedAt 关系创建时间，记录用户加入部门的时间\n用于统计分析、考勤计算、工龄统计等业务场景"
         },
         "updated_at": {
           "type": "string",
           "format": "date-time",
-          "title": "更新时间"
+          "title": "UpdatedAt 关系最后更新时间，记录最近一次修改的时间\n用于数据同步、缓存失效、变更追踪等技术场景"
         },
         "metadata": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           },
-          "title": "元数据"
+          "title": "Metadata 扩展元数据，存储自定义业务属性\n键值对格式，支持灵活的业务扩展需求\n示例：{\"seat_number\": \"A-101\", \"phone_ext\": \"8001\", \"skill_tags\": \"Java,Python\"}"
         },
         "description": {
           "type": "string",
-          "title": "Description 详细说明、业务用途说明、对外展示的内容，通常较长"
+          "title": "Description 详细说明信息，描述用户在部门中的具体职责\n用于职责说明、工作内容描述、特殊安排说明等\n建议长度：500 字符以内，支持富文本格式"
         }
       },
-      "title": "UserDepartment 用户部门关系\n用于描述用户与部门之间的多对多关系，支持角色、状态与扩展属性。"
+      "title": "UserDepartment 用户部门关系实体，支持企业级组织管理\n用于描述用户与部门之间的多对多关系，支持复杂的角色层级、状态管理、\n审计追踪、汇报关系等企业级功能，满足大型组织的精细化管理需求"
     },
     "v1UserDepartmentRole": {
       "type": "string",
       "enum": [
         "ROLE_UNSPECIFIED",
         "ROLE_OWNER",
-        "ROLE_ADMIN",
+        "ROLE_DEPUTY",
+        "ROLE_MANAGER",
+        "ROLE_SUPERVISOR",
+        "ROLE_LEAD",
+        "ROLE_SENIOR",
         "ROLE_MEMBER",
+        "ROLE_INTERN",
+        "ROLE_CONSULTANT",
+        "ROLE_CONTRACTOR",
         "ROLE_ASSISTANT"
       ],
       "default": "ROLE_UNSPECIFIED",
-      "description": "- ROLE_UNSPECIFIED: 未指定\n - ROLE_OWNER: 部门负责人\n - ROLE_ADMIN: 管理员\n - ROLE_MEMBER: 普通成员\n - ROLE_ASSISTANT: 助理",
-      "title": "部门角色枚举"
+      "description": "- ROLE_UNSPECIFIED: 未指定角色（系统默认值）\n - ROLE_OWNER: 部门负责人 - 拥有部门最高管理权限\n - ROLE_DEPUTY: 副负责人 - 协助负责人管理部门，拥有大部分管理权限\n - ROLE_MANAGER: 经理 - 负责具体业务管理和团队领导\n - ROLE_SUPERVISOR: 主管 - 负责日常业务监督和指导\n - ROLE_LEAD: 组长 - 负责小组或项目的直接管理\n - ROLE_SENIOR: 高级成员 - 资深员工，可能承担指导职责\n - ROLE_MEMBER: 普通成员 - 标准部门员工\n - ROLE_INTERN: 实习生 - 临时学习和工作的人员\n - ROLE_CONSULTANT: 顾问 - 提供专业建议和指导的外部专家\n - ROLE_CONTRACTOR: 外包人员 - 临时合作的外部工作人员\n - ROLE_ASSISTANT: 助理 - 提供行政和事务支持的人员",
+      "title": "Role 部门角色枚举，定义用户在部门中的职责和权限层级"
     },
     "v1UserDepartmentStatus": {
       "type": "string",
@@ -2962,11 +3142,13 @@
         "STATUS_ACTIVE",
         "STATUS_DISABLED",
         "STATUS_LEFT",
-        "STATUS_PENDING"
+        "STATUS_PENDING",
+        "STATUS_SUSPENDED",
+        "STATUS_TRANSFERRING"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 未指定\n - STATUS_ACTIVE: 正常\n - STATUS_DISABLED: 已禁用\n - STATUS_LEFT: 已离开\n - STATUS_PENDING: 待加入（申请中）",
-      "title": "成员状态枚举"
+      "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - STATUS_ACTIVE: 正常状态 - 用户正常工作，拥有完整权限\n - STATUS_DISABLED: 已禁用 - 临时禁用，保留关系但无法访问\n - STATUS_LEFT: 已离开 - 用户已离职或调离，保留历史记录\n - STATUS_PENDING: 待加入 - 申请中或等待审批的状态\n - STATUS_SUSPENDED: 暂停 - 临时暂停工作，如休假、停职等\n - STATUS_TRANSFERRING: 调动中 - 正在进行部门间调动的过渡状态",
+      "title": "Status 成员状态枚举，管理用户在部门中的生命周期状态"
     },
     "v1UserGroup": {
       "type": "object",
