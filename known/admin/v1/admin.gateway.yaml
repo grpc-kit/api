@@ -69,16 +69,16 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartmentMembers
     get: "/builtin/admin/api/v1/departments/{parent}/members"
     ## 添加部门成员，通过该接口让用户加入多个部门
-  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartmentMembers
-  #  post: "/builtin/admin/api/v1/departments/{parent}/members"
-  #  body: "department_members"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartmentMembers
+    post: "/builtin/admin/api/v1/departments/{department_id}/members"
+    body: "department_members"
     ## 更新部门成员，通过该接口更新指定部门成员
-  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartmentMembers
-  #  patch: "/builtin/admin/api/v1/departments/{parent}/members"
-  #  body: "department_members"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartmentMembers
+    patch: "/builtin/admin/api/v1/departments/{department_id}/members"
+    body: "department_members"
     ## 移除部门成员
-  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartmentMember
-  #  delete: "/builtin/admin/api/v1/departments/{parent}/members/{user_id}"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartmentMember
+    delete: "/builtin/admin/api/v1/departments/{department_id}/members/{user_id}"
 
     # 用户管理
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListUsers

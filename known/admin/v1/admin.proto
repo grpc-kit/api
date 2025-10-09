@@ -47,6 +47,9 @@ service KnownAdmin {
   rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
   rpc UpdateDepartment(UpdateDepartmentRequest) returns(Department);
   rpc ListDepartmentMembers(ListDepartmentMembersRequest) returns(ListDepartmentMembersResponse);
+  rpc CreateDepartmentMembers(CreateDepartmentMembersRequest) returns(CreateDepartmentMembersResponse);
+  rpc UpdateDepartmentMembers(UpdateDepartmentMembersRequest) returns(UpdateDepartmentMembersResponse);
+  rpc DeleteDepartmentMember(DeleteDepartmentMemberRequest) returns(google.protobuf.Empty);
 
   // 用户相关
   rpc GetUser(GetUserRequest) returns(User);

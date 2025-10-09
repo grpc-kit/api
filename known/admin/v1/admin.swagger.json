@@ -482,6 +482,138 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/departments/{department_id}/members": {
+      "post": {
+        "operationId": "KnownAdmin_CreateDepartmentMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateDepartmentMembersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "department_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "department_members",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1UserDepartment"
+              }
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "KnownAdmin_UpdateDepartmentMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateDepartmentMembersResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "department_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "department_members",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1UserDepartment"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/departments/{department_id}/members/{user_id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteDepartmentMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "department_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/departments/{id}": {
       "delete": {
         "operationId": "KnownAdmin_DeleteDepartment",
@@ -2275,6 +2407,9 @@
     "v1CreateDatabaseInitializeRequest": {
       "type": "object"
     },
+    "v1CreateDepartmentMembersResponse": {
+      "type": "object"
+    },
     "v1CreateGroupMembersResponse": {
       "type": "object"
     },
@@ -2928,6 +3063,9 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_DIRECTORY: 目录，在前端菜单树中，只起到“目录”作用，不直接绑定路由/组件\n - TYPE_MENU: 菜单\n - TYPE_BUTTON: 按钮\n - TYPE_API: API",
       "title": "Type 资源类型"
+    },
+    "v1UpdateDepartmentMembersResponse": {
+      "type": "object"
     },
     "v1UpsertAuthProvidersResponse": {
       "type": "object",
