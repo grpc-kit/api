@@ -62,10 +62,10 @@ message Department {
   int32 order_weight = 5;
   
   // Managers 部门管理者列表，包含各级管理人员和负责人
-  // 通过 UserDepartment 关系表维护，支持精细化角色区分
+  // 通过 DepartmentMember 关系表维护，支持精细化角色区分
   // 支持的管理角色：部门经理、副经理、主管、组长等
-  // 可根据 UserDepartment.member_role 字段区分具体的管理职责和权限级别
-  repeated UserDepartment managers = 6;
+  // 可根据 DepartmentMember.member_role 字段区分具体的管理职责和权限级别
+  repeated DepartmentMember managers = 6;
 
   // Children 直接子部门列表，用于构建完整的组织树
   // 仅包含直接下级，避免深度递归查询
@@ -383,9 +383,9 @@ message Group {
   google.protobuf.Timestamp deleted_at = 17;
 }
 
-// UserGroup 用户群组关系
+// GroupMember 群组成员关系
 // 该模型用于描述用户与群组之间的关联关系，支持多状态管理和角色定义
-message UserGroup {
+message GroupMember {
   // 用户在群组中的角色枚举
   enum Role {
     ROLE_UNSPECIFIED = 0;  // 默认值/未指定
@@ -395,7 +395,7 @@ message UserGroup {
     ROLE_GUEST = 4;        // 访客：拥有受限访问权限
   }
 
-  // 用户群组关系状态
+  // 群组成员关系状态
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
     STATUS_PENDING = 1;      // 待激活／待验证：用户申请加入群组等待审批
@@ -406,7 +406,7 @@ message UserGroup {
     STATUS_LEFT = 6;         // 已退出：用户主动退出群组
   }
 
-  // ID 用户群组关系 ID，全局唯一标识
+  // ID 群组成员关系 ID，全局唯一标识
   int32 id = 1;
   // UserID 用户 ID，关联用户表
   int32 user_id = 2;
@@ -418,7 +418,7 @@ message UserGroup {
   int32 group_id = 5;
   // Role 用户在群组中的角色
   Role member_role = 6;
-  // Status 用户群组关系状态
+  // Status 群组成员关系状态
   Status member_status = 7;
   // JoinedAt 用户加入群组的时间
   google.protobuf.Timestamp joined_at = 8;
@@ -440,10 +440,10 @@ message UserGroup {
   string description = 16;
 }
 
-// UserDepartment 用户部门关系实体，支持企业级组织管理
+// DepartmentMember 部门成员关系实体，支持企业级组织管理
 // 用于描述用户与部门之间的多对多关系，支持复杂的角色层级、状态管理、
 // 审计追踪、汇报关系等企业级功能，满足大型组织的精细化管理需求
-message UserDepartment {
+message DepartmentMember {
   // Role 部门角色枚举，定义用户在部门中的职责和权限层级
   enum Role {
     ROLE_UNSPECIFIED = 0;  // 未指定角色（系统默认值）
@@ -471,7 +471,7 @@ message UserDepartment {
     STATUS_TRANSFERRING = 6; // 调动中 - 正在进行部门间调动的过渡状态
   }
 
-  // ID 用户部门关系唯一标识符，系统自动生成
+  // ID 部门成员关系唯一标识符，系统自动生成
   // 用于数据库主键和关系追踪，支持历史记录查询
   int32 id = 1;
 
@@ -503,7 +503,7 @@ message UserDepartment {
   // 状态变更会影响用户的访问权限和业务操作
   Status member_status = 7;
 
-  // CreatedBy 创建者用户ID，记录是谁添加了这个部门关系
+  // CreatedBy 创建者用户ID，记录是谁添加了这个部门成员关系
   // 用于审计追踪、权限验证、责任确认等合规场景
   // 在批量导入时可能为系统管理员ID
   int64 created_by = 8;
@@ -512,7 +512,7 @@ message UserDepartment {
   // 用于变更追踪、责任确认、审计日志等场景
   int64 updated_by = 9;
 
-  // ExpiredAt 关系到期时间，支持临时性的部门关系
+  // ExpiredAt 关系到期时间，支持临时性的部门成员关系
   // 用于项目组、临时调配、实习期等有时限的组织关系
   // 到期后系统可自动调整状态或发送提醒
   // google.protobuf.Timestamp expired_at = 8;
@@ -535,12 +535,12 @@ message UserDepartment {
   // 建议长度：500 字符以内，支持富文本格式
   string description = 13;
 
-  // ApprovedBy 审批者用户ID，记录批准该关系的管理者
+  // ApprovedBy 审批者用户ID，记录批准该成员关系的管理者
   // 用于审批流程追踪、权限验证、合规管理等场景
   // 在自动加入的情况下可能为空或系统ID
   // int32 approved_by = 15;
 
-  // ApprovedAt 审批时间，记录关系被正式批准的时间
+  // ApprovedAt 审批时间，记录成员关系被正式批准的时间
   // 用于审批流程管理、生效时间控制、合规追踪等场景
   // google.protobuf.Timestamp approved_at = 16;
 

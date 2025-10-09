@@ -62,7 +62,7 @@ message ListGroupMembersRequest {
 
 message ListGroupMembersResponse {
   // 符合查询条件的用户资源。
-  repeated UserGroup group_members = 1;
+  repeated GroupMember group_members = 1;
 
   // 用于获取下一页结果的 token。
   // - 如果为空，表示没有更多结果。
@@ -82,7 +82,7 @@ message CreateGroupMembersRequest {
   // 格式示例: "organizations/123" 或 "projects/456"。
   string parent = 1;
 
-  repeated UserGroup group_members = 2;
+  repeated GroupMember group_members = 2;
 }
 
 message CreateGroupMembersResponse {
@@ -103,7 +103,7 @@ message UpdateGroupMemberRequest {
   
   int32 user_id = 2;
 
-  UserGroup group_member = 3;
+  GroupMember group_member = 3;
 
   google.protobuf.FieldMask update_mask = 4;
 }

@@ -62,7 +62,7 @@ message ListDepartmentMembersRequest {
 
 message ListDepartmentMembersResponse {
   // 符合查询条件的用户资源。
-  repeated UserDepartment department_members = 1;
+  repeated DepartmentMember department_members = 1;
 
   // 用于获取下一页结果的 token。
   // - 如果为空，表示没有更多结果。
@@ -80,7 +80,7 @@ message ListDepartmentMembersResponse {
 message CreateDepartmentMembersRequest {
   int32 department_id = 1;
 
-  repeated UserDepartment department_members = 2;
+  repeated DepartmentMember department_members = 2;
 }
 
 message CreateDepartmentMembersResponse {
@@ -90,7 +90,7 @@ message CreateDepartmentMembersResponse {
 message UpdateDepartmentMembersRequest {
   int32 department_id = 1;
 
-  repeated UserDepartment department_members = 2;
+  repeated DepartmentMember department_members = 2;
 }
 
 message UpdateDepartmentMembersResponse {
