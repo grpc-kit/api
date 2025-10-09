@@ -57,6 +57,7 @@ service KnownAdmin {
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
   rpc UpdateUserPassword(UpdateUserPasswordRequest) returns(google.protobuf.Empty);
+
   // rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);
   // 群组相关
   rpc CreateGroup(CreateGroupRequest) returns(Group);
@@ -67,10 +68,12 @@ service KnownAdmin {
   rpc CreateGroupMembers(CreateGroupMembersRequest) returns(CreateGroupMembersResponse);
   rpc DeleteGroupMember(DeleteGroupMemberRequest) returns(google.protobuf.Empty);
   rpc UpdateGroupMember(UpdateGroupMemberRequest) returns(GroupMember);
+
   // 安全相关
   rpc CreateCredential(CreateCredentialRequest) returns(Credential);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
   rpc GetOAuth2JSONWebKeys(google.protobuf.Empty) returns(OAuth2JSONWebKeys);
+
   // 数据库相关
   rpc CreateDatabaseInitialize(CreateDatabaseInitializeRequest) returns(google.protobuf.Empty);
 }
