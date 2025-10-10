@@ -2954,10 +2954,6 @@
     "v1I18NName": {
       "type": "object",
       "properties": {
-        "default_language": {
-          "$ref": "#/definitions/v1LanguageCode",
-          "title": "默认语言代码，当请求的语言不存在时使用"
-        },
         "texts": {
           "type": "array",
           "items": {
@@ -2967,6 +2963,7 @@
           "title": "本地化文本列表，至少包含一个默认语言的文本"
         }
       },
+      "description": "默认语言代码，当请求的语言不存在时使用\n LanguageCode default_language = 1;",
       "title": "I18NName 国际化文本容器"
     },
     "v1LanguageCode": {

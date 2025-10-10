@@ -53,7 +53,7 @@ message LocalizedText {
 // I18NName 国际化文本容器
 message I18NName {
   // 默认语言代码，当请求的语言不存在时使用
-  LanguageCode default_language = 1;
+  // LanguageCode default_language = 1;
   
   // 本地化文本列表，至少包含一个默认语言的文本
   repeated LocalizedText texts = 2;
