@@ -2954,17 +2954,48 @@
     "v1I18NName": {
       "type": "object",
       "properties": {
-        "zh_cn": {
-          "type": "string"
+        "default_language": {
+          "$ref": "#/definitions/v1LanguageCode",
+          "title": "默认语言代码，当请求的语言不存在时使用"
         },
-        "en_us": {
-          "type": "string"
-        },
-        "ja_jp": {
-          "type": "string"
+        "texts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1LocalizedText"
+          },
+          "title": "本地化文本列表，至少包含一个默认语言的文本"
         }
       },
-      "title": "I18NName 国际化名称"
+      "title": "I18NName 国际化文本容器"
+    },
+    "v1LanguageCode": {
+      "type": "string",
+      "enum": [
+        "LANGUAGE_CODE_UNSPECIFIED",
+        "ZH_CN",
+        "ZH_TW",
+        "ZH_HK",
+        "EN_US",
+        "EN_GB",
+        "EN_AU",
+        "EN_CA",
+        "JA_JP",
+        "KO_KR",
+        "FR_FR",
+        "DE_DE",
+        "ES_ES",
+        "IT_IT",
+        "PT_BR",
+        "RU_RU",
+        "AR_SA",
+        "HI_IN",
+        "TH_TH",
+        "VI_VN"
+      ],
+      "default": "LANGUAGE_CODE_UNSPECIFIED",
+      "description": "- ZH_CN: 中文变体\n\n简体中文（中国大陆）\n - ZH_TW: 繁体中文（台湾）\n - ZH_HK: 繁体中文（香港）\n - EN_US: 英语变体\n\n美式英语\n - EN_GB: 英式英语\n - EN_AU: 澳式英语\n - EN_CA: 加拿大英语\n - JA_JP: 日语\n\n日语（日本）\n - KO_KR: 其他常用语言\n\n韩语（韩国）\n - FR_FR: 法语（法国）\n - DE_DE: 德语（德国）\n - ES_ES: 西班牙语（西班牙）\n - IT_IT: 意大利语（意大利）\n - PT_BR: 葡萄牙语（巴西）\n - RU_RU: 俄语（俄罗斯）\n - AR_SA: 阿拉伯语（沙特阿拉伯）\n - HI_IN: 印地语（印度）\n - TH_TH: 泰语（泰国）\n - VI_VN: 越南语（越南）",
+      "title": "LanguageCode 语言代码枚举，基于 BCP 47 标准\n参考：https://tools.ietf.org/html/bcp47"
     },
     "v1ListAuthProvidersResponse": {
       "type": "object",
@@ -3113,6 +3144,20 @@
           "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
+    },
+    "v1LocalizedText": {
+      "type": "object",
+      "properties": {
+        "language_code": {
+          "$ref": "#/definitions/v1LanguageCode",
+          "title": "语言代码，必须符合 BCP 47 标准"
+        },
+        "text": {
+          "type": "string",
+          "title": "文本内容，不能为空"
+        }
+      },
+      "title": "LocalizedText 本地化文本，包含语言代码和对应的文本内容"
     },
     "v1OAuth2Discovery": {
       "type": "object",

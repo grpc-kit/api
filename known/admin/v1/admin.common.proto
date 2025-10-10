@@ -8,12 +8,63 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 // 引入 google 公共类型
 import "google/protobuf/timestamp.proto";
 
-// I18NName 国际化名称
-message I18NName {
-  string zh_cn = 1;
-  string en_us = 2;
-  string ja_jp = 3;
+// LanguageCode 语言代码枚举，基于 BCP 47 标准
+// 参考：https://tools.ietf.org/html/bcp47
+enum LanguageCode {
+  LANGUAGE_CODE_UNSPECIFIED = 0;
+  
+  // 中文变体
+  ZH_CN = 1;    // 简体中文（中国大陆）
+  ZH_TW = 2;    // 繁体中文（台湾）
+  ZH_HK = 3;    // 繁体中文（香港）
+  
+  // 英语变体
+  EN_US = 10;   // 美式英语
+  EN_GB = 11;   // 英式英语
+  EN_AU = 12;   // 澳式英语
+  EN_CA = 13;   // 加拿大英语
+  
+  // 日语
+  JA_JP = 20;   // 日语（日本）
+  
+  // 其他常用语言
+  KO_KR = 30;   // 韩语（韩国）
+  FR_FR = 40;   // 法语（法国）
+  DE_DE = 50;   // 德语（德国）
+  ES_ES = 60;   // 西班牙语（西班牙）
+  IT_IT = 70;   // 意大利语（意大利）
+  PT_BR = 80;   // 葡萄牙语（巴西）
+  RU_RU = 90;   // 俄语（俄罗斯）
+  AR_SA = 100;  // 阿拉伯语（沙特阿拉伯）
+  HI_IN = 110;  // 印地语（印度）
+  TH_TH = 120;  // 泰语（泰国）
+  VI_VN = 130;  // 越南语（越南）
 }
+
+// LocalizedText 本地化文本，包含语言代码和对应的文本内容
+message LocalizedText {
+  // 语言代码，必须符合 BCP 47 标准
+  LanguageCode language_code = 1;
+  
+  // 文本内容，不能为空
+  string text = 2;
+}
+
+// I18NName 国际化文本容器
+message I18NName {
+  // 默认语言代码，当请求的语言不存在时使用
+  LanguageCode default_language = 1;
+  
+  // 本地化文本列表，至少包含一个默认语言的文本
+  repeated LocalizedText texts = 2;
+}
+
+// I18NName 国际化名称
+//message I18NName {
+//  string zh_cn = 1;
+//  string en_us = 2;
+//  string ja_jp = 3;
+//}
 
 // Address 用户地址
 // https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim

@@ -7,7 +7,7 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/field_mask.proto";
 
-import "known/admin/v1/common.proto";
+import "known/admin/v1/admin.common.proto";
 
 message ListResourcesRequest {
   // 父资源名称，用于限定范围。

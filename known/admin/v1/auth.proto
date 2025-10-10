@@ -5,7 +5,7 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
-import "known/admin/v1/common.proto";
+import "known/admin/v1/admin.common.proto";
 
 // CreateAuthLoginRequest 用于登录请求，所有用户均可
 message CreateAuthLoginRequest {
