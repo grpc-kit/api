@@ -10,35 +10,67 @@ import "google/protobuf/timestamp.proto";
 
 // LanguageCode 语言代码枚举，基于 BCP 47 标准
 // 参考：https://tools.ietf.org/html/bcp47
+// 设计原则：
+// 1. 包含具体地区变体（如 zh-CN, en-US）用于精确匹配
+// 2. 包含通用语言代码（如 zh-Hans, en）用于回退机制
+// 3. 数值分组便于扩展：中文(1-9), 英语(10-19), 日语(20-29), 等
 enum LanguageCode {
   LANGUAGE_CODE_UNSPECIFIED = 0;
   
-  // 中文变体
-  ZH_CN = 1;    // 简体中文（中国大陆）
-  ZH_TW = 2;    // 繁体中文（台湾）
-  ZH_HK = 3;    // 繁体中文（香港）
+  // === 中文变体 (1-9) ===
+  ZH_CN = 1;    // BCP 47: zh-CN (简体中文/中国大陆)
+  ZH_TW = 2;    // BCP 47: zh-TW (繁体中文/台湾)
+  ZH_HK = 3;    // BCP 47: zh-HK (繁体中文/香港)
   
-  // 英语变体
-  EN_US = 10;   // 美式英语
-  EN_GB = 11;   // 英式英语
-  EN_AU = 12;   // 澳式英语
-  EN_CA = 13;   // 加拿大英语
+  // 通用回退语言（基于文字系统，推荐用于回退机制）
+  ZH_HANS = 4;  // BCP 47: zh-Hans (简体中文通用，回退首选)
+  ZH_HANT = 5;  // BCP 47: zh-Hant (繁体中文通用，回退首选)
   
-  // 日语
-  JA_JP = 20;   // 日语（日本）
+  // 预留扩展位：ZH_SG = 6 (新加坡), ZH_MO = 7 (澳门)
   
-  // 其他常用语言
-  KO_KR = 30;   // 韩语（韩国）
-  FR_FR = 40;   // 法语（法国）
-  DE_DE = 50;   // 德语（德国）
-  ES_ES = 60;   // 西班牙语（西班牙）
-  IT_IT = 70;   // 意大利语（意大利）
-  PT_BR = 80;   // 葡萄牙语（巴西）
-  RU_RU = 90;   // 俄语（俄罗斯）
-  AR_SA = 100;  // 阿拉伯语（沙特阿拉伯）
-  HI_IN = 110;  // 印地语（印度）
-  TH_TH = 120;  // 泰语（泰国）
-  VI_VN = 130;  // 越南语（越南）
+  // === 英语变体 (10-19) ===
+  EN_US = 10;   // BCP 47: en-US (美式英语)
+  EN_GB = 11;   // BCP 47: en-GB (英式英语)
+  EN_AU = 12;   // BCP 47: en-AU (澳式英语)
+  EN_CA = 13;   // BCP 47: en-CA (加拿大英语)
+  
+  // 通用英语回退（推荐用于回退机制）
+  EN = 14;      // BCP 47: en (通用英语，全局回退首选)
+  
+  // === 日语 (20-29) ===
+  JA_JP = 20;   // BCP 47: ja-JP (日语/日本)
+  // JA = 21;   // 预留：通用日语回退
+  
+  // === 韩语 (30-39) ===
+  KO_KR = 30;   // BCP 47: ko-KR (韩语/韩国)
+  
+  // === 法语 (40-49) ===
+  FR_FR = 40;   // BCP 47: fr-FR (法语/法国)
+  // FR_CA = 41; // 预留：fr-CA (加拿大法语)
+  
+  // === 德语 (50-59) ===
+  DE_DE = 50;   // BCP 47: de-DE (德语/德国)
+  
+  // === 西班牙语变体 (60-69) ===
+  ES_ES = 60;   // BCP 47: es-ES (西班牙语/西班牙)
+  ES_MX = 61;   // BCP 47: es-MX (西班牙语/墨西哥)
+  ES = 62;      // BCP 47: es (通用西班牙语，回退首选)
+  // ES_AR = 63; // 预留：es-AR (阿根廷西班牙语)
+  
+  // === 意大利语 (70-79) ===
+  IT_IT = 70;   // BCP 47: it-IT (意大利语/意大利)
+  
+  // === 葡萄牙语变体 (80-89) ===
+  PT_BR = 80;   // BCP 47: pt-BR (葡萄牙语/巴西)
+  PT_PT = 81;   // BCP 47: pt-PT (葡萄牙语/葡萄牙)
+  // PT = 82;    // 预留：通用葡萄牙语回退
+  
+  // === 其他重要语言 (90+) ===
+  RU_RU = 90;   // BCP 47: ru-RU (俄语/俄罗斯)
+  AR_SA = 100;  // BCP 47: ar-SA (阿拉伯语/沙特阿拉伯)
+  HI_IN = 110;  // BCP 47: hi-IN (印地语/印度)
+  TH_TH = 120;  // BCP 47: th-TH (泰语/泰国)
+  VI_VN = 130;  // BCP 47: vi-VN (越南语/越南)
 }
 
 // LocalizedText 本地化文本，包含语言代码和对应的文本内容
@@ -53,18 +85,12 @@ message LocalizedText {
 // I18NName 国际化文本容器
 message I18NName {
   // 默认语言代码，当请求的语言不存在时使用
+  // 建议使用通用回退语言（如 ZH_HANS, EN）而非具体地区变体
   // LanguageCode default_language = 1;
   
   // 本地化文本列表，至少包含一个默认语言的文本
   repeated LocalizedText texts = 2;
 }
-
-// I18NName 国际化名称
-//message I18NName {
-//  string zh_cn = 1;
-//  string en_us = 2;
-//  string ja_jp = 3;
-//}
 
 // Address 用户地址
 // https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim
@@ -105,23 +131,17 @@ message Department {
   // I18nName 国际化名称配置，支持多语言环境
   // 用于跨国企业的多语言界面显示
   // 包含语言代码和对应翻译文本的映射关系
-  I18NName i18n_name = 4;
+  map<string, string> i18n_name = 4;
   
-  // OrderWeight 部门排序权重，用于同级部门的显示顺序
-  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
-  // 默认值：100，范围：1-9999
-  int32 order_weight = 5;
-  
-  // Managers 部门管理者列表，包含各级管理人员和负责人
-  // 通过 DepartmentMember 关系表维护，支持精细化角色区分
-  // 支持的管理角色：部门经理、副经理、主管、组长等
-  // 可根据 DepartmentMember.member_role 字段区分具体的管理职责和权限级别
-  repeated DepartmentMember managers = 6;
-
-  // Children 直接子部门列表，用于构建完整的组织树
-  // 仅包含直接下级，避免深度递归查询
-  // 建议在需要完整树结构时通过专门的服务接口获取
-  repeated Department children = 7;
+  // Type 部门类型分类，用于业务逻辑和权限控制
+  enum Type {
+    TYPE_UNSPECIFIED = 0;  // 未指定类型
+    TYPE_BUSINESS = 1;     // 业务部门 - 直接产生收入的核心业务单位
+    TYPE_SUPPORT = 2;      // 支持部门 - 为业务部门提供服务支撑（如：IT、HR）
+    TYPE_MANAGEMENT = 3;   // 管理部门 - 负责决策和监督的管理层级
+    TYPE_VIRTUAL = 4;      // 虚拟部门 - 项目组、临时团队等非固定组织
+  }
+  Type type = 5;
 
   // Status 部门运营状态，用于生命周期管理
   enum Status {
@@ -131,28 +151,34 @@ message Department {
     STATUS_DISSOLVED = 3;    // 已解散 - 部门正式撤销，员工需重新分配
     STATUS_MERGING = 4;      // 合并中 - 正在与其他部门合并，处于过渡状态
   }
-  Status status = 8;
+  Status status = 6;
 
-  // Type 部门类型分类，用于业务逻辑和权限控制
-  enum Type {
-    TYPE_UNSPECIFIED = 0;  // 未指定类型
-    TYPE_BUSINESS = 1;     // 业务部门 - 直接产生收入的核心业务单位
-    TYPE_SUPPORT = 2;      // 支持部门 - 为业务部门提供服务支撑（如：IT、HR）
-    TYPE_MANAGEMENT = 3;   // 管理部门 - 负责决策和监督的管理层级
-    TYPE_VIRTUAL = 4;      // 虚拟部门 - 项目组、临时团队等非固定组织
-  }
-  Type type = 9;
+  // OrderWeight 部门排序权重，用于同级部门的显示顺序
+  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
+  // 默认值：100，范围：1-9999
+  int32 order_weight = 7;
+  
+  // Managers 部门管理者列表，包含各级管理人员和负责人
+  // 通过 DepartmentMember 关系表维护，支持精细化角色区分
+  // 支持的管理角色：部门经理、副经理、主管、组长等
+  // 可根据 DepartmentMember.member_role 字段区分具体的管理职责和权限级别
+  repeated DepartmentMember managers = 8;
+
+  // Children 直接子部门列表，用于构建完整的组织树
+  // 仅包含直接下级，避免深度递归查询
+  // 建议在需要完整树结构时通过专门的服务接口获取
+  repeated Department children = 9;
 
   // Email 部门公共邮箱地址，用于对外联系和内部通知
   // 格式：标准邮箱格式，如 "tech@company.com"
   // 用途：部门公告、外部合作、客户联系等
   string email = 10;
-  
+
   // PhoneNumber 部门联系电话，支持国际化电话号码格式
   // 包含国家代码、区号、号码等完整信息
   // 用于紧急联系、业务咨询等场景
   PhoneNumber phone_number = 11;
-  
+
   // Address 部门办公地址，支持结构化地址信息
   // 包含国家、省市、详细地址等信息
   // 用于邮寄、拜访、资产管理等业务场景
@@ -168,7 +194,7 @@ message Department {
   // 格式：与财务系统对应的预算科目编码
   // 用途：年度预算、费用审批、财务分析等
   // 支持多维度预算管理（如：人员预算、设备预算等）
-  string budget_code = 14;
+  string budget_item_code = 14;
 
   // MaxMembers 部门最大成员数限制，用于人员规模控制
   // 值为 0 表示无限制，正整数表示具体限制
@@ -187,11 +213,11 @@ message Department {
 
   // CreatedBy 创建者用户ID，记录部门创建人
   // 用于审计追踪和权限验证
-  int32 created_by = 18;
+  int64 created_by = 18;
   
   // UpdatedBy 最后更新者用户ID，记录最近修改人
   // 用于变更追踪和责任确认
-  int32 updated_by = 19;
+  int64 updated_by = 19;
   
   // CreatedAt 创建时间戳，记录部门建立时间
   // 使用 UTC 时间，精确到毫秒级别
