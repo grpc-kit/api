@@ -31,6 +31,7 @@ http:
     body: "resource"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteResource
     delete: "/builtin/admin/api/v1/resources/{id}"
+
     # 角色相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoles
     get: "/builtin/admin/api/v1/roles"

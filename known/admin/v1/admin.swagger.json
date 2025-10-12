@@ -380,8 +380,17 @@
                   "title": "Name 部门名称，用于系统内部显示和业务逻辑\n要求：长度 1-100 字符，同级部门名称不可重复\n示例：\"技术研发部\"、\"市场营销部\"、\"人力资源部\""
                 },
                 "i18n_name": {
-                  "$ref": "#/definitions/v1I18NName",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
                   "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
+                },
+                "type": {
+                  "$ref": "#/definitions/v1DepartmentType"
+                },
+                "status": {
+                  "$ref": "#/definitions/v1DepartmentStatus"
                 },
                 "order_weight": {
                   "type": "integer",
@@ -404,12 +413,6 @@
                   },
                   "title": "Children 直接子部门列表，用于构建完整的组织树\n仅包含直接下级，避免深度递归查询\n建议在需要完整树结构时通过专门的服务接口获取"
                 },
-                "status": {
-                  "$ref": "#/definitions/v1DepartmentStatus"
-                },
-                "type": {
-                  "$ref": "#/definitions/v1DepartmentType"
-                },
                 "email": {
                   "type": "string",
                   "title": "Email 部门公共邮箱地址，用于对外联系和内部通知\n格式：标准邮箱格式，如 \"tech@company.com\"\n用途：部门公告、外部合作、客户联系等"
@@ -426,7 +429,7 @@
                   "type": "string",
                   "title": "CostCenterCode 成本中心编码，用于财务核算和成本控制\n格式：企业自定义编码规则，如 \"CC-TECH-001\"\n用途：预算分配、成本归集、财务报表等\n与 ERP 系统集成时的重要标识字段"
                 },
-                "budget_code": {
+                "budget_item_code": {
                   "type": "string",
                   "title": "BudgetCode 预算编码，用于预算管理和费用控制\n格式：与财务系统对应的预算科目编码\n用途：年度预算、费用审批、财务分析等\n支持多维度预算管理（如：人员预算、设备预算等）"
                 },
@@ -447,13 +450,13 @@
                   "title": "Metadata 扩展元数据，存储自定义业务属性\n键值对格式，支持灵活的业务扩展需求\n示例：{\"location\": \"北京\", \"floor\": \"15F\", \"capacity\": \"50\"}"
                 },
                 "created_by": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
                 },
                 "updated_by": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
                 },
                 "created_at": {
@@ -1874,6 +1877,31 @@
               "USER_VIEW_FULL"
             ],
             "default": "USER_VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "filter_id",
+            "description": "TODO；将来会统一使用 filter 参数实现过滤",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter_username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter_nickname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter_status",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       },
@@ -2486,8 +2514,17 @@
           "title": "Name 部门名称，用于系统内部显示和业务逻辑\n要求：长度 1-100 字符，同级部门名称不可重复\n示例：\"技术研发部\"、\"市场营销部\"、\"人力资源部\""
         },
         "i18n_name": {
-          "$ref": "#/definitions/v1I18NName",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
           "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
+        },
+        "type": {
+          "$ref": "#/definitions/v1DepartmentType"
+        },
+        "status": {
+          "$ref": "#/definitions/v1DepartmentStatus"
         },
         "order_weight": {
           "type": "integer",
@@ -2510,12 +2547,6 @@
           },
           "title": "Children 直接子部门列表，用于构建完整的组织树\n仅包含直接下级，避免深度递归查询\n建议在需要完整树结构时通过专门的服务接口获取"
         },
-        "status": {
-          "$ref": "#/definitions/v1DepartmentStatus"
-        },
-        "type": {
-          "$ref": "#/definitions/v1DepartmentType"
-        },
         "email": {
           "type": "string",
           "title": "Email 部门公共邮箱地址，用于对外联系和内部通知\n格式：标准邮箱格式，如 \"tech@company.com\"\n用途：部门公告、外部合作、客户联系等"
@@ -2532,7 +2563,7 @@
           "type": "string",
           "title": "CostCenterCode 成本中心编码，用于财务核算和成本控制\n格式：企业自定义编码规则，如 \"CC-TECH-001\"\n用途：预算分配、成本归集、财务报表等\n与 ERP 系统集成时的重要标识字段"
         },
-        "budget_code": {
+        "budget_item_code": {
           "type": "string",
           "title": "BudgetCode 预算编码，用于预算管理和费用控制\n格式：与财务系统对应的预算科目编码\n用途：年度预算、费用审批、财务分析等\n支持多维度预算管理（如：人员预算、设备预算等）"
         },
@@ -2553,13 +2584,13 @@
           "title": "Metadata 扩展元数据，存储自定义业务属性\n键值对格式，支持灵活的业务扩展需求\n示例：{\"location\": \"北京\", \"floor\": \"15F\", \"capacity\": \"50\"}"
         },
         "created_by": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
         },
         "updated_by": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
         },
         "created_at": {
@@ -2963,7 +2994,7 @@
           "title": "本地化文本列表，至少包含一个默认语言的文本"
         }
       },
-      "description": "默认语言代码，当请求的语言不存在时使用\n LanguageCode default_language = 1;",
+      "description": "默认语言代码，当请求的语言不存在时使用\n 建议使用通用回退语言（如 ZH_HANS, EN）而非具体地区变体\n LanguageCode default_language = 1;",
       "title": "I18NName 国际化文本容器"
     },
     "v1LanguageCode": {
@@ -2973,17 +3004,23 @@
         "ZH_CN",
         "ZH_TW",
         "ZH_HK",
+        "ZH_HANS",
+        "ZH_HANT",
         "EN_US",
         "EN_GB",
         "EN_AU",
         "EN_CA",
+        "EN",
         "JA_JP",
         "KO_KR",
         "FR_FR",
         "DE_DE",
         "ES_ES",
+        "ES_MX",
+        "ES",
         "IT_IT",
         "PT_BR",
+        "PT_PT",
         "RU_RU",
         "AR_SA",
         "HI_IN",
@@ -2991,8 +3028,8 @@
         "VI_VN"
       ],
       "default": "LANGUAGE_CODE_UNSPECIFIED",
-      "description": "- ZH_CN: 中文变体\n\n简体中文（中国大陆）\n - ZH_TW: 繁体中文（台湾）\n - ZH_HK: 繁体中文（香港）\n - EN_US: 英语变体\n\n美式英语\n - EN_GB: 英式英语\n - EN_AU: 澳式英语\n - EN_CA: 加拿大英语\n - JA_JP: 日语\n\n日语（日本）\n - KO_KR: 其他常用语言\n\n韩语（韩国）\n - FR_FR: 法语（法国）\n - DE_DE: 德语（德国）\n - ES_ES: 西班牙语（西班牙）\n - IT_IT: 意大利语（意大利）\n - PT_BR: 葡萄牙语（巴西）\n - RU_RU: 俄语（俄罗斯）\n - AR_SA: 阿拉伯语（沙特阿拉伯）\n - HI_IN: 印地语（印度）\n - TH_TH: 泰语（泰国）\n - VI_VN: 越南语（越南）",
-      "title": "LanguageCode 语言代码枚举，基于 BCP 47 标准\n参考：https://tools.ietf.org/html/bcp47"
+      "description": "- ZH_CN: === 中文变体 (1-9) ===\n\nBCP 47: zh-CN (简体中文/中国大陆)\n - ZH_TW: BCP 47: zh-TW (繁体中文/台湾)\n - ZH_HK: BCP 47: zh-HK (繁体中文/香港)\n - ZH_HANS: 通用回退语言（基于文字系统，推荐用于回退机制）\n\nBCP 47: zh-Hans (简体中文通用，回退首选)\n - ZH_HANT: BCP 47: zh-Hant (繁体中文通用，回退首选)\n - EN_US: === 英语变体 (10-19) ===\n\nBCP 47: en-US (美式英语)\n - EN_GB: BCP 47: en-GB (英式英语)\n - EN_AU: BCP 47: en-AU (澳式英语)\n - EN_CA: BCP 47: en-CA (加拿大英语)\n - EN: 通用英语回退（推荐用于回退机制）\n\nBCP 47: en (通用英语，全局回退首选)\n - JA_JP: === 日语 (20-29) ===\n\nBCP 47: ja-JP (日语/日本)\n - KO_KR: === 韩语 (30-39) ===\n\nBCP 47: ko-KR (韩语/韩国)\n - FR_FR: === 法语 (40-49) ===\n\nBCP 47: fr-FR (法语/法国)\n - DE_DE: === 德语 (50-59) ===\n\nBCP 47: de-DE (德语/德国)\n - ES_ES: === 西班牙语变体 (60-69) ===\n\nBCP 47: es-ES (西班牙语/西班牙)\n - ES_MX: BCP 47: es-MX (西班牙语/墨西哥)\n - ES: BCP 47: es (通用西班牙语，回退首选)\n - IT_IT: === 意大利语 (70-79) ===\n\nBCP 47: it-IT (意大利语/意大利)\n - PT_BR: === 葡萄牙语变体 (80-89) ===\n\nBCP 47: pt-BR (葡萄牙语/巴西)\n - PT_PT: BCP 47: pt-PT (葡萄牙语/葡萄牙)\n - RU_RU: === 其他重要语言 (90+) ===\n\nBCP 47: ru-RU (俄语/俄罗斯)\n - AR_SA: BCP 47: ar-SA (阿拉伯语/沙特阿拉伯)\n - HI_IN: BCP 47: hi-IN (印地语/印度)\n - TH_TH: BCP 47: th-TH (泰语/泰国)\n - VI_VN: BCP 47: vi-VN (越南语/越南)",
+      "title": "LanguageCode 语言代码枚举，基于 BCP 47 标准\n参考：https://tools.ietf.org/html/bcp47\n设计原则：\n1. 包含具体地区变体（如 zh-CN, en-US）用于精确匹配\n2. 包含通用语言代码（如 zh-Hans, en）用于回退机制\n3. 数值分组便于扩展：中文(1-9), 英语(10-19), 日语(20-29), 等"
     },
     "v1ListAuthProvidersResponse": {
       "type": "object",

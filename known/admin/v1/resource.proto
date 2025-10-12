@@ -46,7 +46,6 @@ message ListResourcesResponse {
   repeated Resource resources = 1;
 }
 
-
 message CreateResourceRequest {
   Resource resource = 1;
 }

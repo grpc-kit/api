@@ -59,6 +59,12 @@ message ListUsersRequest {
   // - FULL: 详细信息
   // AIP-157: 建议支持。
   UserView view = 7;
+
+  // TODO；将来会统一使用 filter 参数实现过滤
+  string filter_id = 11;
+  string filter_username = 12;
+  string filter_nickname = 13;
+  string filter_status = 14;
 }
 
 message ListUsersResponse {
