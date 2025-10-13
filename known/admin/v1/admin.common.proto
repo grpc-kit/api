@@ -240,7 +240,20 @@ message Department {
 
 // Resource 资源定义，如：菜单等
 message Resource {
-  // Type 资源类型
+  // ID 资源 ID
+  int32 id = 1;
+  // ParentID 父资源 ID，为 0 表示顶级资源
+  int32 parent_id = 2;
+  // Name 资源名称
+  string name = 3;
+  // I18nName 国际化名称配置，支持多语言环境
+  // 用于跨国企业的多语言界面显示
+  // 包含语言代码和对应翻译文本的映射关系
+  map<string, string> i18n_name = 4;
+  // OrderWeight 资源排序权重，数字越小越靠前
+  int32 order_weight = 5;
+
+  // Type 资源用途，如后台管理员、前台用户、APP 应用
   enum Type {
     TYPE_UNSPECIFIED = 0;
     TYPE_DIRECTORY = 1; // 目录，在前端菜单树中，只起到“目录”作用，不直接绑定路由/组件
@@ -248,6 +261,7 @@ message Resource {
     TYPE_BUTTON = 3;    // 按钮
     TYPE_API = 4;       // API
   }
+  Type type = 6;
 
   // Scope 资源作用域
   enum Scope {
@@ -256,21 +270,8 @@ message Resource {
     SCOPE_USER = 2;  // 前台
     SCOPE_APP = 3;   // 移动端
   }
-
-  // ID 资源 ID
-  int32 id = 1;
-  // ParentID 父资源 ID，为 0 表示顶级资源
-  int32 parent_id = 2;
-  // Name 资源名称
-  string name = 3;
-  // I18NName 国际化名称
-  I18NName i18n_name = 4;
-  // OrderWeight 资源排序权重，数字越小越靠前
-  int32 order_weight = 5;
-  // Type 资源用途，如后台管理员、前台用户、APP 应用
-  Type type = 6;
-  // Scope 资源作用域
   Scope scope = 7;
+
   // Enabled 资源是否启用
   bool enabled = 8;
   // Hidden 是否在资源列表中隐藏
@@ -289,48 +290,21 @@ message Resource {
   repeated Resource children = 15;
 
   string description = 16;
-  google.protobuf.Timestamp created_at = 17;
-  google.protobuf.Timestamp updated_at = 18;
+
+  // CreatedBy 创建者用户ID，记录部门创建人
+  // 用于审计追踪和权限验证
+  int64 created_by = 17;
+  
+  // UpdatedBy 最后更新者用户ID，记录最近修改人
+  // 用于变更追踪和责任确认
+  int64 updated_by = 18;
+
+  google.protobuf.Timestamp created_at = 19;
+  google.protobuf.Timestamp updated_at = 20;
 }
 
 // User 用户实体，表示系统中的账号信息
 message User {
-  // Gender 用户性别
-  enum Gender {
-    GENDER_UNSPECIFIED = 0;
-    GENDER_MALE = 1;        // 男性
-    GENDER_FEMALE = 2;      // 女性
-    GENDER_OTHER = 3;       // 其他
-  }
-
-  // 用户状态（枚举值预计不会太频繁变化）
-  // 可以根据业务再增加状态
-  enum Status {
-    STATUS_UNSPECIFIED = 0;  // 默认值／未知状态
-    STATUS_PENDING = 1;      // 待激活／待验证
-    STATUS_ACTIVE = 2;       // 正常启用状态
-    STATUS_LOCKED = 3;       // 被锁定（如连续密码错误、账号风控等）
-    STATUS_DISABLED = 4;     // 禁用（人工停用）
-    STATUS_EXPIRED = 5;      // 过期等（订阅过期、账号注销等）
-  }
-
-  // 用户的系统类型或所属边界
-  enum Type {
-    TYPE_UNSPECIFIED = 0;  // 默认值
-
-    // 外部用户 / 业务伙伴
-    TYPE_CUSTOMER = 1;     // 前台用户 / 消费者
-    TYPE_MERCHANT = 2;     // 商户 / 卖家
-    TYPE_SUPPLIER = 3;     // 供应商 / 合作方
-
-    // 内部用户 / 员工
-    TYPE_EMPLOYEE = 10;    // 后台用户 / 内部员工
-    TYPE_ADMIN = 11;       // 系统管理员
-
-    // 系统账户 (为安全和区分，编号拉开)
-    TYPE_SYSTEM = 99;      // 系统集成账户 / 机器人
-  }
-
   // 以下字段为非敏感/可直接输出（适合公开展示或普通资料页）
 
   // ID 用户 ID，全局唯一标识，使用 int64 序列化为 json 为 string 类型
@@ -346,18 +320,54 @@ message User {
   // 个人网站地址
   string website = 6;
   // 时区信息（IANA 时区标识，例如 "Asia/Shanghai"）
-  string zoneinfo = 7;
+  string timezone = 7;
   // 用户偏好的语言与地区（例如 "zh-CN"、"en-US"）
   string locale = 8;
 
   // 以下字段受限输出（仅本人或具备权限的管理员可见，外部或公共接口谨慎返回）
 
   // 用户的基础身份类型，后端自动维护更新，非人为更新
+  enum Type {
+    TYPE_UNSPECIFIED = 0;  // 默认值
+
+    // 外部用户 / 业务伙伴
+    TYPE_CUSTOMER = 1;     // 前台用户 / 消费者
+    TYPE_MERCHANT = 2;     // 商户 / 卖家
+    TYPE_SUPPLIER = 3;     // 供应商 / 合作方
+
+    // 内部用户 / 员工
+    TYPE_EMPLOYEE = 10;    // 后台用户 / 内部员工
+    TYPE_ADMIN = 11;       // 系统管理员
+
+    // 系统账户 (为安全和区分，编号拉开)
+    TYPE_SYSTEM = 99;      // 系统集成账户 / 机器人
+  }
   Type type = 9;
-  // 用户状态，表示当前账号的生命周期阶段
+
+  // 用户状态（枚举值预计不会太频繁变化）
+  // 可以根据业务再增加状态
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 默认值／未知状态
+    STATUS_PENDING = 1;      // 待激活／待验证
+    STATUS_ACTIVE = 2;       // 正常启用状态
+    STATUS_LOCKED = 3;       // 被锁定（如连续密码错误、账号风控等）
+    STATUS_DISABLED = 4;     // 禁用（人工停用）
+    STATUS_EXPIRED = 5;      // 过期等（订阅过期、账号注销等）
+    STATUS_SUSPENDED = 6;   // 暂时冻结（如风控触发、投诉处理中）
+    STATUS_DELETED = 7;     // 已注销（区别软删除）
+  }
   Status status = 10;
-  // 性别
+
+  // Gender 用户性别
+  enum Gender {
+    GENDER_UNSPECIFIED = 0;
+    GENDER_MALE = 1;        // 男性
+    GENDER_FEMALE = 2;      // 女性
+    GENDER_OTHER = 3;       // 其他
+    GENDER_PRIVATE = 4;     // 保密，不愿透露
+  }
   Gender gender = 11;
+
   // 邮箱是否已验证
   bool email_verified = 12;
   // 手机号码是否已验证
@@ -385,8 +395,16 @@ message User {
   // 地址信息
   Address address = 24;
 
+    // CreatedBy 创建者用户ID，记录部门创建人
+  // 用于审计追踪和权限验证
+  int64 created_by = 25;
+  
+  // UpdatedBy 最后更新者用户ID，记录最近修改人
+  // 用于变更追踪和责任确认
+  int64 updated_by = 26;
+
   // 自定义元数据，用于存储额外的用户信息（如 JSON 字符串）
-  map<string, string> metadata = 25;
+  map<string, string> metadata = 27;
 }
 
 // Role 角色实体，表示用户在系统上的权限和功能
@@ -396,15 +414,65 @@ message Role {
   // Name 角色名称
   string name = 2;
   // I18NName 角色国际化名称
-  I18NName i18n_name = 3;
+  map<string, string> i18n_name = 3;
   // OrderWeight 菜单排序权重，数字越小越靠前
   int32 order_weight = 4;
-  string description = 5;
+
+  // Type 角色类型枚举，定义角色的来源和管理方式
+  // 用于区分不同类型的角色，影响角色的可编辑性和权限管理策略
+  enum Type {
+    TYPE_UNSPECIFIED = 0;  // 默认值／未指定类型：系统默认值，通常不直接使用
+    TYPE_SYSTEM = 1;       // 系统内置角色：由系统预定义，不可删除，权限固定
+    TYPE_CUSTOM = 2;       // 自定义角色：用户创建的角色，可完全自定义权限
+    TYPE_TEMPLATE = 3;     // 模板角色：预设的角色模板，可基于此创建新角色
+  }
+  // type 角色类型，决定角色的管理策略和可操作性
+  Type type = 5;
+
+  // Status 角色状态枚举，控制角色的可用性和生命周期
+  // 用于角色的启用/禁用管理，影响用户权限的实际生效
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
+    STATUS_ACTIVE = 1;       // 正常启用状态：角色正常可用，权限生效
+    STATUS_DISABLED = 2;     // 禁用状态：角色被停用，权限不生效
+  }
+  // status 角色状态，控制角色是否可用和权限是否生效
+  Status status = 6;
+
+  // CreatedBy 创建者用户ID，记录部门创建人
+  // 用于审计追踪和权限验证
+  int64 created_by = 7;
+  
+  // UpdatedBy 最后更新者用户ID，记录最近修改人
+  // 用于变更追踪和责任确认
+  int64 updated_by = 8;
+
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+
+  string description = 11;
 }
 
 // Group 群组实体，表示一类相同维度的用户集合
 // 该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理
 message Group {
+  // ID 群组 ID，全局唯一标识
+  int32 id = 1;
+  // Name 群组名称，系统内唯一标识符
+  string name = 2;
+
+  // Type 群组类型，标识群组的业务用途
+  // 群组类型，用于区分不同用途的群组
+  enum Type {
+    TYPE_UNSPECIFIED = 0;  // 默认值/未指定：系统默认值，通常不直接使用
+    TYPE_DEPARTMENT = 1;   // 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id
+    TYPE_PROJECT = 2;      // 项目群组：基于项目或任务的临时分组
+    TYPE_ROLE = 3;         // 角色群组：基于用户角色或权限的分组
+    TYPE_CUSTOM = 4;       // 自定义群组：用户根据特定业务需求自定义的分组
+  }
+  Type type = 3;
+
+  // Status 群组状态，控制群组的可用状态
   // 群组状态（枚举值预计不会太频繁变化）
   // 可以根据业务再增加状态
   enum Status {
@@ -414,26 +482,10 @@ message Group {
     STATUS_ARCHIVED = 3;     // 被归档，但可查询：群组不再活跃但保留历史数据，成员不允许变更
     STATUS_DISABLED = 4;     // 禁用，不可查询：群组被临时停用，通常为人工操作结果
   }
-
-  // 群组类型，用于区分不同用途的群组
-  enum Type {
-    TYPE_UNSPECIFIED = 0;  // 默认值/未指定：系统默认值，通常不直接使用
-    TYPE_DEPARTMENT = 1;   // 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id
-    TYPE_PROJECT = 2;      // 项目群组：基于项目或任务的临时分组
-    TYPE_ROLE = 3;         // 角色群组：基于用户角色或权限的分组
-    TYPE_CUSTOM = 4;       // 自定义群组：用户根据特定业务需求自定义的分组
-  }
-
-  // ID 群组 ID，全局唯一标识
-  int32 id = 1;
-  // Name 群组名称，系统内唯一标识符
-  string name = 2;
-  // Type 群组类型，标识群组的业务用途
-  Type type = 3;
-  // Status 群组状态，控制群组的可用状态
   Status status = 4;
+
   // I18NName 群组国际化名称，支持多语言显示
-  I18NName i18n_name = 5;
+  map<string, string> i18n_name = 5;
   // OrderWeight 菜单排序权重，数字越小越靠前，用于UI展示排序
   int32 order_weight = 6;
   // ParentID 父群组ID，用于支持群组嵌套，为0表示顶级群组，支持树形组织结构
@@ -449,9 +501,9 @@ message Group {
   // Description 群组描述，详细说明群组的目的和用途
   string description = 12;
   // CreatedBy 群组创建者/所有者ID，记录创建该群组的用户
-  int32 created_by = 13;
+  int64 created_by = 13;
   // UpdatedBy 群组最后更新者，记录最后修改该群组的用户
-  int32 updated_by = 14;
+  int64 updated_by = 14;
   // CreatedAt 创建时间，记录群组的创建时间戳
   google.protobuf.Timestamp created_at = 15;
   // UpdatedAt 更新时间，记录群组的最后修改时间戳
@@ -463,6 +515,18 @@ message Group {
 // GroupMember 群组成员关系
 // 该模型用于描述用户与群组之间的关联关系，支持多状态管理和角色定义
 message GroupMember {
+  // ID 群组成员关系 ID，全局唯一标识
+  int32 id = 1;
+  // UserID 用户 ID，关联用户表
+  int64 user_id = 2;
+  // Username 用户名，来自用户表
+  string username = 3;
+  // Nickname 用户昵称，来自用户表
+  string nickname = 4;
+  // GroupID 群组 ID，关联群组表
+  int32 group_id = 5;
+
+  // Role 用户在群组中的角色
   // 用户在群组中的角色枚举
   enum Role {
     ROLE_UNSPECIFIED = 0;  // 默认值/未指定
@@ -471,7 +535,9 @@ message GroupMember {
     ROLE_MEMBER = 3;       // 普通成员：拥有基本访问权限
     ROLE_GUEST = 4;        // 访客：拥有受限访问权限
   }
+  Role member_role = 6;
 
+  // Status 群组成员关系状态
   // 群组成员关系状态
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
@@ -482,35 +548,20 @@ message GroupMember {
     STATUS_REJECTED = 5;     // 被拒绝加入：用户申请或邀请被拒绝
     STATUS_LEFT = 6;         // 已退出：用户主动退出群组
   }
-
-  // ID 群组成员关系 ID，全局唯一标识
-  int32 id = 1;
-  // UserID 用户 ID，关联用户表
-  int32 user_id = 2;
-  // Username 用户名，来自用户表
-  string username = 3;
-  // Nickname 用户昵称，来自用户表
-  string nickname = 4;
-  // GroupID 群组 ID，关联群组表
-  int32 group_id = 5;
-  // Role 用户在群组中的角色
-  Role member_role = 6;
-  // Status 群组成员关系状态
   Status member_status = 7;
+
   // JoinedAt 用户加入群组的时间
   google.protobuf.Timestamp joined_at = 8;
   // ExpiredAt 关系有效期，用于临时成员管理，0表示永久有效
   google.protobuf.Timestamp expired_at = 9;
   // CreatedBy 创建者 ID，记录创建该关系的用户
-  int32 created_by = 10;
+  int64 created_by = 10;
   // UpdatedBy 最后更新者 ID，记录最后修改该关系的用户
-  int32 updated_by = 11;
+  int64 updated_by = 11;
   // CreatedAt 创建时间，记录关系的创建时间戳
   google.protobuf.Timestamp created_at = 12;
   // UpdatedAt 更新时间，记录关系的最后修改时间戳
   google.protobuf.Timestamp updated_at = 13;
-  // DeletedAt 删除时间，用于软删除机制
-  google.protobuf.Timestamp deleted_at = 14;
   // Metadata 元数据，用于存储自定义属性，支持业务扩展
   map<string, string> metadata = 15;
   // Description 群组描述，详细说明群组的目的和用途
@@ -521,33 +572,6 @@ message GroupMember {
 // 用于描述用户与部门之间的多对多关系，支持复杂的角色层级、状态管理、
 // 审计追踪、汇报关系等企业级功能，满足大型组织的精细化管理需求
 message DepartmentMember {
-  // Role 部门角色枚举，定义用户在部门中的职责和权限层级
-  enum Role {
-    ROLE_UNSPECIFIED = 0;  // 未指定角色（系统默认值）
-    ROLE_OWNER = 1;        // 部门负责人 - 拥有部门最高管理权限
-    ROLE_DEPUTY = 2;       // 副负责人 - 协助负责人管理部门，拥有大部分管理权限
-    ROLE_MANAGER = 3;      // 经理 - 负责具体业务管理和团队领导
-    ROLE_SUPERVISOR = 4;   // 主管 - 负责日常业务监督和指导
-    ROLE_LEAD = 5;         // 组长 - 负责小组或项目的直接管理
-    ROLE_SENIOR = 6;       // 高级成员 - 资深员工，可能承担指导职责
-    ROLE_MEMBER = 7;       // 普通成员 - 标准部门员工
-    ROLE_INTERN = 8;       // 实习生 - 临时学习和工作的人员
-    ROLE_CONSULTANT = 9;   // 顾问 - 提供专业建议和指导的外部专家
-    ROLE_CONTRACTOR = 10;  // 外包人员 - 临时合作的外部工作人员
-    ROLE_ASSISTANT = 11;   // 助理 - 提供行政和事务支持的人员
-  }
-
-  // Status 成员状态枚举，管理用户在部门中的生命周期状态
-  enum Status {
-    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
-    STATUS_ACTIVE = 1;       // 正常状态 - 用户正常工作，拥有完整权限
-    STATUS_DISABLED = 2;     // 已禁用 - 临时禁用，保留关系但无法访问
-    STATUS_LEFT = 3;         // 已离开 - 用户已离职或调离，保留历史记录
-    STATUS_PENDING = 4;      // 待加入 - 申请中或等待审批的状态
-    STATUS_SUSPENDED = 5;    // 暂停 - 临时暂停工作，如休假、停职等
-    STATUS_TRANSFERRING = 6; // 调动中 - 正在进行部门间调动的过渡状态
-  }
-
   // ID 部门成员关系唯一标识符，系统自动生成
   // 用于数据库主键和关系追踪，支持历史记录查询
   int32 id = 1;
@@ -570,14 +594,37 @@ message DepartmentMember {
   // 支持用户在多个部门中的复杂组织关系
   int32 department_id = 5;
 
-  // MemberRole 用户在该部门中的角色，决定权限和职责范围
+  // Role 部门角色枚举，定义用户在部门中的职责和权限层级
   // 支持角色继承和权限控制，可用于业务逻辑判断
   // 角色变更需要审批流程和历史记录追踪
+  enum Role {
+    ROLE_UNSPECIFIED = 0;  // 未指定角色（系统默认值）
+    ROLE_OWNER = 1;        // 部门负责人 - 拥有部门最高管理权限
+    ROLE_DEPUTY = 2;       // 副负责人 - 协助负责人管理部门，拥有大部分管理权限
+    ROLE_MANAGER = 3;      // 经理 - 负责具体业务管理和团队领导
+    ROLE_SUPERVISOR = 4;   // 主管 - 负责日常业务监督和指导
+    ROLE_LEAD = 5;         // 组长 - 负责小组或项目的直接管理
+    ROLE_SENIOR = 6;       // 高级成员 - 资深员工，可能承担指导职责
+    ROLE_MEMBER = 7;       // 普通成员 - 标准部门员工
+    ROLE_INTERN = 8;       // 实习生 - 临时学习和工作的人员
+    ROLE_CONSULTANT = 9;   // 顾问 - 提供专业建议和指导的外部专家
+    ROLE_CONTRACTOR = 10;  // 外包人员 - 临时合作的外部工作人员
+    ROLE_ASSISTANT = 11;   // 助理 - 提供行政和事务支持的人员
+  }
   Role member_role = 6;
 
-  // MemberStatus 用户在该部门中的当前状态，用于生命周期管理
+  // Status 成员状态枚举，管理用户在部门中的生命周期状态
   // 支持状态流转和业务流程控制
   // 状态变更会影响用户的访问权限和业务操作
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
+    STATUS_ACTIVE = 1;       // 正常状态 - 用户正常工作，拥有完整权限
+    STATUS_DISABLED = 2;     // 已禁用 - 临时禁用，保留关系但无法访问
+    STATUS_LEFT = 3;         // 已离开 - 用户已离职或调离，保留历史记录
+    STATUS_PENDING = 4;      // 待加入 - 申请中或等待审批的状态
+    STATUS_SUSPENDED = 5;    // 暂停 - 临时暂停工作，如休假、停职等
+    STATUS_TRANSFERRING = 6; // 调动中 - 正在进行部门间调动的过渡状态
+  }
   Status member_status = 7;
 
   // CreatedBy 创建者用户ID，记录是谁添加了这个部门成员关系
@@ -690,6 +737,11 @@ message DepartmentMember {
 
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
 message AuthProvider {
+  // ID 全局唯一标识
+  int32 id = 1;
+  // Name 身份提供商名称，全局唯一
+  string name = 2;
+
   // Type 身份提供商类型
   enum Type {
     TYPE_UNSPECIFIED = 0;
@@ -701,13 +753,8 @@ message AuthProvider {
     TYPE_GOOGLE = 6;
     TYPE_WECHAT = 7;
   }
-
-  // ID 全局唯一标识
-  int32 id = 1;
-  // Name 身份提供商名称，全局唯一
-  string name = 2;
-  // Type 身份提供商类型
   Type type = 3;
+
   // ClientID 身份提供商客户端 ID
   string client_id = 4;
   // ClientSecret 身份提供商客户端密钥

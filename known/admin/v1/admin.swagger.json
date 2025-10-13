@@ -827,15 +827,16 @@
                   "title": "Name 群组名称，系统内唯一标识符"
                 },
                 "type": {
-                  "$ref": "#/definitions/v1GroupType",
-                  "title": "Type 群组类型，标识群组的业务用途"
+                  "$ref": "#/definitions/v1GroupType"
                 },
                 "status": {
-                  "$ref": "#/definitions/v1GroupStatus",
-                  "title": "Status 群组状态，控制群组的可用状态"
+                  "$ref": "#/definitions/v1GroupStatus"
                 },
                 "i18n_name": {
-                  "$ref": "#/definitions/v1I18NName",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
                   "title": "I18NName 群组国际化名称，支持多语言显示"
                 },
                 "order_weight": {
@@ -874,13 +875,13 @@
                   "title": "Description 群组描述，详细说明群组的目的和用途"
                 },
                 "created_by": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "CreatedBy 群组创建者/所有者ID，记录创建该群组的用户"
                 },
                 "updated_by": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "UpdatedBy 群组最后更新者，记录最后修改该群组的用户"
                 },
                 "created_at": {
@@ -1397,8 +1398,11 @@
                   "title": "Name 资源名称"
                 },
                 "i18n_name": {
-                  "$ref": "#/definitions/v1I18NName",
-                  "title": "I18NName 国际化名称"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
                 },
                 "order_weight": {
                   "type": "integer",
@@ -1406,12 +1410,10 @@
                   "title": "OrderWeight 资源排序权重，数字越小越靠前"
                 },
                 "type": {
-                  "$ref": "#/definitions/v1ResourceType",
-                  "title": "Type 资源用途，如后台管理员、前台用户、APP 应用"
+                  "$ref": "#/definitions/v1ResourceType"
                 },
                 "scope": {
-                  "$ref": "#/definitions/ResourceScope",
-                  "title": "Scope 资源作用域"
+                  "$ref": "#/definitions/ResourceScope"
                 },
                 "enabled": {
                   "type": "boolean",
@@ -1452,6 +1454,16 @@
                 },
                 "description": {
                   "type": "string"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
                 },
                 "created_at": {
                   "type": "string",
@@ -1720,13 +1732,42 @@
                   "title": "Name 角色名称"
                 },
                 "i18n_name": {
-                  "$ref": "#/definitions/v1I18NName",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
                   "title": "I18NName 角色国际化名称"
                 },
                 "order_weight": {
                   "type": "integer",
                   "format": "int32",
                   "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+                },
+                "type": {
+                  "$ref": "#/definitions/v1RoleType",
+                  "title": "type 角色类型，决定角色的管理策略和可操作性"
+                },
+                "status": {
+                  "$ref": "#/definitions/v1RoleStatus",
+                  "title": "status 角色状态，控制角色是否可用和权限是否生效"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
                 },
                 "description": {
                   "type": "string"
@@ -2016,7 +2057,7 @@
           },
           {
             "name": "user",
-            "description": "User 用户实体，表示系统中的账号信息",
+            "description": "User 用户实体，表示系统中的账号信息\n\n以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
             "in": "body",
             "required": true,
             "schema": {
@@ -2042,7 +2083,7 @@
                   "type": "string",
                   "title": "个人网站地址"
                 },
-                "zoneinfo": {
+                "timezone": {
                   "type": "string",
                   "title": "时区信息（IANA 时区标识，例如 \"Asia/Shanghai\"）"
                 },
@@ -2051,16 +2092,13 @@
                   "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）"
                 },
                 "type": {
-                  "$ref": "#/definitions/v1UserType",
-                  "title": "用户的基础身份类型，后端自动维护更新，非人为更新"
+                  "$ref": "#/definitions/v1UserType"
                 },
                 "status": {
-                  "$ref": "#/definitions/v1UserStatus",
-                  "title": "用户状态，表示当前账号的生命周期阶段"
+                  "$ref": "#/definitions/v1UserStatus"
                 },
                 "gender": {
-                  "$ref": "#/definitions/UserGender",
-                  "title": "性别"
+                  "$ref": "#/definitions/UserGender"
                 },
                 "email_verified": {
                   "type": "boolean",
@@ -2110,6 +2148,16 @@
                   "$ref": "#/definitions/v1Address",
                   "title": "地址信息"
                 },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
+                },
                 "metadata": {
                   "type": "object",
                   "additionalProperties": {
@@ -2118,6 +2166,7 @@
                   "title": "自定义元数据，用于存储额外的用户信息（如 JSON 字符串）"
                 }
               },
+              "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
               "title": "User 用户实体，表示系统中的账号信息"
             }
           }
@@ -2234,10 +2283,11 @@
         "GENDER_UNSPECIFIED",
         "GENDER_MALE",
         "GENDER_FEMALE",
-        "GENDER_OTHER"
+        "GENDER_OTHER",
+        "GENDER_PRIVATE"
       ],
       "default": "GENDER_UNSPECIFIED",
-      "description": "- GENDER_MALE: 男性\n - GENDER_FEMALE: 女性\n - GENDER_OTHER: 其他",
+      "description": "- GENDER_MALE: 男性\n - GENDER_FEMALE: 女性\n - GENDER_OTHER: 其他\n - GENDER_PRIVATE: 保密，不愿透露",
       "title": "Gender 用户性别"
     },
     "adminv1Role": {
@@ -2253,13 +2303,42 @@
           "title": "Name 角色名称"
         },
         "i18n_name": {
-          "$ref": "#/definitions/v1I18NName",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
           "title": "I18NName 角色国际化名称"
         },
         "order_weight": {
           "type": "integer",
           "format": "int32",
           "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+        },
+        "type": {
+          "$ref": "#/definitions/v1RoleType",
+          "title": "type 角色类型，决定角色的管理策略和可操作性"
+        },
+        "status": {
+          "$ref": "#/definitions/v1RoleStatus",
+          "title": "status 角色状态，控制角色是否可用和权限是否生效"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
         },
         "description": {
           "type": "string"
@@ -2301,8 +2380,7 @@
           "title": "Name 身份提供商名称，全局唯一"
         },
         "type": {
-          "$ref": "#/definitions/v1AuthProviderType",
-          "title": "Type 身份提供商类型"
+          "$ref": "#/definitions/v1AuthProviderType"
         },
         "client_id": {
           "type": "string",
@@ -2642,12 +2720,10 @@
           "title": "DepartmentID 部门唯一标识符，建立与部门实体的关联\n支持用户在多个部门中的复杂组织关系"
         },
         "member_role": {
-          "$ref": "#/definitions/v1DepartmentMemberRole",
-          "title": "MemberRole 用户在该部门中的角色，决定权限和职责范围\n支持角色继承和权限控制，可用于业务逻辑判断\n角色变更需要审批流程和历史记录追踪"
+          "$ref": "#/definitions/v1DepartmentMemberRole"
         },
         "member_status": {
-          "$ref": "#/definitions/v1DepartmentMemberStatus",
-          "title": "MemberStatus 用户在该部门中的当前状态，用于生命周期管理\n支持状态流转和业务流程控制\n状态变更会影响用户的访问权限和业务操作"
+          "$ref": "#/definitions/v1DepartmentMemberStatus"
         },
         "created_by": {
           "type": "string",
@@ -2701,7 +2777,7 @@
       ],
       "default": "ROLE_UNSPECIFIED",
       "description": "- ROLE_UNSPECIFIED: 未指定角色（系统默认值）\n - ROLE_OWNER: 部门负责人 - 拥有部门最高管理权限\n - ROLE_DEPUTY: 副负责人 - 协助负责人管理部门，拥有大部分管理权限\n - ROLE_MANAGER: 经理 - 负责具体业务管理和团队领导\n - ROLE_SUPERVISOR: 主管 - 负责日常业务监督和指导\n - ROLE_LEAD: 组长 - 负责小组或项目的直接管理\n - ROLE_SENIOR: 高级成员 - 资深员工，可能承担指导职责\n - ROLE_MEMBER: 普通成员 - 标准部门员工\n - ROLE_INTERN: 实习生 - 临时学习和工作的人员\n - ROLE_CONSULTANT: 顾问 - 提供专业建议和指导的外部专家\n - ROLE_CONTRACTOR: 外包人员 - 临时合作的外部工作人员\n - ROLE_ASSISTANT: 助理 - 提供行政和事务支持的人员",
-      "title": "Role 部门角色枚举，定义用户在部门中的职责和权限层级"
+      "title": "Role 部门角色枚举，定义用户在部门中的职责和权限层级\n支持角色继承和权限控制，可用于业务逻辑判断\n角色变更需要审批流程和历史记录追踪"
     },
     "v1DepartmentMemberStatus": {
       "type": "string",
@@ -2716,7 +2792,7 @@
       ],
       "default": "STATUS_UNSPECIFIED",
       "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - STATUS_ACTIVE: 正常状态 - 用户正常工作，拥有完整权限\n - STATUS_DISABLED: 已禁用 - 临时禁用，保留关系但无法访问\n - STATUS_LEFT: 已离开 - 用户已离职或调离，保留历史记录\n - STATUS_PENDING: 待加入 - 申请中或等待审批的状态\n - STATUS_SUSPENDED: 暂停 - 临时暂停工作，如休假、停职等\n - STATUS_TRANSFERRING: 调动中 - 正在进行部门间调动的过渡状态",
-      "title": "Status 成员状态枚举，管理用户在部门中的生命周期状态"
+      "title": "Status 成员状态枚举，管理用户在部门中的生命周期状态\n支持状态流转和业务流程控制\n状态变更会影响用户的访问权限和业务操作"
     },
     "v1DepartmentStatus": {
       "type": "string",
@@ -2771,15 +2847,16 @@
           "title": "Name 群组名称，系统内唯一标识符"
         },
         "type": {
-          "$ref": "#/definitions/v1GroupType",
-          "title": "Type 群组类型，标识群组的业务用途"
+          "$ref": "#/definitions/v1GroupType"
         },
         "status": {
-          "$ref": "#/definitions/v1GroupStatus",
-          "title": "Status 群组状态，控制群组的可用状态"
+          "$ref": "#/definitions/v1GroupStatus"
         },
         "i18n_name": {
-          "$ref": "#/definitions/v1I18NName",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
           "title": "I18NName 群组国际化名称，支持多语言显示"
         },
         "order_weight": {
@@ -2818,13 +2895,13 @@
           "title": "Description 群组描述，详细说明群组的目的和用途"
         },
         "created_by": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "CreatedBy 群组创建者/所有者ID，记录创建该群组的用户"
         },
         "updated_by": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "UpdatedBy 群组最后更新者，记录最后修改该群组的用户"
         },
         "created_at": {
@@ -2854,8 +2931,8 @@
           "title": "ID 群组成员关系 ID，全局唯一标识"
         },
         "user_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "UserID 用户 ID，关联用户表"
         },
         "username": {
@@ -2872,12 +2949,10 @@
           "title": "GroupID 群组 ID，关联群组表"
         },
         "member_role": {
-          "$ref": "#/definitions/v1GroupMemberRole",
-          "title": "Role 用户在群组中的角色"
+          "$ref": "#/definitions/v1GroupMemberRole"
         },
         "member_status": {
-          "$ref": "#/definitions/v1GroupMemberStatus",
-          "title": "Status 群组成员关系状态"
+          "$ref": "#/definitions/v1GroupMemberStatus"
         },
         "joined_at": {
           "type": "string",
@@ -2890,13 +2965,13 @@
           "title": "ExpiredAt 关系有效期，用于临时成员管理，0表示永久有效"
         },
         "created_by": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "CreatedBy 创建者 ID，记录创建该关系的用户"
         },
         "updated_by": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "UpdatedBy 最后更新者 ID，记录最后修改该关系的用户"
         },
         "created_at": {
@@ -2908,11 +2983,6 @@
           "type": "string",
           "format": "date-time",
           "title": "UpdatedAt 更新时间，记录关系的最后修改时间戳"
-        },
-        "deleted_at": {
-          "type": "string",
-          "format": "date-time",
-          "title": "DeletedAt 删除时间，用于软删除机制"
         },
         "metadata": {
           "type": "object",
@@ -2939,7 +3009,7 @@
       ],
       "default": "ROLE_UNSPECIFIED",
       "description": "- ROLE_UNSPECIFIED: 默认值/未指定\n - ROLE_OWNER: 所有者：拥有群组最高权限\n - ROLE_ADMIN: 管理员：管理群组成员和基本设置\n - ROLE_MEMBER: 普通成员：拥有基本访问权限\n - ROLE_GUEST: 访客：拥有受限访问权限",
-      "title": "用户在群组中的角色枚举"
+      "title": "Role 用户在群组中的角色\n用户在群组中的角色枚举"
     },
     "v1GroupMemberStatus": {
       "type": "string",
@@ -2954,7 +3024,7 @@
       ],
       "default": "STATUS_UNSPECIFIED",
       "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - STATUS_PENDING: 待激活／待验证：用户申请加入群组等待审批\n - STATUS_ACTIVE: 正常启用状态：用户正式加入群组\n - STATUS_INVITED: 被邀请加入：用户收到群组邀请但尚未回应\n - STATUS_DISABLED: 禁用（人工停用）：用户被临时限制群组权限\n - STATUS_REJECTED: 被拒绝加入：用户申请或邀请被拒绝\n - STATUS_LEFT: 已退出：用户主动退出群组",
-      "title": "群组成员关系状态"
+      "title": "Status 群组成员关系状态\n群组成员关系状态"
     },
     "v1GroupStatus": {
       "type": "string",
@@ -2967,7 +3037,7 @@
       ],
       "default": "STATUS_UNSPECIFIED",
       "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - STATUS_PENDING: 待激活／待验证：创建后等待审核或激活的状态\n - STATUS_ACTIVE: 正常启用状态：群组正常运行中，可以进行成员管理和权限分配\n - STATUS_ARCHIVED: 被归档，但可查询：群组不再活跃但保留历史数据，成员不允许变更\n - STATUS_DISABLED: 禁用，不可查询：群组被临时停用，通常为人工操作结果",
-      "title": "群组状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
+      "title": "Status 群组状态，控制群组的可用状态\n群组状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
     },
     "v1GroupType": {
       "type": "string",
@@ -2980,56 +3050,7 @@
       ],
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - TYPE_DEPARTMENT: 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id\n - TYPE_PROJECT: 项目群组：基于项目或任务的临时分组\n - TYPE_ROLE: 角色群组：基于用户角色或权限的分组\n - TYPE_CUSTOM: 自定义群组：用户根据特定业务需求自定义的分组",
-      "title": "群组类型，用于区分不同用途的群组"
-    },
-    "v1I18NName": {
-      "type": "object",
-      "properties": {
-        "texts": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1LocalizedText"
-          },
-          "title": "本地化文本列表，至少包含一个默认语言的文本"
-        }
-      },
-      "description": "默认语言代码，当请求的语言不存在时使用\n 建议使用通用回退语言（如 ZH_HANS, EN）而非具体地区变体\n LanguageCode default_language = 1;",
-      "title": "I18NName 国际化文本容器"
-    },
-    "v1LanguageCode": {
-      "type": "string",
-      "enum": [
-        "LANGUAGE_CODE_UNSPECIFIED",
-        "ZH_CN",
-        "ZH_TW",
-        "ZH_HK",
-        "ZH_HANS",
-        "ZH_HANT",
-        "EN_US",
-        "EN_GB",
-        "EN_AU",
-        "EN_CA",
-        "EN",
-        "JA_JP",
-        "KO_KR",
-        "FR_FR",
-        "DE_DE",
-        "ES_ES",
-        "ES_MX",
-        "ES",
-        "IT_IT",
-        "PT_BR",
-        "PT_PT",
-        "RU_RU",
-        "AR_SA",
-        "HI_IN",
-        "TH_TH",
-        "VI_VN"
-      ],
-      "default": "LANGUAGE_CODE_UNSPECIFIED",
-      "description": "- ZH_CN: === 中文变体 (1-9) ===\n\nBCP 47: zh-CN (简体中文/中国大陆)\n - ZH_TW: BCP 47: zh-TW (繁体中文/台湾)\n - ZH_HK: BCP 47: zh-HK (繁体中文/香港)\n - ZH_HANS: 通用回退语言（基于文字系统，推荐用于回退机制）\n\nBCP 47: zh-Hans (简体中文通用，回退首选)\n - ZH_HANT: BCP 47: zh-Hant (繁体中文通用，回退首选)\n - EN_US: === 英语变体 (10-19) ===\n\nBCP 47: en-US (美式英语)\n - EN_GB: BCP 47: en-GB (英式英语)\n - EN_AU: BCP 47: en-AU (澳式英语)\n - EN_CA: BCP 47: en-CA (加拿大英语)\n - EN: 通用英语回退（推荐用于回退机制）\n\nBCP 47: en (通用英语，全局回退首选)\n - JA_JP: === 日语 (20-29) ===\n\nBCP 47: ja-JP (日语/日本)\n - KO_KR: === 韩语 (30-39) ===\n\nBCP 47: ko-KR (韩语/韩国)\n - FR_FR: === 法语 (40-49) ===\n\nBCP 47: fr-FR (法语/法国)\n - DE_DE: === 德语 (50-59) ===\n\nBCP 47: de-DE (德语/德国)\n - ES_ES: === 西班牙语变体 (60-69) ===\n\nBCP 47: es-ES (西班牙语/西班牙)\n - ES_MX: BCP 47: es-MX (西班牙语/墨西哥)\n - ES: BCP 47: es (通用西班牙语，回退首选)\n - IT_IT: === 意大利语 (70-79) ===\n\nBCP 47: it-IT (意大利语/意大利)\n - PT_BR: === 葡萄牙语变体 (80-89) ===\n\nBCP 47: pt-BR (葡萄牙语/巴西)\n - PT_PT: BCP 47: pt-PT (葡萄牙语/葡萄牙)\n - RU_RU: === 其他重要语言 (90+) ===\n\nBCP 47: ru-RU (俄语/俄罗斯)\n - AR_SA: BCP 47: ar-SA (阿拉伯语/沙特阿拉伯)\n - HI_IN: BCP 47: hi-IN (印地语/印度)\n - TH_TH: BCP 47: th-TH (泰语/泰国)\n - VI_VN: BCP 47: vi-VN (越南语/越南)",
-      "title": "LanguageCode 语言代码枚举，基于 BCP 47 标准\n参考：https://tools.ietf.org/html/bcp47\n设计原则：\n1. 包含具体地区变体（如 zh-CN, en-US）用于精确匹配\n2. 包含通用语言代码（如 zh-Hans, en）用于回退机制\n3. 数值分组便于扩展：中文(1-9), 英语(10-19), 日语(20-29), 等"
+      "title": "Type 群组类型，标识群组的业务用途\n群组类型，用于区分不同用途的群组"
     },
     "v1ListAuthProvidersResponse": {
       "type": "object",
@@ -3179,20 +3200,6 @@
         }
       }
     },
-    "v1LocalizedText": {
-      "type": "object",
-      "properties": {
-        "language_code": {
-          "$ref": "#/definitions/v1LanguageCode",
-          "title": "语言代码，必须符合 BCP 47 标准"
-        },
-        "text": {
-          "type": "string",
-          "title": "文本内容，不能为空"
-        }
-      },
-      "title": "LocalizedText 本地化文本，包含语言代码和对应的文本内容"
-    },
     "v1OAuth2Discovery": {
       "type": "object",
       "properties": {
@@ -3277,8 +3284,11 @@
           "title": "Name 资源名称"
         },
         "i18n_name": {
-          "$ref": "#/definitions/v1I18NName",
-          "title": "I18NName 国际化名称"
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
         },
         "order_weight": {
           "type": "integer",
@@ -3286,12 +3296,10 @@
           "title": "OrderWeight 资源排序权重，数字越小越靠前"
         },
         "type": {
-          "$ref": "#/definitions/v1ResourceType",
-          "title": "Type 资源用途，如后台管理员、前台用户、APP 应用"
+          "$ref": "#/definitions/v1ResourceType"
         },
         "scope": {
-          "$ref": "#/definitions/ResourceScope",
-          "title": "Scope 资源作用域"
+          "$ref": "#/definitions/ResourceScope"
         },
         "enabled": {
           "type": "boolean",
@@ -3333,6 +3341,16 @@
         "description": {
           "type": "string"
         },
+        "created_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
+        },
         "created_at": {
           "type": "string",
           "format": "date-time"
@@ -3355,7 +3373,30 @@
       ],
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_DIRECTORY: 目录，在前端菜单树中，只起到“目录”作用，不直接绑定路由/组件\n - TYPE_MENU: 菜单\n - TYPE_BUTTON: 按钮\n - TYPE_API: API",
-      "title": "Type 资源类型"
+      "title": "Type 资源用途，如后台管理员、前台用户、APP 应用"
+    },
+    "v1RoleStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_ACTIVE",
+        "STATUS_DISABLED"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - STATUS_ACTIVE: 正常启用状态：角色正常可用，权限生效\n - STATUS_DISABLED: 禁用状态：角色被停用，权限不生效",
+      "title": "Status 角色状态枚举，控制角色的可用性和生命周期\n用于角色的启用/禁用管理，影响用户权限的实际生效"
+    },
+    "v1RoleType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "TYPE_SYSTEM",
+        "TYPE_CUSTOM",
+        "TYPE_TEMPLATE"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "description": "- TYPE_UNSPECIFIED: 默认值／未指定类型：系统默认值，通常不直接使用\n - TYPE_SYSTEM: 系统内置角色：由系统预定义，不可删除，权限固定\n - TYPE_CUSTOM: 自定义角色：用户创建的角色，可完全自定义权限\n - TYPE_TEMPLATE: 模板角色：预设的角色模板，可基于此创建新角色",
+      "title": "Type 角色类型枚举，定义角色的来源和管理方式\n用于区分不同类型的角色，影响角色的可编辑性和权限管理策略"
     },
     "v1UpdateDepartmentMembersResponse": {
       "type": "object"
@@ -3400,7 +3441,7 @@
           "type": "string",
           "title": "个人网站地址"
         },
-        "zoneinfo": {
+        "timezone": {
           "type": "string",
           "title": "时区信息（IANA 时区标识，例如 \"Asia/Shanghai\"）"
         },
@@ -3409,16 +3450,13 @@
           "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）"
         },
         "type": {
-          "$ref": "#/definitions/v1UserType",
-          "title": "用户的基础身份类型，后端自动维护更新，非人为更新"
+          "$ref": "#/definitions/v1UserType"
         },
         "status": {
-          "$ref": "#/definitions/v1UserStatus",
-          "title": "用户状态，表示当前账号的生命周期阶段"
+          "$ref": "#/definitions/v1UserStatus"
         },
         "gender": {
-          "$ref": "#/definitions/UserGender",
-          "title": "性别"
+          "$ref": "#/definitions/UserGender"
         },
         "email_verified": {
           "type": "boolean",
@@ -3468,6 +3506,16 @@
           "$ref": "#/definitions/v1Address",
           "title": "地址信息"
         },
+        "created_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "CreatedBy 创建者用户ID，记录部门创建人\n用于审计追踪和权限验证"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "UpdatedBy 最后更新者用户ID，记录最近修改人\n用于变更追踪和责任确认"
+        },
         "metadata": {
           "type": "object",
           "additionalProperties": {
@@ -3476,6 +3524,7 @@
           "title": "自定义元数据，用于存储额外的用户信息（如 JSON 字符串）"
         }
       },
+      "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
       "title": "User 用户实体，表示系统中的账号信息"
     },
     "v1UserStatus": {
@@ -3486,10 +3535,12 @@
         "STATUS_ACTIVE",
         "STATUS_LOCKED",
         "STATUS_DISABLED",
-        "STATUS_EXPIRED"
+        "STATUS_EXPIRED",
+        "STATUS_SUSPENDED",
+        "STATUS_DELETED"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态\n - STATUS_PENDING: 待激活／待验证\n - STATUS_ACTIVE: 正常启用状态\n - STATUS_LOCKED: 被锁定（如连续密码错误、账号风控等）\n - STATUS_DISABLED: 禁用（人工停用）\n - STATUS_EXPIRED: 过期等（订阅过期、账号注销等）",
+      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态\n - STATUS_PENDING: 待激活／待验证\n - STATUS_ACTIVE: 正常启用状态\n - STATUS_LOCKED: 被锁定（如连续密码错误、账号风控等）\n - STATUS_DISABLED: 禁用（人工停用）\n - STATUS_EXPIRED: 过期等（订阅过期、账号注销等）\n - STATUS_SUSPENDED: 暂时冻结（如风控触发、投诉处理中）\n - STATUS_DELETED: 已注销（区别软删除）",
       "title": "用户状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
     },
     "v1UserType": {
@@ -3505,7 +3556,7 @@
       ],
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值\n - TYPE_CUSTOMER: 外部用户 / 业务伙伴\n\n前台用户 / 消费者\n - TYPE_MERCHANT: 商户 / 卖家\n - TYPE_SUPPLIER: 供应商 / 合作方\n - TYPE_EMPLOYEE: 内部用户 / 员工\n\n后台用户 / 内部员工\n - TYPE_ADMIN: 系统管理员\n - TYPE_SYSTEM: 系统账户 (为安全和区分，编号拉开)\n\n系统集成账户 / 机器人",
-      "title": "用户的系统类型或所属边界"
+      "title": "用户的基础身份类型，后端自动维护更新，非人为更新"
     }
   },
   "securityDefinitions": {
