@@ -2232,6 +2232,136 @@
     }
   },
   "definitions": {
+    "CredentialAlgorithm": {
+      "type": "string",
+      "enum": [
+        "ALGORITHM_UNSPECIFIED",
+        "ALGORITHM_RSA",
+        "ALGORITHM_ECDSA",
+        "ALGORITHM_ED25519",
+        "ALGORITHM_HMAC",
+        "ALGORITHM_AES",
+        "ALGORITHM_CHACHA20_POLY1305",
+        "ALGORITHM_OTHER"
+      ],
+      "default": "ALGORITHM_UNSPECIFIED",
+      "description": "- ALGORITHM_UNSPECIFIED: 未指定\n - ALGORITHM_RSA: 非对称签名/加密算法\n\nRSA 公私钥算法\n - ALGORITHM_ECDSA: ECDSA 椭圆曲线签名算法\n - ALGORITHM_ED25519: Ed25519 高性能椭圆曲线签名算法\n - ALGORITHM_HMAC: 对称签名 / HMAC\n\nHMAC 对称签名算法，hash 类型可在 metadata 指定 (SHA256, SHA512, SHA3 等)\n - ALGORITHM_AES: 对称加密算法\n\nAES 对称加密算法，可在 metadata 指定 key 长度 (128/256) 和模式 (GCM/CBC 等)\n - ALGORITHM_CHACHA20_POLY1305: ChaCha20-Poly1305 对称加密 + 完整性验证，高性能\n - ALGORITHM_OTHER: 国密 / 自定义算法\n\n自定义算法或国密算法（如 SM2/SM3/SM4 或企业自研算法）",
+      "title": "算法类型枚举"
+    },
+    "CredentialApiKeyData": {
+      "type": "object",
+      "properties": {
+        "api_key": {
+          "type": "string",
+          "title": "API Key 的公有标识"
+        },
+        "api_secret": {
+          "type": "string",
+          "format": "byte",
+          "title": "API Secret / 私密部分，敏感数据"
+        }
+      },
+      "title": "API 密钥结构"
+    },
+    "CredentialKeyPairData": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "公钥内容（PEM/DER 格式）"
+        },
+        "private_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "私钥内容（PEM/DER 格式），敏感数据"
+        },
+        "passphrase": {
+          "type": "string",
+          "format": "byte",
+          "title": "私钥加密口令，可选"
+        }
+      },
+      "title": "非对称密钥对"
+    },
+    "CredentialLicenseData": {
+      "type": "object",
+      "properties": {
+        "license_key": {
+          "type": "string",
+          "title": "许可证密钥或主体内容"
+        },
+        "signature": {
+          "type": "string",
+          "title": "许可证数字签名，用于验证完整性"
+        }
+      },
+      "title": "软件许可证"
+    },
+    "CredentialSource": {
+      "type": "string",
+      "enum": [
+        "SOURCE_UNSPECIFIED",
+        "SOURCE_SYSTEM",
+        "SOURCE_USER",
+        "SOURCE_KMS",
+        "SOURCE_EXTERNAL"
+      ],
+      "default": "SOURCE_UNSPECIFIED",
+      "description": "- SOURCE_UNSPECIFIED: 未指定\n - SOURCE_SYSTEM: 系统自动生成\n - SOURCE_USER: 用户创建\n - SOURCE_KMS: KMS/HSM 生成\n - SOURCE_EXTERNAL: 外部导入",
+      "title": "凭证来源"
+    },
+    "CredentialUsage": {
+      "type": "string",
+      "enum": [
+        "USAGE_UNSPECIFIED",
+        "USAGE_SIGNING",
+        "USAGE_ENCRYPTION",
+        "USAGE_AUTH",
+        "USAGE_LICENSE",
+        "USAGE_OTP"
+      ],
+      "default": "USAGE_UNSPECIFIED",
+      "description": "- USAGE_UNSPECIFIED: 未指定用途\n - USAGE_SIGNING: 技术用途\n\n数据签名/完整性验证\n - USAGE_ENCRYPTION: 数据加密/解密\n - USAGE_AUTH: 业务用途\n\n身份认证/授权\n - USAGE_LICENSE: 软件许可证验证\n - USAGE_OTP: 一次性密码 / TOTP",
+      "title": "凭证用途"
+    },
+    "CredentialVisibility": {
+      "type": "string",
+      "enum": [
+        "VISIBILITY_UNSPECIFIED",
+        "VISIBILITY_PRIVATE",
+        "VISIBILITY_INTERNAL",
+        "VISIBILITY_PUBLIC",
+        "VISIBILITY_GROUP"
+      ],
+      "default": "VISIBILITY_UNSPECIFIED",
+      "description": "- VISIBILITY_UNSPECIFIED: 未指定\n - VISIBILITY_PRIVATE: 仅创建者/管理员可见\n - VISIBILITY_INTERNAL: 系统内部服务可访问\n - VISIBILITY_PUBLIC: 可公开（公钥/证书）\n - VISIBILITY_GROUP: 特定团队可访问",
+      "title": "凭证可见性"
+    },
+    "CredentialX509Data": {
+      "type": "object",
+      "properties": {
+        "certificate": {
+          "type": "string",
+          "format": "byte",
+          "title": "主证书（PEM/DER 格式）"
+        },
+        "private_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "对应私钥（PEM/DER 格式），敏感数据，可选"
+        },
+        "ca_chain": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "title": "可选 CA 证书链（顺序从根到中间证书）"
+        }
+      },
+      "title": "X.509 证书捆绑数据"
+    },
     "ListUsersRequestUserView": {
       "type": "string",
       "enum": [
@@ -2522,57 +2652,146 @@
     "v1Credential": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "凭证唯一 ID"
+        },
         "name": {
           "type": "string",
-          "title": "Name 凭据名称"
+          "title": "凭证显示名称"
         },
         "type": {
           "$ref": "#/definitions/v1CredentialType",
-          "title": "凭据类型"
+          "title": "凭证类型"
         },
-        "appid": {
-          "type": "string",
-          "title": "Appid 凭据关联的应用 ID"
-        },
-        "appkey": {
-          "type": "string",
-          "title": "Appkey 凭据关联的密钥"
-        },
-        "public_key": {
-          "type": "string",
-          "title": "公钥"
-        },
-        "private_key": {
-          "type": "string",
-          "title": "私钥"
+        "algorithm": {
+          "$ref": "#/definitions/CredentialAlgorithm",
+          "title": "技术算法"
         },
         "usage": {
-          "type": "string"
+          "$ref": "#/definitions/CredentialUsage",
+          "title": "业务用途"
+        },
+        "visibility": {
+          "$ref": "#/definitions/CredentialVisibility",
+          "title": "可见性"
+        },
+        "status": {
+          "$ref": "#/definitions/v1CredentialStatus",
+          "title": "当前状态"
+        },
+        "source": {
+          "$ref": "#/definitions/CredentialSource",
+          "title": "凭证来源"
+        },
+        "key_id": {
+          "type": "string",
+          "title": "外部系统 Key ID / JWKS ID / HSM ID"
+        },
+        "api_key": {
+          "$ref": "#/definitions/CredentialApiKeyData",
+          "title": "API Key"
+        },
+        "key_pair": {
+          "$ref": "#/definitions/CredentialKeyPairData",
+          "title": "公私钥对"
+        },
+        "x509": {
+          "$ref": "#/definitions/CredentialX509Data",
+          "title": "X.509 证书数据"
+        },
+        "license": {
+          "$ref": "#/definitions/CredentialLicenseData",
+          "title": "软件许可证"
+        },
+        "symmetric_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "对称密钥 / HMAC / JWT"
+        },
+        "jwks_uri": {
+          "type": "string",
+          "title": "JWKS URI"
+        },
+        "not_before": {
+          "type": "string",
+          "format": "date-time",
+          "description": "生效时间（Not Before）",
+          "title": "时间相关字段"
         },
         "expires_at": {
           "type": "string",
           "format": "date-time",
           "title": "过期时间"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后更新时间"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "int64",
+          "description": "创建者用户 ID",
+          "title": "审计信息"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "更新者用户 ID"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "自定义业务属性",
+          "title": "附加元数据和描述"
+        },
+        "description": {
+          "type": "string",
+          "title": "凭证说明或备注"
         }
       },
-      "title": "Credential 存储凭证信息"
+      "title": "企业级通用凭证定义\n支持 API Key、X.509 证书、非对称密钥对、HMAC/对称密钥、JWKS、软件许可证等多种凭证类型\n提供分层管理：类型、算法、用途、可见性、来源、策略、审计和元数据"
+    },
+    "v1CredentialStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_ACTIVE",
+        "STATUS_PENDING",
+        "STATUS_DISABLED",
+        "STATUS_EXPIRED",
+        "STATUS_REVOKED"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "- STATUS_UNSPECIFIED: 未指定状态\n - STATUS_ACTIVE: 有效且正在使用\n - STATUS_PENDING: 待激活/待验证\n - STATUS_DISABLED: 手动禁用\n - STATUS_EXPIRED: 已过期\n - STATUS_REVOKED: 已吊销/废弃",
+      "title": "凭证状态"
     },
     "v1CredentialType": {
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
         "TYPE_API_KEY",
-        "TYPE_JWT",
-        "TYPE_JWKS",
-        "TYPE_RSA",
-        "TYPE_ECDSA",
-        "TYPE_ED25519",
-        "TYPE_SSH_KEY",
+        "TYPE_SYMMETRIC_KEY",
+        "TYPE_KEY_PAIR",
         "TYPE_X509",
-        "TYPE_LICENSE"
+        "TYPE_LICENSE",
+        "TYPE_JWKS",
+        "TYPE_HSM_REF",
+        "TYPE_FIDO",
+        "TYPE_OTHER"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "title": "- TYPE_API_KEY: 普通 API key\n - TYPE_JWT: JSON Web Token\n - TYPE_JWKS: JSON Web Key Set\n - TYPE_RSA: RSA 密钥对\n - TYPE_ECDSA: ECDSA 密钥对\n - TYPE_ED25519: Ed25519 密钥对\n - TYPE_SSH_KEY: SSH 公私钥\n - TYPE_X509: 证书\n - TYPE_LICENSE: 软件 License"
+      "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_API_KEY: API Key\n - TYPE_SYMMETRIC_KEY: 对称密钥 / HMAC / AES\n - TYPE_KEY_PAIR: 公私钥对\n - TYPE_X509: X.509 证书凭证（包含主证书、私钥、CA链）\n - TYPE_LICENSE: 软件许可证\n - TYPE_JWKS: JSON Web Key Set URI / 内容\n - TYPE_HSM_REF: 外部安全模块 (KMS/HSM) 引用\n - TYPE_FIDO: 硬件安全密钥 / 多因素认证设备\n - TYPE_OTHER: 未来扩展自定义类型",
+      "title": "凭证类型（载体/结构）"
     },
     "v1Department": {
       "type": "object",

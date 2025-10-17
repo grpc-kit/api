@@ -775,38 +775,147 @@ message AuthProvider {
   string userinfo_endpoint = 12;
 }
 
-// Credential 存储凭证信息
+// 企业级通用凭证定义
+// 支持 API Key、X.509 证书、非对称密钥对、HMAC/对称密钥、JWKS、软件许可证等多种凭证类型
+// 提供分层管理：类型、算法、用途、可见性、来源、策略、审计和元数据
 message Credential {
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    TYPE_API_KEY = 1;      // 普通 API key
-    TYPE_JWT = 2;          // JSON Web Token
-    TYPE_JWKS = 3;         // JSON Web Key Set
-    TYPE_RSA = 4;          // RSA 密钥对
-    TYPE_ECDSA = 5;        // ECDSA 密钥对
-    TYPE_ED25519 = 6;      // Ed25519 密钥对
-    TYPE_SSH_KEY = 7;      // SSH 公私钥
-    TYPE_X509 = 8;         // 证书
-    TYPE_LICENSE = 9;      // 软件 License
+  // API 密钥结构
+  message ApiKeyData {
+    string api_key = 1;    // API Key 的公有标识
+    bytes api_secret = 2;  // API Secret / 私密部分，敏感数据
   }
 
-  // Name 凭据名称
-  string name = 1;
-  // 凭据类型
-  Type type = 2;
-  // Appid 凭据关联的应用 ID
-  string appid = 3;
-  // Appkey 凭据关联的密钥
-  string appkey = 4;
-  // 公钥
-  string public_key = 5;
-  // 私钥
-  string private_key = 6;
+  // 非对称密钥对
+  message KeyPairData {
+    bytes public_key = 1;   // 公钥内容（PEM/DER 格式）
+    bytes private_key = 2;  // 私钥内容（PEM/DER 格式），敏感数据
+    bytes passphrase = 3;   // 私钥加密口令，可选
+  }
 
-  string usage = 7;
+  // X.509 证书捆绑数据
+  message X509Data {
+    bytes certificate = 1;       // 主证书（PEM/DER 格式）
+    bytes private_key = 2;       // 对应私钥（PEM/DER 格式），敏感数据，可选
+    repeated bytes ca_chain = 3; // 可选 CA 证书链（顺序从根到中间证书）
+  }
 
-  // 过期时间
-  google.protobuf.Timestamp expires_at = 8;
+  // 软件许可证
+  message LicenseData {
+    string license_key = 1;  // 许可证密钥或主体内容
+    string signature = 2;    // 许可证数字签名，用于验证完整性
+  }
+
+  // 凭证类型（载体/结构）
+  enum Type {
+    TYPE_UNSPECIFIED = 0;     // 未指定类型
+    TYPE_API_KEY = 1;         // API Key
+    TYPE_SYMMETRIC_KEY = 2;   // 对称密钥 / HMAC / AES
+    TYPE_KEY_PAIR = 3;        // 公私钥对
+    TYPE_X509 = 4;            // X.509 证书凭证（包含主证书、私钥、CA链）
+    TYPE_LICENSE = 5;         // 软件许可证
+    TYPE_JWKS = 6;            // JSON Web Key Set URI / 内容
+    TYPE_HSM_REF = 7;         // 外部安全模块 (KMS/HSM) 引用
+    TYPE_FIDO = 8;            // 硬件安全密钥 / 多因素认证设备
+    TYPE_OTHER = 99;          // 未来扩展自定义类型
+  }
+
+  // 算法类型枚举
+  enum Algorithm {
+    ALGORITHM_UNSPECIFIED = 0; // 未指定
+
+    // 非对称签名/加密算法
+    ALGORITHM_RSA = 1;          // RSA 公私钥算法
+    ALGORITHM_ECDSA = 2;        // ECDSA 椭圆曲线签名算法
+    ALGORITHM_ED25519 = 3;      // Ed25519 高性能椭圆曲线签名算法
+
+    // 对称签名 / HMAC
+    ALGORITHM_HMAC = 4;         // HMAC 对称签名算法，hash 类型可在 metadata 指定 (SHA256, SHA512, SHA3 等)
+
+    // 对称加密算法
+    ALGORITHM_AES = 5;          // AES 对称加密算法，可在 metadata 指定 key 长度 (128/256) 和模式 (GCM/CBC 等)
+    ALGORITHM_CHACHA20_POLY1305 = 6; // ChaCha20-Poly1305 对称加密 + 完整性验证，高性能
+
+    // 国密 / 自定义算法
+    ALGORITHM_OTHER = 99;       // 自定义算法或国密算法（如 SM2/SM3/SM4 或企业自研算法）
+  }
+
+  // 凭证用途
+  enum Usage {
+    USAGE_UNSPECIFIED = 0; // 未指定用途
+
+    // 技术用途
+    USAGE_SIGNING = 1;     // 数据签名/完整性验证
+    USAGE_ENCRYPTION = 2;  // 数据加密/解密
+
+    // 业务用途
+    USAGE_AUTH = 10;        // 身份认证/授权
+    USAGE_LICENSE = 11;     // 软件许可证验证
+    USAGE_OTP = 12;         // 一次性密码 / TOTP
+  }
+
+  // 凭证可见性
+  enum Visibility {
+    VISIBILITY_UNSPECIFIED = 0; // 未指定
+    VISIBILITY_PRIVATE = 1;     // 仅创建者/管理员可见
+    VISIBILITY_INTERNAL = 2;    // 系统内部服务可访问
+    VISIBILITY_PUBLIC = 3;      // 可公开（公钥/证书）
+    VISIBILITY_GROUP = 4;       // 特定团队可访问
+  }
+
+  // 凭证状态
+  enum Status {
+    STATUS_UNSPECIFIED = 0; // 未指定状态
+    STATUS_ACTIVE = 1;      // 有效且正在使用
+    STATUS_PENDING = 2;     // 待激活/待验证
+    STATUS_DISABLED = 3;    // 手动禁用
+    STATUS_EXPIRED = 4;     // 已过期
+    STATUS_REVOKED = 5;     // 已吊销/废弃
+  }
+
+  // 凭证来源
+  enum Source {
+    SOURCE_UNSPECIFIED = 0; // 未指定
+    SOURCE_SYSTEM = 1;      // 系统自动生成
+    SOURCE_USER = 2;        // 用户创建
+    SOURCE_KMS = 3;         // KMS/HSM 生成
+    SOURCE_EXTERNAL = 4;    // 外部导入
+  }
+
+  int32 id = 1;             // 凭证唯一 ID
+  string name = 2;          // 凭证显示名称
+
+  Type type = 3;             // 凭证类型
+  Algorithm algorithm = 4;   // 技术算法
+  Usage usage = 5;           // 业务用途
+  Visibility visibility = 6; // 可见性
+  Status status = 7;         // 当前状态
+  Source source = 8;         // 凭证来源
+
+  string key_id = 9;         // 外部系统 Key ID / JWKS ID / HSM ID
+
+  // oneof: 核心密钥材料（互斥存储）
+  oneof key_material {
+    ApiKeyData api_key = 10;                // API Key
+    KeyPairData key_pair = 11;              // 公私钥对
+    X509Data x509 = 12;   // X.509 证书数据
+    LicenseData license = 13;                // 软件许可证
+    bytes symmetric_key = 14;              // 对称密钥 / HMAC / JWT
+    string jwks_uri = 15;                    // JWKS URI
+  }
+
+  // 时间相关字段
+  google.protobuf.Timestamp not_before = 17; // 生效时间（Not Before）
+  google.protobuf.Timestamp expires_at = 18; // 过期时间
+  google.protobuf.Timestamp created_at = 19; // 创建时间
+  google.protobuf.Timestamp updated_at = 20; // 最后更新时间
+
+  // 审计信息
+  int64 created_by = 21; // 创建者用户 ID
+  int64 updated_by = 22; // 更新者用户 ID
+
+  // 附加元数据和描述
+  map<string, string> metadata = 23; // 自定义业务属性
+  string description = 24;           // 凭证说明或备注
 }
 
 message OAuth2JSONWebKeys {
