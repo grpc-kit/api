@@ -303,6 +303,11 @@ message Resource {
   google.protobuf.Timestamp updated_at = 20;
 }
 
+message Permission {
+  // ID 资源 ID
+  int32 id = 1;
+}
+
 // User 用户实体，表示系统中的账号信息
 message User {
   // 以下字段为非敏感/可直接输出（适合公开展示或普通资料页）
