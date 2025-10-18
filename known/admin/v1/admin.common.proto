@@ -69,10 +69,10 @@ message Department {
   }
   Status status = 6;
 
-  // OrderWeight 部门排序权重，用于同级部门的显示顺序
+  // SortOrder 部门排序顺序，用于同级部门的显示顺序
   // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
   // 默认值：100，范围：1-9999
-  int32 order_weight = 7;
+  int32 sort_order = 7;
   
   // Managers 部门管理者列表，包含各级管理人员和负责人
   // 通过 DepartmentMember 关系表维护，支持精细化角色区分
@@ -168,8 +168,10 @@ message Resource {
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化
   string display_name = 4;
-  // OrderWeight 资源排序权重，数字越小越靠前
-  int32 order_weight = 5;
+  // SortOrder 资源排序顺序，用于同级资源的显示顺序
+  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
+  // 默认值：100，范围：1-9999
+  int32 sort_order = 5;
 
   // Type 资源用途，如后台管理员、前台用户、APP 应用
   enum Type {
@@ -342,8 +344,10 @@ message Role {
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于角色名称的多语言显示，便于不同地区用户理解角色含义
   string display_name = 3;
-  // OrderWeight 菜单排序权重，数字越小越靠前
-  int32 order_weight = 4;
+  // SortOrder 角色排序顺序，用于同级角色的显示顺序
+  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
+  // 默认值：100，范围：1-9999
+  int32 sort_order = 4;
 
   // Type 角色类型枚举，定义角色的来源和管理方式
   // 用于区分不同类型的角色，影响角色的可编辑性和权限管理策略
@@ -417,8 +421,10 @@ message Group {
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于群组名称的多语言显示，提升群组管理的用户体验和可读性
   string display_name = 5;
-  // OrderWeight 菜单排序权重，数字越小越靠前，用于UI展示排序
-  int32 order_weight = 6;
+  // SortOrder 群组排序顺序，用于同级群组的显示顺序
+  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
+  // 默认值：100，范围：1-9999
+  int32 sort_order = 6;
   // ParentID 父群组ID，用于支持群组嵌套，为0表示顶级群组，支持树形组织结构
   int32 parent_id = 7;
   // MaxMembers 群组最大成员数量限制，0表示不限制

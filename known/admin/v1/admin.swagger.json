@@ -389,10 +389,10 @@
                 "status": {
                   "$ref": "#/definitions/v1DepartmentStatus"
                 },
-                "order_weight": {
+                "sort_order": {
                   "type": "integer",
                   "format": "int32",
-                  "title": "OrderWeight 部门排序权重，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
+                  "title": "SortOrder 部门排序顺序，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
                 "managers": {
                   "type": "array",
@@ -833,10 +833,10 @@
                   "type": "string",
                   "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于群组名称的多语言显示，提升群组管理的用户体验和可读性"
                 },
-                "order_weight": {
+                "sort_order": {
                   "type": "integer",
                   "format": "int32",
-                  "title": "OrderWeight 菜单排序权重，数字越小越靠前，用于UI展示排序"
+                  "title": "SortOrder 群组排序顺序，用于同级群组的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
                 "parent_id": {
                   "type": "integer",
@@ -1395,10 +1395,10 @@
                   "type": "string",
                   "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化"
                 },
-                "order_weight": {
+                "sort_order": {
                   "type": "integer",
                   "format": "int32",
-                  "title": "OrderWeight 资源排序权重，数字越小越靠前"
+                  "title": "SortOrder 资源排序顺序，用于同级资源的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
                 "type": {
                   "$ref": "#/definitions/v1ResourceType"
@@ -1726,10 +1726,10 @@
                   "type": "string",
                   "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于角色名称的多语言显示，便于不同地区用户理解角色含义"
                 },
-                "order_weight": {
+                "sort_order": {
                   "type": "integer",
                   "format": "int32",
-                  "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+                  "title": "SortOrder 角色排序顺序，用于同级角色的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
                 "type": {
                   "$ref": "#/definitions/v1RoleType",
@@ -2424,10 +2424,10 @@
           "type": "string",
           "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于角色名称的多语言显示，便于不同地区用户理解角色含义"
         },
-        "order_weight": {
+        "sort_order": {
           "type": "integer",
           "format": "int32",
-          "title": "OrderWeight 菜单排序权重，数字越小越靠前"
+          "title": "SortOrder 角色排序顺序，用于同级角色的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
         "type": {
           "$ref": "#/definitions/v1RoleType",
@@ -2805,10 +2805,10 @@
         "status": {
           "$ref": "#/definitions/v1DepartmentStatus"
         },
-        "order_weight": {
+        "sort_order": {
           "type": "integer",
           "format": "int32",
-          "title": "OrderWeight 部门排序权重，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
+          "title": "SortOrder 部门排序顺序，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
         "managers": {
           "type": "array",
@@ -3057,10 +3057,10 @@
           "type": "string",
           "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于群组名称的多语言显示，提升群组管理的用户体验和可读性"
         },
-        "order_weight": {
+        "sort_order": {
           "type": "integer",
           "format": "int32",
-          "title": "OrderWeight 菜单排序权重，数字越小越靠前，用于UI展示排序"
+          "title": "SortOrder 群组排序顺序，用于同级群组的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
         "parent_id": {
           "type": "integer",
@@ -3485,10 +3485,10 @@
           "type": "string",
           "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化"
         },
-        "order_weight": {
+        "sort_order": {
           "type": "integer",
           "format": "int32",
-          "title": "OrderWeight 资源排序权重，数字越小越靠前"
+          "title": "SortOrder 资源排序顺序，用于同级资源的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
         "type": {
           "$ref": "#/definitions/v1ResourceType"
