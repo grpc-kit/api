@@ -2350,6 +2350,18 @@
       },
       "title": "X.509 证书捆绑数据"
     },
+    "DepartmentMemberMemberType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "TYPE_PRIMARY",
+        "TYPE_DUAL",
+        "TYPE_ADVISORY"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "description": "- TYPE_UNSPECIFIED: 未指定\n - TYPE_PRIMARY: 主部门/主成员 - 用户的主要工作、汇报、考勤部门\n - TYPE_DUAL: 兼职部门/次要成员 - 协作、项目或次要行政隶属\n - TYPE_ADVISORY: 顾问关系/临时关系 - 仅提供指导或临时服务的关系",
+      "title": "IsPrimaryDepartment 是否为用户的主部门标识\ntrue: 主部门（用户的主要工作部门，影响薪资、考勤等）\nfalse: 兼职部门（用户的兼职或协作部门）\n一个用户只能有一个主部门，但可以有多个兼职部门\nMemberType 成员关系类型，区分主部门和兼职部门"
+    },
     "ListUsersRequestUserView": {
       "type": "string",
       "enum": [
@@ -2956,6 +2968,10 @@
         "description": {
           "type": "string",
           "title": "Description 详细说明信息，描述用户在部门中的具体职责\n用于职责说明、工作内容描述、特殊安排说明等\n建议长度：500 字符以内，支持富文本格式"
+        },
+        "member_type": {
+          "$ref": "#/definitions/DepartmentMemberMemberType",
+          "title": "【系统约束】：针对同一个 UserID，只能有一个 DepartmentMember 记录的 MemberType 为 TYPE_PRIMARY。\n bool is_primary_department = 17;"
         }
       },
       "title": "DepartmentMember 部门成员关系实体，支持企业级组织管理\n用于描述用户与部门之间的多对多关系，支持复杂的角色层级、状态管理、\n审计追踪、汇报关系等企业级功能，满足大型组织的精细化管理需求"

@@ -609,6 +609,15 @@ message DepartmentMember {
   // true: 主部门（用户的主要工作部门，影响薪资、考勤等）
   // false: 兼职部门（用户的兼职或协作部门）
   // 一个用户只能有一个主部门，但可以有多个兼职部门
+  // MemberType 成员关系类型，区分主部门和兼职部门
+  enum MemberType {
+    TYPE_UNSPECIFIED = 0;  // 未指定
+    TYPE_PRIMARY = 1;      // 主部门/主成员 - 用户的主要工作、汇报、考勤部门
+    TYPE_DUAL = 2;         // 兼职部门/次要成员 - 协作、项目或次要行政隶属
+    TYPE_ADVISORY = 3;     // 顾问关系/临时关系 - 仅提供指导或临时服务的关系
+  }
+  MemberType member_type = 17;
+  // 【系统约束】：针对同一个 UserID，只能有一个 DepartmentMember 记录的 MemberType 为 TYPE_PRIMARY。
   // bool is_primary_department = 17;
   
   // StartDate 在该部门的开始工作时间，可能与创建时间不同
