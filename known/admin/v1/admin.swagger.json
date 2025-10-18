@@ -377,14 +377,11 @@
                 },
                 "name": {
                   "type": "string",
-                  "title": "Name 部门名称，用于系统内部显示和业务逻辑\n要求：长度 1-100 字符，同级部门名称不可重复\n示例：\"技术研发部\"、\"市场营销部\"、\"人力资源部\""
+                  "title": "Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复\n示例：\"tech_dept\"、\"marketing_dept\"、\"hr_dept\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
-                "i18n_name": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
+                "display_name": {
+                  "type": "string",
+                  "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于部门名称的多语言显示，提升用户体验和国际化支持"
                 },
                 "type": {
                   "$ref": "#/definitions/v1DepartmentType"
@@ -824,7 +821,7 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "title": "Name 群组名称，系统内唯一标识符"
+                  "title": "Name 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"dev_team\"、\"project_alpha\"、\"admin_group\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
                 "type": {
                   "$ref": "#/definitions/v1GroupType"
@@ -832,12 +829,9 @@
                 "status": {
                   "$ref": "#/definitions/v1GroupStatus"
                 },
-                "i18n_name": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "title": "I18NName 群组国际化名称，支持多语言显示"
+                "display_name": {
+                  "type": "string",
+                  "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于群组名称的多语言显示，提升群组管理的用户体验和可读性"
                 },
                 "order_weight": {
                   "type": "integer",
@@ -1395,14 +1389,11 @@
                 },
                 "name": {
                   "type": "string",
-                  "title": "Name 资源名称"
+                  "title": "Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"user_management\"、\"role_admin\"、\"system_config\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
-                "i18n_name": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
+                "display_name": {
+                  "type": "string",
+                  "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化"
                 },
                 "order_weight": {
                   "type": "integer",
@@ -1729,14 +1720,11 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "title": "Name 角色名称"
+                  "title": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"admin\"、\"user_manager\"、\"guest\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
-                "i18n_name": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "title": "I18NName 角色国际化名称"
+                "display_name": {
+                  "type": "string",
+                  "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于角色名称的多语言显示，便于不同地区用户理解角色含义"
                 },
                 "order_weight": {
                   "type": "integer",
@@ -2430,14 +2418,11 @@
         },
         "name": {
           "type": "string",
-          "title": "Name 角色名称"
+          "title": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"admin\"、\"user_manager\"、\"guest\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
-        "i18n_name": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "I18NName 角色国际化名称"
+        "display_name": {
+          "type": "string",
+          "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于角色名称的多语言显示，便于不同地区用户理解角色含义"
         },
         "order_weight": {
           "type": "integer",
@@ -2808,14 +2793,11 @@
         },
         "name": {
           "type": "string",
-          "title": "Name 部门名称，用于系统内部显示和业务逻辑\n要求：长度 1-100 字符，同级部门名称不可重复\n示例：\"技术研发部\"、\"市场营销部\"、\"人力资源部\""
+          "title": "Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复\n示例：\"tech_dept\"、\"marketing_dept\"、\"hr_dept\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
-        "i18n_name": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
+        "display_name": {
+          "type": "string",
+          "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于部门名称的多语言显示，提升用户体验和国际化支持"
         },
         "type": {
           "$ref": "#/definitions/v1DepartmentType"
@@ -3063,7 +3045,7 @@
         },
         "name": {
           "type": "string",
-          "title": "Name 群组名称，系统内唯一标识符"
+          "title": "Name 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"dev_team\"、\"project_alpha\"、\"admin_group\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
         "type": {
           "$ref": "#/definitions/v1GroupType"
@@ -3071,12 +3053,9 @@
         "status": {
           "$ref": "#/definitions/v1GroupStatus"
         },
-        "i18n_name": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "I18NName 群组国际化名称，支持多语言显示"
+        "display_name": {
+          "type": "string",
+          "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于群组名称的多语言显示，提升群组管理的用户体验和可读性"
         },
         "order_weight": {
           "type": "integer",
@@ -3500,14 +3479,11 @@
         },
         "name": {
           "type": "string",
-          "title": "Name 资源名称"
+          "title": "Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"user_management\"、\"role_admin\"、\"system_config\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
-        "i18n_name": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "I18nName 国际化名称配置，支持多语言环境\n用于跨国企业的多语言界面显示\n包含语言代码和对应翻译文本的映射关系"
+        "display_name": {
+          "type": "string",
+          "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化"
         },
         "order_weight": {
           "type": "integer",

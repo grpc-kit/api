@@ -39,15 +39,15 @@ message Department {
   // 支持多级嵌套，建议层级深度不超过 6 级以保证查询性能
   int32 parent_id = 2;
   
-  // Name 部门名称，用于系统内部显示和业务逻辑
-  // 要求：长度 1-100 字符，同级部门名称不可重复
-  // 示例："技术研发部"、"市场营销部"、"人力资源部"
+  // Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
+  // 要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复
+  // 示例："tech_dept"、"marketing_dept"、"hr_dept"
+  // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
   string name = 3;
   
-  // I18nName 国际化名称配置，支持多语言环境
-  // 用于跨国企业的多语言界面显示
-  // 包含语言代码和对应翻译文本的映射关系
-  map<string, string> i18n_name = 4;
+  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
+  // 用于部门名称的多语言显示，提升用户体验和国际化支持
+  string display_name = 4;
   
   // Type 部门类型分类，用于业务逻辑和权限控制
   enum Type {
@@ -160,12 +160,14 @@ message Resource {
   int32 id = 1;
   // ParentID 父资源 ID，为 0 表示顶级资源
   int32 parent_id = 2;
-  // Name 资源名称
+  // Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
+  // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
+  // 示例："user_management"、"role_admin"、"system_config"
+  // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
   string name = 3;
-  // I18nName 国际化名称配置，支持多语言环境
-  // 用于跨国企业的多语言界面显示
-  // 包含语言代码和对应翻译文本的映射关系
-  map<string, string> i18n_name = 4;
+  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
+  // 用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化
+  string display_name = 4;
   // OrderWeight 资源排序权重，数字越小越靠前
   int32 order_weight = 5;
 
@@ -332,10 +334,14 @@ message User {
 message Role {
   // ID 角色 ID，全局唯一标识
   int32 id = 1;
-  // Name 角色名称
+  // Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
+  // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
+  // 示例："admin"、"user_manager"、"guest"
+  // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
   string name = 2;
-  // I18NName 角色国际化名称
-  map<string, string> i18n_name = 3;
+  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
+  // 用于角色名称的多语言显示，便于不同地区用户理解角色含义
+  string display_name = 3;
   // OrderWeight 菜单排序权重，数字越小越靠前
   int32 order_weight = 4;
 
@@ -379,7 +385,10 @@ message Role {
 message Group {
   // ID 群组 ID，全局唯一标识
   int32 id = 1;
-  // Name 群组名称，系统内唯一标识符
+  // Name 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
+  // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
+  // 示例："dev_team"、"project_alpha"、"admin_group"
+  // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
   string name = 2;
 
   // Type 群组类型，标识群组的业务用途
@@ -405,8 +414,9 @@ message Group {
   }
   Status status = 4;
 
-  // I18NName 群组国际化名称，支持多语言显示
-  map<string, string> i18n_name = 5;
+  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
+  // 用于群组名称的多语言显示，提升群组管理的用户体验和可读性
+  string display_name = 5;
   // OrderWeight 菜单排序权重，数字越小越靠前，用于UI展示排序
   int32 order_weight = 6;
   // ParentID 父群组ID，用于支持群组嵌套，为0表示顶级群组，支持树形组织结构
