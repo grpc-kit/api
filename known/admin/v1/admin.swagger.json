@@ -2214,8 +2214,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1UpdateUserPasswordResponse"
             }
           },
           "4xx": {
@@ -3674,6 +3673,9 @@
       "title": "Type 角色类型枚举，定义角色的来源和管理方式\n用于区分不同类型的角色，影响角色的可编辑性和权限管理策略"
     },
     "v1UpdateDepartmentMembersResponse": {
+      "type": "object"
+    },
+    "v1UpdateUserPasswordResponse": {
       "type": "object"
     },
     "v1UpsertAuthProvidersResponse": {

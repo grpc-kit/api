@@ -119,3 +119,7 @@ message UpdateUserPasswordRequest {
   string new_password_hash = 3;
   string old_password_hash = 4;
 }
+
+message UpdateUserPasswordResponse {
+
+}

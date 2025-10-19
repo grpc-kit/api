@@ -56,7 +56,7 @@ service KnownAdmin {
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
-  rpc UpdateUserPassword(UpdateUserPasswordRequest) returns(google.protobuf.Empty);
+  rpc UpdateUserPassword(UpdateUserPasswordRequest) returns(UpdateUserPasswordResponse);
 
   // rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);
   // 群组相关
