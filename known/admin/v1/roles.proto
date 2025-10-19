@@ -24,10 +24,48 @@ message DeleteRoleRequest {
 }
 
 message ListRolesRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  // 每页返回的最大用户数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 8;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 4;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "create_time desc, name asc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 5;
 }
 
 message ListRolesResponse {
   repeated Role roles = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
 }
 
 message ListRoleUsersRequest {
