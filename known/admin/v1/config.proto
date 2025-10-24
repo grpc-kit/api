@@ -5,10 +5,101 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+message LocalConfig {
+  ServicesConfig Services = 1;
+  DiscoverConfig Discover = 2;
+  SecurityConfig Security = 3;
+  DatabaseConfig Database = 4;
+  CacheboxConfig Cachebox = 5;
+  DebuggerConfig Debugger = 6;
+  ObjstoreConfig Objstore = 7;
+  FrontendConfig Frontend = 8;
+  ObservablesConfig Observables = 9;
+  CloudEventsConfig CloudEvents = 10;
+  AutomationsConfig Automations = 11;
+}
+
+message ServicesConfig {
+
+}
+
+message DiscoverConfig {
+
+}
+
+message SecurityConfig {
+  bool enable = 1;
+  Authentication authentication = 2;
+  Authorization authorization = 3;
+}
+
+message DatabaseConfig {
+
+}
+
+message CacheboxConfig {
+
+}
+
+message DebuggerConfig {
+
+}
+
+message ObjstoreConfig {
+
+}
+
+message FrontendConfig {
+
+}
+
+message ObservablesConfig {
+
+}
+
+message CloudEventsConfig {
+
+}
+
+message AutomationsConfig {
+
+}
+
+message Authentication {
+  repeated string insecure_rpcs = 1;
+  OIDCProvider oidc_provider = 2;
+  repeated BasicAuth http_users = 3;
+}
+
+message Authorization {
+
+}
+
+message OIDCProvider {
+
+}
+
+message BasicAuth {
+  int64 user_id = 1;
+  string username = 2;
+  string password = 3;
+  string password_hash = 4;
+  repeated string groups = 5;
+  string tenant = 6;
+}
+
+message AuthorizationConfig {
+
+}
+
 message GetConfigRequest {
 
 }
 
 message GetConfigResponse {
+
+}
+
+message GetLocalConfigSecurityRequest {
 
 }
