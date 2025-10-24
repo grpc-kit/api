@@ -19,7 +19,10 @@ import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
 
 service KnownAdmin {
+  // 本地配置
   rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
+  rpc GetLocalConfigSecurity(GetLocalConfigSecurityRequest) returns (SecurityConfig);
+
   // 认证鉴权
   rpc CreateAuthLogin(CreateAuthLoginRequest) returns (AuthToken);
   rpc CreateAuthToken(CreateAuthTokenRequest) returns (AuthToken);

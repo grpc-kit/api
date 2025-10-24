@@ -1139,6 +1139,31 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/local/config/security": {
+      "get": {
+        "operationId": "KnownAdmin_GetLocalConfigSecurity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration": {
       "get": {
         "operationId": "KnownAdmin_GetOAuth2Discovery",
@@ -2624,6 +2649,57 @@
       },
       "title": "AuthToken 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
     },
+    "v1Authentication": {
+      "type": "object",
+      "properties": {
+        "insecure_rpcs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "oidc_provider": {
+          "$ref": "#/definitions/v1OIDCProvider"
+        },
+        "http_users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1BasicAuth"
+          }
+        }
+      }
+    },
+    "v1Authorization": {
+      "type": "object"
+    },
+    "v1BasicAuth": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "password_hash": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tenant": {
+          "type": "string"
+        }
+      }
+    },
     "v1CreateAuthLoginRequest": {
       "type": "object",
       "properties": {
@@ -3529,6 +3605,9 @@
         }
       }
     },
+    "v1OIDCProvider": {
+      "type": "object"
+    },
     "v1PhoneNumber": {
       "type": "object",
       "properties": {
@@ -3671,6 +3750,20 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值／未指定类型：系统默认值，通常不直接使用\n - TYPE_SYSTEM: 系统内置角色：由系统预定义，不可删除，权限固定\n - TYPE_CUSTOM: 自定义角色：用户创建的角色，可完全自定义权限\n - TYPE_TEMPLATE: 模板角色：预设的角色模板，可基于此创建新角色",
       "title": "Type 角色类型枚举，定义角色的来源和管理方式\n用于区分不同类型的角色，影响角色的可编辑性和权限管理策略"
+    },
+    "v1SecurityConfig": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean"
+        },
+        "authentication": {
+          "$ref": "#/definitions/v1Authentication"
+        },
+        "authorization": {
+          "$ref": "#/definitions/v1Authorization"
+        }
+      }
     },
     "v1UpdateDepartmentMembersResponse": {
       "type": "object"
