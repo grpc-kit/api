@@ -6,62 +6,72 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 message LocalConfig {
-  ServicesConfig Services = 1;
-  DiscoverConfig Discover = 2;
-  SecurityConfig Security = 3;
-  DatabaseConfig Database = 4;
-  CacheboxConfig Cachebox = 5;
-  DebuggerConfig Debugger = 6;
-  ObjstoreConfig Objstore = 7;
-  FrontendConfig Frontend = 8;
-  ObservablesConfig Observables = 9;
-  CloudEventsConfig CloudEvents = 10;
-  AutomationsConfig Automations = 11;
+  ServicesConfig services = 1;
+  DiscoverConfig discover = 2;
+  SecurityConfig security = 3;
+  DatabaseConfig database = 4;
+  CacheboxConfig cachebox = 5;
+  DebuggerConfig debugger = 6;
+  ObjstoreConfig objstore = 7;
+  FrontendConfig frontend = 8;
+  ObservablesConfig observables = 9;
+  CloudEventsConfig cloudevents = 10;
+  AutomationsConfig automations = 11;
 }
 
 message ServicesConfig {
-
+  string name = 1;
 }
 
 message DiscoverConfig {
-
+  string name = 1;
 }
 
 message SecurityConfig {
-  bool enable = 1;
-  Authentication authentication = 2;
-  Authorization authorization = 3;
+  string name = 1;
+
+  bool enable = 3;
+  Authentication authentication = 4;
+  Authorization authorization = 5;
 }
 
 message DatabaseConfig {
+  string name = 1;
 
 }
 
 message CacheboxConfig {
+  string name = 1;
 
 }
 
 message DebuggerConfig {
+  string name = 1;
 
 }
 
 message ObjstoreConfig {
+  string name = 1;
 
 }
 
 message FrontendConfig {
+  string name = 1;
 
 }
 
 message ObservablesConfig {
+  string name = 1;
 
 }
 
 message CloudEventsConfig {
+  string name = 1;
 
 }
 
 message AutomationsConfig {
+  string name = 1;
 
 }
 
@@ -96,10 +106,6 @@ message GetConfigRequest {
 
 }
 
-message GetConfigResponse {
-
-}
-
-message GetLocalConfigSecurityRequest {
+message GetConfigSecurityRequest {
 
 }

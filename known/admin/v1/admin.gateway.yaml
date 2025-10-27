@@ -8,8 +8,10 @@ http:
     body: "*"
 
     # 本地配置
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetLocalConfigSecurity
-    get: "/builtin/admin/api/v1/local/config/security"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfig
+    get: "/builtin/admin/api/v1/config"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigSecurity
+    get: "/builtin/admin/api/v1/config/security"
 
     # 认证鉴权
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthToken
