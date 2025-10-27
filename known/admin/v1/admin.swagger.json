@@ -198,6 +198,57 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/config": {
+      "get": {
+        "summary": "本地配置",
+        "operationId": "KnownAdmin_GetConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LocalConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/security": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigSecurity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/builtin/admin/api/v1/credentials": {
       "post": {
         "summary": "安全相关",
@@ -1137,31 +1188,6 @@
             }
           }
         ]
-      }
-    },
-    "/builtin/admin/api/v1/local/config/security": {
-      "get": {
-        "operationId": "KnownAdmin_GetLocalConfigSecurity",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SecurityConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
       }
     },
     "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration": {
@@ -2673,6 +2699,14 @@
     "v1Authorization": {
       "type": "object"
     },
+    "v1AutomationsConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "v1BasicAuth": {
       "type": "object",
       "properties": {
@@ -2696,6 +2730,22 @@
           }
         },
         "tenant": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CacheboxConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CloudEventsConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
           "type": "string"
         }
       }
@@ -2910,6 +2960,22 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_API_KEY: API Key\n - TYPE_SYMMETRIC_KEY: 对称密钥 / HMAC / AES\n - TYPE_KEY_PAIR: 公私钥对\n - TYPE_X509: X.509 证书凭证（包含主证书、私钥、CA链）\n - TYPE_LICENSE: 软件许可证\n - TYPE_JWKS: JSON Web Key Set URI / 内容\n - TYPE_HSM_REF: 外部安全模块 (KMS/HSM) 引用\n - TYPE_FIDO: 硬件安全密钥 / 多因素认证设备\n - TYPE_OTHER: 未来扩展自定义类型",
       "title": "凭证类型（载体/结构）"
+    },
+    "v1DatabaseConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DebuggerConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
     },
     "v1Department": {
       "type": "object",
@@ -3158,6 +3224,22 @@
       "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_BUSINESS: 业务部门 - 直接产生收入的核心业务单位\n - TYPE_SUPPORT: 支持部门 - 为业务部门提供服务支撑（如：IT、HR）\n - TYPE_MANAGEMENT: 管理部门 - 负责决策和监督的管理层级\n - TYPE_VIRTUAL: 虚拟部门 - 项目组、临时团队等非固定组织",
       "title": "Type 部门类型分类，用于业务逻辑和权限控制"
     },
+    "v1DiscoverConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1FrontendConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "v1GetAuthCallbackResponse": {
       "type": "object",
       "properties": {
@@ -3168,9 +3250,6 @@
           "type": "string"
         }
       }
-    },
-    "v1GetConfigResponse": {
-      "type": "object"
     },
     "v1Group": {
       "type": "object",
@@ -3553,6 +3632,44 @@
         }
       }
     },
+    "v1LocalConfig": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "$ref": "#/definitions/v1ServicesConfig"
+        },
+        "discover": {
+          "$ref": "#/definitions/v1DiscoverConfig"
+        },
+        "security": {
+          "$ref": "#/definitions/v1SecurityConfig"
+        },
+        "database": {
+          "$ref": "#/definitions/v1DatabaseConfig"
+        },
+        "cachebox": {
+          "$ref": "#/definitions/v1CacheboxConfig"
+        },
+        "debugger": {
+          "$ref": "#/definitions/v1DebuggerConfig"
+        },
+        "objstore": {
+          "$ref": "#/definitions/v1ObjstoreConfig"
+        },
+        "frontend": {
+          "$ref": "#/definitions/v1FrontendConfig"
+        },
+        "observables": {
+          "$ref": "#/definitions/v1ObservablesConfig"
+        },
+        "cloudevents": {
+          "$ref": "#/definitions/v1CloudEventsConfig"
+        },
+        "automations": {
+          "$ref": "#/definitions/v1AutomationsConfig"
+        }
+      }
+    },
     "v1OAuth2Discovery": {
       "type": "object",
       "properties": {
@@ -3607,6 +3724,22 @@
     },
     "v1OIDCProvider": {
       "type": "object"
+    },
+    "v1ObjstoreConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ObservablesConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
     },
     "v1PhoneNumber": {
       "type": "object",
@@ -3754,6 +3887,9 @@
     "v1SecurityConfig": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "enable": {
           "type": "boolean"
         },
@@ -3762,6 +3898,14 @@
         },
         "authorization": {
           "$ref": "#/definitions/v1Authorization"
+        }
+      }
+    },
+    "v1ServicesConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
         }
       }
     },
