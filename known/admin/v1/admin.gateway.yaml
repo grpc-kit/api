@@ -145,6 +145,9 @@ http:
     get: "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetOAuth2JSONWebKeys
     get: "/builtin/admin/api/v1/oatuh2/jwks"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetOAuth2Userinfo
+    get: "/builtin/admin/api/v1/oatuh2/userinfo"
+
     # 数据库相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDatabaseInitialize
     post: "/builtin/admin/api/v1/database/initialize"

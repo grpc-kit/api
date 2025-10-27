@@ -76,6 +76,7 @@ service KnownAdmin {
   rpc CreateCredential(CreateCredentialRequest) returns(Credential);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
   rpc GetOAuth2JSONWebKeys(google.protobuf.Empty) returns(OAuth2JSONWebKeys);
+  rpc GetOAuth2Userinfo(google.protobuf.Empty) returns(OAuth2Userinfo);
 
   // 数据库相关
   rpc CreateDatabaseInitialize(CreateDatabaseInitializeRequest) returns(google.protobuf.Empty);

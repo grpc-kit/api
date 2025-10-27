@@ -21,57 +21,67 @@ message LocalConfig {
 
 message ServicesConfig {
   string name = 1;
+  bool enabled = 2;
 }
 
 message DiscoverConfig {
   string name = 1;
+  bool enabled = 2;
 }
 
 message SecurityConfig {
   string name = 1;
+  bool enabled = 2;
 
-  bool enable = 3;
   Authentication authentication = 4;
   Authorization authorization = 5;
 }
 
 message DatabaseConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
 message CacheboxConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
 message DebuggerConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
 message ObjstoreConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
 message FrontendConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
 message ObservablesConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
 message CloudEventsConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
 message AutomationsConfig {
   string name = 1;
+  bool enabled = 2;
 
 }
 
