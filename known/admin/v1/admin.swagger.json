@@ -1240,6 +1240,31 @@
         }
       }
     },
+    "/builtin/admin/api/v1/oatuh2/userinfo": {
+      "get": {
+        "operationId": "KnownAdmin_GetOAuth2Userinfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OAuth2Userinfo"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/builtin/admin/api/v1/resources": {
       "get": {
         "summary": "资源管理",
@@ -2704,6 +2729,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -2739,6 +2767,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -2747,6 +2778,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -2966,6 +3000,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -2974,6 +3011,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -3229,6 +3269,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -3237,6 +3280,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -3722,6 +3768,44 @@
         }
       }
     },
+    "v1OAuth2Userinfo": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "int64",
+          "title": "ID 用户 ID，全局唯一标识，使用 int64 序列化为 json 为 string 类型"
+        },
+        "username": {
+          "type": "string",
+          "title": "用户名，系统登录凭证，必须唯一"
+        },
+        "nickname": {
+          "type": "string",
+          "title": "昵称，用于社交或前端展示"
+        },
+        "profile": {
+          "type": "string",
+          "title": "个人简介或签名"
+        },
+        "picture": {
+          "type": "string",
+          "title": "用户头像 URL"
+        },
+        "website": {
+          "type": "string",
+          "title": "个人网站地址"
+        },
+        "timezone": {
+          "type": "string",
+          "title": "时区信息（IANA 时区标识，例如 \"Asia/Shanghai\"）"
+        },
+        "locale": {
+          "type": "string",
+          "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）"
+        }
+      }
+    },
     "v1OIDCProvider": {
       "type": "object"
     },
@@ -3730,6 +3814,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -3738,6 +3825,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -3890,7 +3980,7 @@
         "name": {
           "type": "string"
         },
-        "enable": {
+        "enabled": {
           "type": "boolean"
         },
         "authentication": {
@@ -3906,6 +3996,9 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
