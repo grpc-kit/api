@@ -205,13 +205,15 @@ message Resource {
   // 默认值：100，范围：1-9999
   int32 sort_order = 5;
 
-  // Type 资源用途，如后台管理员、前台用户、APP 应用
+  // Type 资源类型
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    TYPE_DIRECTORY = 1; // 目录，在前端菜单树中，只起到“目录”作用，不直接绑定路由/组件
-    TYPE_MENU = 2;      // 菜单
-    TYPE_BUTTON = 3;    // 按钮
-    TYPE_API = 4;       // API
+    TYPE_MENU    = 1; // 菜单（页面入口）
+    TYPE_PAGE    = 2; // 页面（路由级）
+    TYPE_BUTTON  = 3; // 按钮 / UI 操作
+    TYPE_API     = 4; // 后端接口
+    TYPE_DATA    = 5; // 数据级资源（行 / 字段）
+    TYPE_SYSTEM  = 6; // 系统级 / 非 UI 资源
   }
   Type type = 6;
 
@@ -230,7 +232,6 @@ message Resource {
   // Icon 资源图标，通常用于前端展示
   string icon = 12;
   string component = 13;
-  repeated string permissions = 14;
 
   // Children 子资源列表
   repeated Resource children = 15;

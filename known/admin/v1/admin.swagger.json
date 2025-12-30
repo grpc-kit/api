@@ -1480,7 +1480,12 @@
                   "$ref": "#/definitions/v1ResourceType"
                 },
                 "scope": {
-                  "$ref": "#/definitions/ResourceScope"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/v1Scope"
+                  },
+                  "title": "Scope 资源作用域"
                 },
                 "enabled": {
                   "type": "boolean",
@@ -1504,12 +1509,6 @@
                 },
                 "component": {
                   "type": "string"
-                },
-                "permissions": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
                 },
                 "children": {
                   "type": "array",
@@ -2515,18 +2514,6 @@
           "type": "string"
         }
       }
-    },
-    "ResourceScope": {
-      "type": "string",
-      "enum": [
-        "SCOPE_UNSPECIFIED",
-        "SCOPE_ADMIN",
-        "SCOPE_USER",
-        "SCOPE_APP"
-      ],
-      "default": "SCOPE_UNSPECIFIED",
-      "description": "- SCOPE_ADMIN: 后台\n - SCOPE_USER: 前台\n - SCOPE_APP: 移动端",
-      "title": "Scope 资源作用域"
     },
     "UserGender": {
       "type": "string",
@@ -3875,7 +3862,12 @@
           "$ref": "#/definitions/v1ResourceType"
         },
         "scope": {
-          "$ref": "#/definitions/ResourceScope"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Scope"
+          },
+          "title": "Scope 资源作用域"
         },
         "enabled": {
           "type": "boolean",
@@ -3899,12 +3891,6 @@
         },
         "component": {
           "type": "string"
-        },
-        "permissions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         },
         "children": {
           "type": "array",
@@ -3942,14 +3928,16 @@
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_DIRECTORY",
         "TYPE_MENU",
+        "TYPE_PAGE",
         "TYPE_BUTTON",
-        "TYPE_API"
+        "TYPE_API",
+        "TYPE_DATA",
+        "TYPE_SYSTEM"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_DIRECTORY: 目录，在前端菜单树中，只起到“目录”作用，不直接绑定路由/组件\n - TYPE_MENU: 菜单\n - TYPE_BUTTON: 按钮\n - TYPE_API: API",
-      "title": "Type 资源用途，如后台管理员、前台用户、APP 应用"
+      "description": "- TYPE_MENU: 菜单（页面入口）\n - TYPE_PAGE: 页面（路由级）\n - TYPE_BUTTON: 按钮 / UI 操作\n - TYPE_API: 后端接口\n - TYPE_DATA: 数据级资源（行 / 字段）\n - TYPE_SYSTEM: 系统级 / 非 UI 资源",
+      "title": "Type 资源类型"
     },
     "v1RoleStatus": {
       "type": "string",
@@ -3973,6 +3961,38 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值／未指定类型：系统默认值，通常不直接使用\n - TYPE_SYSTEM: 系统内置角色：由系统预定义，不可删除，权限固定\n - TYPE_CUSTOM: 自定义角色：用户创建的角色，可完全自定义权限\n - TYPE_TEMPLATE: 模板角色：预设的角色模板，可基于此创建新角色",
       "title": "Type 角色类型枚举，定义角色的来源和管理方式\n用于区分不同类型的角色，影响角色的可编辑性和权限管理策略"
+    },
+    "v1Scope": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ID 资源 ID"
+        },
+        "type": {
+          "$ref": "#/definitions/v1ScopeType"
+        },
+        "name": {
+          "type": "string",
+          "title": "Name 作用域系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n默认存在以下内部作用域：\nadmin 后天用户菜单查看权限\nuser 前端用户菜单查看权限"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "title": "Scope 作用域"
+    },
+    "v1ScopeType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "PLATFORM",
+        "ACTION"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "description": "- PLATFORM: admin   后台管理端\nuser    前台用户端\napp     移动端\n\nadmin, user, app\n - ACTION: readonly\nreadwrite",
+      "title": "Type 作用域类型"
     },
     "v1SecurityConfig": {
       "type": "object",
