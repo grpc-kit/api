@@ -154,6 +154,38 @@ message Department {
   string description = 23;
 }
 
+// Scope 作用域
+message Scope {
+  // ID 资源 ID
+  int32 id = 1;
+
+  // Type 作用域类型
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    /*
+      admin   后台管理端
+      user    前台用户端
+      app     移动端
+     */
+    PLATFORM = 1; // admin, user, app
+
+    /*
+      readonly
+      readwrite
+     */
+    ACTION = 2;
+  }
+  Type type = 2;
+
+  // Name 作用域系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
+  // 默认存在以下内部作用域：
+  // admin 后天用户菜单查看权限
+  // user 前端用户菜单查看权限
+  string name = 3;
+
+  string description = 4;
+}
+
 // Resource 资源定义，如：菜单等
 message Resource {
   // ID 资源 ID
@@ -184,13 +216,7 @@ message Resource {
   Type type = 6;
 
   // Scope 资源作用域
-  enum Scope {
-    SCOPE_UNSPECIFIED = 0;
-    SCOPE_ADMIN = 1; // 后台
-    SCOPE_USER = 2;  // 前台
-    SCOPE_APP = 3;   // 移动端
-  }
-  Scope scope = 7;
+  repeated Scope scope = 7;
 
   // Enabled 资源是否启用
   bool enabled = 8;
