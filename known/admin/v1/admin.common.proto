@@ -250,6 +250,53 @@ message Resource {
   google.protobuf.Timestamp updated_at = 20;
 }
 
+// Policy 策略定义
+message Policy {
+  // ID 资源 ID
+  int32 id = 1;
+
+  // Type 策略类型
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_ROLE = 1;
+    TYPE_OPEN_POLICY_AGENT = 2;
+  }
+  Type type = 2;
+
+  // Status 策略状态，用于生命周期管理
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
+
+    // ===== 正常生命周期 =====
+    STATUS_DRAFT = 1;        // 草稿：未生效，仅用于编辑/评审
+    STATUS_ENABLED = 2;      // 已启用：正在参与授权决策
+    STATUS_DISABLED = 3;     // 已禁用：保留配置，但不参与决策
+
+    // ===== 变更 / 风险控制 =====
+    STATUS_PENDING = 4;     // 待生效：已配置，等待审批或时间触发
+    STATUS_SUSPENDED = 5;   // 已挂起：紧急风控临时冻结（可自动/人工）
+
+    // ===== 生命周期结束 =====
+    STATUS_DEPRECATED = 6;  // 已废弃：不推荐使用，允许已有绑定
+    STATUS_ARCHIVED = 7;    // 已归档：只读，仅审计/历史查询
+  }
+  Status status = 3;
+
+  // Name 策略系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
+  // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
+  // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
+  string name = 4;
+
+  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
+  string display_name = 5;
+
+  // Value 策略值，根据策略类型不同，表示不同的含义
+  string value = 6;
+
+  // Description 策略描述，详细说明策略职责和业务范围
+  string description = 7;
+}
+
 message Permission {
   // ID 资源 ID
   int32 id = 1;
