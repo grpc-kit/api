@@ -24,22 +24,26 @@ message ListResourcesRequest {
     string page_token = 3;
 
     // Offset-based 分页
-    int32 offset = 8;
+    int32 offset = 4;
   }
+
+  View view = 5;
+  Structure structure = 6;
 
   // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
   // 示例: `email="alice@example.com" AND state="ACTIVE"`
-  string filter = 4;
+  string filter = 7;
 
   // 排序规则，指定结果返回顺序。
   // 格式: "field_name [asc|desc], ..."。
   // 示例: "create_time desc, name asc"
   // AIP-132: order_by 是可选字段。
-  string order_by = 5;
+  string order_by = 8;
 
   // TODO；将来会统一使用 filter 参数实现过滤
-  string type = 6;
-  string scope = 7;
+  string filter_resource_type = 9;
+  string filter_scope_type = 10;
+  string filter_scope_name = 11;
 }
 
 message ListResourcesResponse {
