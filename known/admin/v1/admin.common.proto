@@ -8,6 +8,28 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 // 引入 google 公共类型
 import "google/protobuf/timestamp.proto";
 
+// 通用：用于所有 List / Get / BatchGet
+enum View {
+  VIEW_UNSPECIFIED = 0;
+  // List 默认
+  BASIC = 1;
+  // 常规详情
+  STANDARD = 2;
+  // 全量
+  FULL = 3;
+}
+
+// 通用：用于任何支持层级 / 关系返回的 List API
+enum Structure {
+  STRUCTURE_UNSPECIFIED = 0;
+  // 平铺列表（默认）
+  FLAT = 1;
+  // 层级结构（父子）
+  TREE = 2;
+  // 层级结构 + 全展开
+  TREE_EXPANDED = 3;
+}
+
 // Address 用户地址
 // https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim
 message Address {
@@ -208,12 +230,12 @@ message Resource {
   // Type 资源类型
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    TYPE_MENU    = 1; // 菜单（页面入口）
-    TYPE_PAGE    = 2; // 页面（路由级）
-    TYPE_BUTTON  = 3; // 按钮 / UI 操作
-    TYPE_API     = 4; // 后端接口
-    TYPE_DATA    = 5; // 数据级资源（行 / 字段）
-    TYPE_SYSTEM  = 6; // 系统级 / 非 UI 资源
+    MENU    = 1; // 菜单（页面入口）
+    PAGE    = 2; // 页面（路由级）
+    BUTTON  = 3; // 按钮 / UI 操作
+    API     = 4; // 后端接口
+    DATA    = 5; // 数据级资源（行 / 字段）
+    SYSTEM  = 6; // 系统级 / 非 UI 资源
   }
   Type type = 6;
 
@@ -258,8 +280,8 @@ message Policy {
   // Type 策略类型
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    TYPE_ROLE = 1;
-    TYPE_OPEN_POLICY_AGENT = 2;
+    ROLE = 1;
+    OPEN_POLICY_AGENT = 2;
   }
   Type type = 2;
 
@@ -268,17 +290,17 @@ message Policy {
     STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
 
     // ===== 正常生命周期 =====
-    STATUS_DRAFT = 1;        // 草稿：未生效，仅用于编辑/评审
-    STATUS_ENABLED = 2;      // 已启用：正在参与授权决策
-    STATUS_DISABLED = 3;     // 已禁用：保留配置，但不参与决策
+    DRAFT = 1;        // 草稿：未生效，仅用于编辑/评审
+    ENABLED = 2;      // 已启用：正在参与授权决策
+    DISABLED = 3;     // 已禁用：保留配置，但不参与决策
 
     // ===== 变更 / 风险控制 =====
-    STATUS_PENDING = 4;     // 待生效：已配置，等待审批或时间触发
-    STATUS_SUSPENDED = 5;   // 已挂起：紧急风控临时冻结（可自动/人工）
+    PENDING = 4;     // 待生效：已配置，等待审批或时间触发
+    SUSPENDED = 5;   // 已挂起：紧急风控临时冻结（可自动/人工）
 
     // ===== 生命周期结束 =====
-    STATUS_DEPRECATED = 6;  // 已废弃：不推荐使用，允许已有绑定
-    STATUS_ARCHIVED = 7;    // 已归档：只读，仅审计/历史查询
+    DEPRECATED = 6;  // 已废弃：不推荐使用，允许已有绑定
+    ARCHIVED = 7;    // 已归档：只读，仅审计/历史查询
   }
   Status status = 3;
 
