@@ -1321,6 +1321,34 @@
             "format": "int32"
           },
           {
+            "name": "view",
+            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "BASIC",
+              "STANDARD",
+              "FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "structure",
+            "description": " - FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRUCTURE_UNSPECIFIED",
+              "FLAT",
+              "TREE",
+              "TREE_EXPANDED"
+            ],
+            "default": "STRUCTURE_UNSPECIFIED"
+          },
+          {
             "name": "filter",
             "description": "过滤条件，采用 AIP-160 定义的标准 filter 语法。\n示例: `email=\"alice@example.com\" AND state=\"ACTIVE\"`",
             "in": "query",
@@ -1335,14 +1363,26 @@
             "type": "string"
           },
           {
-            "name": "type",
-            "description": "TODO；将来会统一使用 filter 参数实现过滤",
+            "name": "resource_type",
+            "description": "TODO；以下将来会统一使用 filter 参数实现过滤",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "scope",
+            "name": "resource_status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "scope_type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "scope_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1479,21 +1519,12 @@
                 "type": {
                   "$ref": "#/definitions/v1ResourceType"
                 },
-                "scope": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "$ref": "#/definitions/v1Scope"
-                  },
-                  "title": "Scope 资源作用域"
-                },
-                "enabled": {
-                  "type": "boolean",
-                  "title": "Enabled 资源是否启用"
+                "status": {
+                  "$ref": "#/definitions/v1ResourceStatus"
                 },
                 "hidden": {
                   "type": "boolean",
-                  "title": "Hidden 是否在资源列表中隐藏"
+                  "title": "Enabled 资源是否启用\nbool enabled = 8;\nHidden 是否在资源列表中隐藏"
                 },
                 "hide_children": {
                   "type": "boolean",
@@ -3597,6 +3628,15 @@
             "type": "object",
             "$ref": "#/definitions/v1Resource"
           }
+        },
+        "next_page_token": {
+          "type": "string",
+          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
     },
@@ -3861,21 +3901,12 @@
         "type": {
           "$ref": "#/definitions/v1ResourceType"
         },
-        "scope": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1Scope"
-          },
-          "title": "Scope 资源作用域"
-        },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enabled 资源是否启用"
+        "status": {
+          "$ref": "#/definitions/v1ResourceStatus"
         },
         "hidden": {
           "type": "boolean",
-          "title": "Hidden 是否在资源列表中隐藏"
+          "title": "Enabled 资源是否启用\nbool enabled = 8;\nHidden 是否在资源列表中隐藏"
         },
         "hide_children": {
           "type": "boolean",
@@ -3924,19 +3955,30 @@
       },
       "title": "Resource 资源定义，如：菜单等"
     },
+    "v1ResourceStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "ENABLED",
+        "DISABLED"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "- ENABLED: 启用\n - DISABLED: 禁用",
+      "title": "Status 资源状态"
+    },
     "v1ResourceType": {
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_MENU",
-        "TYPE_PAGE",
-        "TYPE_BUTTON",
-        "TYPE_API",
-        "TYPE_DATA",
-        "TYPE_SYSTEM"
+        "MENU",
+        "PAGE",
+        "BUTTON",
+        "API",
+        "DATA",
+        "SYSTEM"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_MENU: 菜单（页面入口）\n - TYPE_PAGE: 页面（路由级）\n - TYPE_BUTTON: 按钮 / UI 操作\n - TYPE_API: 后端接口\n - TYPE_DATA: 数据级资源（行 / 字段）\n - TYPE_SYSTEM: 系统级 / 非 UI 资源",
+      "description": "- MENU: 菜单（页面入口）\n - PAGE: 页面（路由级）\n - BUTTON: 按钮 / UI 操作\n - API: 后端接口\n - DATA: 数据级资源（行 / 字段）\n - SYSTEM: 系统级 / 非 UI 资源",
       "title": "Type 资源类型"
     },
     "v1RoleStatus": {
@@ -3961,38 +4003,6 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值／未指定类型：系统默认值，通常不直接使用\n - TYPE_SYSTEM: 系统内置角色：由系统预定义，不可删除，权限固定\n - TYPE_CUSTOM: 自定义角色：用户创建的角色，可完全自定义权限\n - TYPE_TEMPLATE: 模板角色：预设的角色模板，可基于此创建新角色",
       "title": "Type 角色类型枚举，定义角色的来源和管理方式\n用于区分不同类型的角色，影响角色的可编辑性和权限管理策略"
-    },
-    "v1Scope": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32",
-          "title": "ID 资源 ID"
-        },
-        "type": {
-          "$ref": "#/definitions/v1ScopeType"
-        },
-        "name": {
-          "type": "string",
-          "title": "Name 作用域系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n默认存在以下内部作用域：\nadmin 后天用户菜单查看权限\nuser 前端用户菜单查看权限"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "title": "Scope 作用域"
-    },
-    "v1ScopeType": {
-      "type": "string",
-      "enum": [
-        "TYPE_UNSPECIFIED",
-        "PLATFORM",
-        "ACTION"
-      ],
-      "default": "TYPE_UNSPECIFIED",
-      "description": "- PLATFORM: admin   后台管理端\nuser    前台用户端\napp     移动端\n\nadmin, user, app\n - ACTION: readonly\nreadwrite",
-      "title": "Type 作用域类型"
     },
     "v1SecurityConfig": {
       "type": "object",
@@ -4021,6 +4031,18 @@
           "type": "boolean"
         }
       }
+    },
+    "v1Structure": {
+      "type": "string",
+      "enum": [
+        "STRUCTURE_UNSPECIFIED",
+        "FLAT",
+        "TREE",
+        "TREE_EXPANDED"
+      ],
+      "default": "STRUCTURE_UNSPECIFIED",
+      "description": "- FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+      "title": "通用：用于任何支持层级 / 关系返回的 List API"
     },
     "v1UpdateDepartmentMembersResponse": {
       "type": "object"
@@ -4184,6 +4206,18 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值\n - TYPE_CUSTOMER: 外部用户 / 业务伙伴\n\n前台用户 / 消费者\n - TYPE_MERCHANT: 商户 / 卖家\n - TYPE_SUPPLIER: 供应商 / 合作方\n - TYPE_EMPLOYEE: 内部用户 / 员工\n\n后台用户 / 内部员工\n - TYPE_ADMIN: 系统管理员\n - TYPE_SYSTEM: 系统账户 (为安全和区分，编号拉开)\n\n系统集成账户 / 机器人",
       "title": "用户的基础身份类型，后端自动维护更新，非人为更新"
+    },
+    "v1View": {
+      "type": "string",
+      "enum": [
+        "VIEW_UNSPECIFIED",
+        "BASIC",
+        "STANDARD",
+        "FULL"
+      ],
+      "default": "VIEW_UNSPECIFIED",
+      "description": "- BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+      "title": "通用：用于所有 List / Get / BatchGet"
     }
   },
   "securityDefinitions": {
