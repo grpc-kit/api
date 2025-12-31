@@ -240,10 +240,19 @@ message Resource {
   Type type = 6;
 
   // Scope 资源作用域
-  repeated Scope scope = 7;
+  // repeated Scope scope = 7;
+
+  // Status 资源状态
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+
+    ENABLED = 1; // 启用
+    DISABLED = 2; // 禁用
+  }
+  Status status = 7;
 
   // Enabled 资源是否启用
-  bool enabled = 8;
+  // bool enabled = 8;
   // Hidden 是否在资源列表中隐藏
   bool hidden = 9;
   // HideChildren 是否在资源列表中隐藏子项
