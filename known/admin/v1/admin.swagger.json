@@ -1367,25 +1367,42 @@
             "description": "TODO；以下将来会统一使用 filter 参数实现过滤",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "resource_status",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "scope_type",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "scope_name",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "policy_type",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "policy_status",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ]
       },
