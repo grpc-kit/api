@@ -273,8 +273,8 @@ message Resource {
   string locator = 11;
   // visual 资源图标，我怎么看到你
   string visual = 12;
-  // Representation 资源描述，我怎么用你
-  string representation = 13;
+  // Manifest 资源描述，我怎么用你
+  string manifest = 13;
   // Metadata 扩展元数据
   // 用于存储上述三个核心字段无法涵盖的特定平台/业务属性
   map<string, string> metadata = 14;

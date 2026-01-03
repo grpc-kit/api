@@ -1504,8 +1504,8 @@
             "description": "ID 资源 ID",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "resource",
@@ -1516,8 +1516,8 @@
               "type": "object",
               "properties": {
                 "parent_id": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "ParentID 父资源 ID，为 0 表示顶级资源"
                 },
                 "name": {
@@ -1539,24 +1539,27 @@
                 "status": {
                   "$ref": "#/definitions/v1ResourceStatus"
                 },
-                "hidden": {
-                  "type": "boolean",
-                  "title": "Enabled 资源是否启用\nbool enabled = 8;\nHidden 是否在资源列表中隐藏"
+                "visibility": {
+                  "$ref": "#/definitions/v1ResourceVisibility"
                 },
-                "hide_children": {
-                  "type": "boolean",
-                  "title": "HideChildren 是否在资源列表中隐藏子项"
-                },
-                "path": {
+                "locator": {
                   "type": "string",
-                  "title": "Path 资源路径"
+                  "title": "Locator 资源路径，我怎么找到你"
                 },
-                "icon": {
+                "visual": {
                   "type": "string",
-                  "title": "Icon 资源图标，通常用于前端展示"
+                  "title": "visual 资源图标，我怎么看到你"
                 },
-                "component": {
-                  "type": "string"
+                "manifest": {
+                  "type": "string",
+                  "title": "Manifest 资源描述，我怎么用你"
+                },
+                "metadata": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Metadata 扩展元数据\n用于存储上述三个核心字段无法涵盖的特定平台/业务属性"
                 },
                 "children": {
                   "type": "array",
@@ -2481,19 +2484,6 @@
       "description": "- USAGE_UNSPECIFIED: 未指定用途\n - USAGE_SIGNING: 技术用途\n\n数据签名/完整性验证\n - USAGE_ENCRYPTION: 数据加密/解密\n - USAGE_AUTH: 业务用途\n\n身份认证/授权\n - USAGE_LICENSE: 软件许可证验证\n - USAGE_OTP: 一次性密码 / TOTP",
       "title": "凭证用途"
     },
-    "CredentialVisibility": {
-      "type": "string",
-      "enum": [
-        "VISIBILITY_UNSPECIFIED",
-        "VISIBILITY_PRIVATE",
-        "VISIBILITY_INTERNAL",
-        "VISIBILITY_PUBLIC",
-        "VISIBILITY_GROUP"
-      ],
-      "default": "VISIBILITY_UNSPECIFIED",
-      "description": "- VISIBILITY_UNSPECIFIED: 未指定\n - VISIBILITY_PRIVATE: 仅创建者/管理员可见\n - VISIBILITY_INTERNAL: 系统内部服务可访问\n - VISIBILITY_PUBLIC: 可公开（公钥/证书）\n - VISIBILITY_GROUP: 特定团队可访问",
-      "title": "凭证可见性"
-    },
     "CredentialX509Data": {
       "type": "object",
       "properties": {
@@ -2911,7 +2901,7 @@
           "title": "业务用途"
         },
         "visibility": {
-          "$ref": "#/definitions/CredentialVisibility",
+          "$ref": "#/definitions/v1CredentialVisibility",
           "title": "可见性"
         },
         "status": {
@@ -3029,6 +3019,19 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_API_KEY: API Key\n - TYPE_SYMMETRIC_KEY: 对称密钥 / HMAC / AES\n - TYPE_KEY_PAIR: 公私钥对\n - TYPE_X509: X.509 证书凭证（包含主证书、私钥、CA链）\n - TYPE_LICENSE: 软件许可证\n - TYPE_JWKS: JSON Web Key Set URI / 内容\n - TYPE_HSM_REF: 外部安全模块 (KMS/HSM) 引用\n - TYPE_FIDO: 硬件安全密钥 / 多因素认证设备\n - TYPE_OTHER: 未来扩展自定义类型",
       "title": "凭证类型（载体/结构）"
+    },
+    "v1CredentialVisibility": {
+      "type": "string",
+      "enum": [
+        "VISIBILITY_UNSPECIFIED",
+        "VISIBILITY_PRIVATE",
+        "VISIBILITY_INTERNAL",
+        "VISIBILITY_PUBLIC",
+        "VISIBILITY_GROUP"
+      ],
+      "default": "VISIBILITY_UNSPECIFIED",
+      "description": "- VISIBILITY_UNSPECIFIED: 未指定\n - VISIBILITY_PRIVATE: 仅创建者/管理员可见\n - VISIBILITY_INTERNAL: 系统内部服务可访问\n - VISIBILITY_PUBLIC: 可公开（公钥/证书）\n - VISIBILITY_GROUP: 特定团队可访问",
+      "title": "凭证可见性"
     },
     "v1DatabaseConfig": {
       "type": "object",
@@ -3893,13 +3896,13 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ID 资源 ID"
         },
         "parent_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ParentID 父资源 ID，为 0 表示顶级资源"
         },
         "name": {
@@ -3921,24 +3924,27 @@
         "status": {
           "$ref": "#/definitions/v1ResourceStatus"
         },
-        "hidden": {
-          "type": "boolean",
-          "title": "Enabled 资源是否启用\nbool enabled = 8;\nHidden 是否在资源列表中隐藏"
+        "visibility": {
+          "$ref": "#/definitions/v1ResourceVisibility"
         },
-        "hide_children": {
-          "type": "boolean",
-          "title": "HideChildren 是否在资源列表中隐藏子项"
-        },
-        "path": {
+        "locator": {
           "type": "string",
-          "title": "Path 资源路径"
+          "title": "Locator 资源路径，我怎么找到你"
         },
-        "icon": {
+        "visual": {
           "type": "string",
-          "title": "Icon 资源图标，通常用于前端展示"
+          "title": "visual 资源图标，我怎么看到你"
         },
-        "component": {
-          "type": "string"
+        "manifest": {
+          "type": "string",
+          "title": "Manifest 资源描述，我怎么用你"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Metadata 扩展元数据\n用于存储上述三个核心字段无法涵盖的特定平台/业务属性"
         },
         "children": {
           "type": "array",
@@ -3997,6 +4003,19 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- MENU: 菜单（页面入口）\n - PAGE: 页面（路由级）\n - BUTTON: 按钮 / UI 操作\n - API: 后端接口\n - DATA: 数据级资源（行 / 字段）\n - SYSTEM: 系统级 / 非 UI 资源",
       "title": "Type 资源类型"
+    },
+    "v1ResourceVisibility": {
+      "type": "string",
+      "enum": [
+        "VISIBILITY_UNSPECIFIED",
+        "VISIBLE",
+        "HIDDEN",
+        "HIDE_CHILDREN",
+        "INTERNAL"
+      ],
+      "default": "VISIBILITY_UNSPECIFIED",
+      "description": "- VISIBLE: 正常显示\n - HIDDEN: 自身隐藏\n - HIDE_CHILDREN: 自身显示，子资源隐藏\n - INTERNAL: 内部使用（API/系统）",
+      "title": "Visibility 资源可见性/展示策略"
     },
     "v1RoleStatus": {
       "type": "string",
