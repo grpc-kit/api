@@ -211,9 +211,9 @@ message Scope {
 // Resource 资源定义，如：菜单等
 message Resource {
   // ID 资源 ID
-  int32 id = 1;
+  int64 id = 1;
   // ParentID 父资源 ID，为 0 表示顶级资源
-  int32 parent_id = 2;
+  int64 parent_id = 2;
   // Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："user_management"、"role_admin"、"system_config"
@@ -254,15 +254,30 @@ message Resource {
   // Enabled 资源是否启用
   // bool enabled = 8;
   // Hidden 是否在资源列表中隐藏
-  bool hidden = 9;
+  // bool hidden = 9;
   // HideChildren 是否在资源列表中隐藏子项
-  bool hide_children = 10;
+  // bool hide_children = 10;
 
-  // Path 资源路径
-  string path = 11;
-  // Icon 资源图标，通常用于前端展示
-  string icon = 12;
-  string component = 13;
+  // Visibility 资源可见性/展示策略
+  enum Visibility {
+    VISIBILITY_UNSPECIFIED = 0;
+
+    VISIBLE = 1;           // 正常显示
+    HIDDEN = 2;            // 自身隐藏
+    HIDE_CHILDREN = 3;     // 自身显示，子资源隐藏
+    INTERNAL = 4;          // 内部使用（API/系统）
+  }
+  Visibility visibility = 8;
+
+  // Locator 资源路径，我怎么找到你
+  string locator = 11;
+  // visual 资源图标，我怎么看到你
+  string visual = 12;
+  // Representation 资源描述，我怎么用你
+  string representation = 13;
+  // Metadata 扩展元数据
+  // 用于存储上述三个核心字段无法涵盖的特定平台/业务属性
+  map<string, string> metadata = 14;
 
   // Children 子资源列表
   repeated Resource children = 15;
