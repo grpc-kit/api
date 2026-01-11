@@ -1267,13 +1267,29 @@
     },
     "/builtin/admin/api/v1/resources": {
       "get": {
-        "summary": "资源管理",
+        "summary": "资源列表",
+        "description": "接口格式：/builtin/admin/api/v1/resources",
         "operationId": "KnownAdmin_ListResources",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListResourcesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "resources": [
+                  {
+                    "id": 1,
+                    "name": "resource1",
+                    "display_name": "Resource 1",
+                    "sort_order": 100,
+                    "type": "MENU",
+                    "status": "ENABLED",
+                    "visibility": "VISIBLE"
+                  }
+                ]
+              }
             }
           },
           "4xx": {
@@ -1404,6 +1420,9 @@
             "type": "integer",
             "format": "int32"
           }
+        ],
+        "tags": [
+          "资源管理"
         ]
       },
       "post": {

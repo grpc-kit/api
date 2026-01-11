@@ -230,18 +230,15 @@ message Resource {
   // Type 资源类型
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    MENU    = 1; // 菜单（页面入口）
-    PAGE    = 2; // 页面（路由级）
+    MENU    = 1; // 菜单（页面入口，会在菜单栏中显示）
+    PAGE    = 2; // 页面（路由级，不会在菜单栏中显示）
     BUTTON  = 3; // 按钮 / UI 操作
-    API     = 4; // 后端接口
+    API     = 4; // 后端接口（包含 grpc、http 等）
     DATA    = 5; // 数据级资源（行 / 字段）
-    SYSTEM  = 6; // 系统级 / 非 UI 资源
+    SYSTEM  = 6; // 系统级 / 非 UI 资源（如：系统设置、系统日志等）
   }
   Type type = 6;
-
-  // Scope 资源作用域
-  // repeated Scope scope = 7;
-
+  
   // Status 资源状态
   enum Status {
     STATUS_UNSPECIFIED = 0;

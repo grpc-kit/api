@@ -27,15 +27,20 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthProvider
     post: "/builtin/admin/api/v1/auth/providers"
     body: "provider"
+
     # 资源管理
+    ## 资源列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListResources
     get: "/builtin/admin/api/v1/resources"
+    ## 创建资源
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateResource
     post: "/builtin/admin/api/v1/resources"
     body: "resource"
+    ## 更新资源
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateResource
     patch: "/builtin/admin/api/v1/resources/{resource.id}"
     body: "resource"
+    ## 删除资源
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteResource
     delete: "/builtin/admin/api/v1/resources/{id}"
 
