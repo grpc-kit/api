@@ -65,7 +65,7 @@ message Department {
   // 要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复
   // 示例："tech_dept"、"marketing_dept"、"hr_dept"
   // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
-  string name = 3;
+  string code = 3;
   
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于部门名称的多语言显示，提升用户体验和国际化支持
@@ -203,9 +203,10 @@ message Scope {
   // 默认存在以下内部作用域：
   // admin 后天用户菜单查看权限
   // user 前端用户菜单查看权限
-  string name = 3;
+  string code = 3;
+  string display_name = 4;
 
-  string description = 4;
+  string description = 5;
 }
 
 // Resource 资源定义，如：菜单等
@@ -218,7 +219,7 @@ message Resource {
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："user_management"、"role_admin"、"system_config"
   // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
-  string name = 3;
+  string code = 3;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化
   string display_name = 4;
@@ -328,7 +329,7 @@ message Policy {
   // Name 策略系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
-  string name = 4;
+  string code = 4;
 
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   string display_name = 5;
@@ -457,7 +458,7 @@ message Role {
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："admin"、"user_manager"、"guest"
   // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
-  string name = 2;
+  string code = 2;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于角色名称的多语言显示，便于不同地区用户理解角色含义
   string display_name = 3;
@@ -510,7 +511,7 @@ message Group {
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："dev_team"、"project_alpha"、"admin_group"
   // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
-  string name = 2;
+  string code = 2;
 
   // Type 群组类型，标识群组的业务用途
   // 群组类型，用于区分不同用途的群组
@@ -803,7 +804,7 @@ message AuthProvider {
   // ID 全局唯一标识
   int32 id = 1;
   // Name 身份提供商名称，全局唯一
-  string name = 2;
+  string code = 2;
 
   // Type 身份提供商类型
   enum Type {
@@ -945,7 +946,7 @@ message Credential {
   }
 
   int32 id = 1;             // 凭证唯一 ID
-  string name = 2;          // 凭证显示名称
+  string code = 2;          // 凭证显示名称
 
   Type type = 3;             // 凭证类型
   Algorithm algorithm = 4;   // 技术算法

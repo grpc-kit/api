@@ -426,7 +426,7 @@
                   "format": "int32",
                   "title": "ParentID 父部门ID，构建树形组织结构\n值为 0 表示顶级部门（如：总公司、集团总部）\n支持多级嵌套，建议层级深度不超过 6 级以保证查询性能"
                 },
-                "name": {
+                "code": {
                   "type": "string",
                   "title": "Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复\n示例：\"tech_dept\"、\"marketing_dept\"、\"hr_dept\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
@@ -870,7 +870,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
+                "code": {
                   "type": "string",
                   "title": "Name 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"dev_team\"、\"project_alpha\"、\"admin_group\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
@@ -1539,7 +1539,7 @@
                   "format": "int64",
                   "title": "ParentID 父资源 ID，为 0 表示顶级资源"
                 },
-                "name": {
+                "code": {
                   "type": "string",
                   "title": "Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"user_management\"、\"role_admin\"、\"system_config\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
@@ -1909,7 +1909,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
+                "code": {
                   "type": "string",
                   "title": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"admin\"、\"user_manager\"、\"guest\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
                 },
@@ -2593,7 +2593,7 @@
           "format": "int32",
           "title": "ID 角色 ID，全局唯一标识"
         },
-        "name": {
+        "code": {
           "type": "string",
           "title": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"admin\"、\"user_manager\"、\"guest\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
@@ -2667,7 +2667,7 @@
           "format": "int32",
           "title": "ID 全局唯一标识"
         },
-        "name": {
+        "code": {
           "type": "string",
           "title": "Name 身份提供商名称，全局唯一"
         },
@@ -2903,7 +2903,7 @@
           "format": "int32",
           "title": "凭证唯一 ID"
         },
-        "name": {
+        "code": {
           "type": "string",
           "title": "凭证显示名称"
         },
@@ -3087,7 +3087,7 @@
           "format": "int32",
           "title": "ParentID 父部门ID，构建树形组织结构\n值为 0 表示顶级部门（如：总公司、集团总部）\n支持多级嵌套，建议层级深度不超过 6 级以保证查询性能"
         },
-        "name": {
+        "code": {
           "type": "string",
           "title": "Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复\n示例：\"tech_dept\"、\"marketing_dept\"、\"hr_dept\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
@@ -3362,7 +3362,7 @@
           "format": "int32",
           "title": "ID 群组 ID，全局唯一标识"
         },
-        "name": {
+        "code": {
           "type": "string",
           "title": "Name 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"dev_team\"、\"project_alpha\"、\"admin_group\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
@@ -3924,7 +3924,7 @@
           "format": "int64",
           "title": "ParentID 父资源 ID，为 0 表示顶级资源"
         },
-        "name": {
+        "code": {
           "type": "string",
           "title": "Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"user_management\"、\"role_admin\"、\"system_config\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
         },
@@ -4020,7 +4020,7 @@
         "SYSTEM"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- MENU: 菜单（页面入口）\n - PAGE: 页面（路由级）\n - BUTTON: 按钮 / UI 操作\n - API: 后端接口\n - DATA: 数据级资源（行 / 字段）\n - SYSTEM: 系统级 / 非 UI 资源",
+      "description": "- MENU: 菜单（页面入口，会在菜单栏中显示）\n - PAGE: 页面（路由级，不会在菜单栏中显示）\n - BUTTON: 按钮 / UI 操作\n - API: 后端接口（包含 grpc、http 等）\n - DATA: 数据级资源（行 / 字段）\n - SYSTEM: 系统级 / 非 UI 资源（如：系统设置、系统日志等）",
       "title": "Type 资源类型"
     },
     "v1ResourceVisibility": {
