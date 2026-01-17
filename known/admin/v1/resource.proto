@@ -66,6 +66,24 @@ message ListResourcesResponse {
 }
 
 message CreateResourceRequest {
+  /*
+  {
+    "parent_id": "1",
+    "code": "hello.test",
+    "display_name": "admin",
+    "sort_order": 0,
+    "type": "MENU",
+    "status": "ENABLED",
+    "visibility": "VISIBLE",
+    "locator": "/hello/world",
+    "visual": "avatar",
+    "manifest": "",
+    "metadata": {
+        "hello": "world"
+    },
+    "description": "admin"
+  }
+  */
   Resource resource = 1;
 }
 
