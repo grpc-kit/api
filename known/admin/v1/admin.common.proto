@@ -179,7 +179,7 @@ message Department {
 // Scope 作用域
 message Scope {
   // ID 资源 ID
-  int32 id = 1;
+  int64 id = 1;
 
   // Type 作用域类型
   enum Type {
@@ -280,18 +280,20 @@ message Resource {
   // Children 子资源列表
   repeated Resource children = 15;
 
-  string description = 16;
+  repeated Scope scopes = 16;
+
+  string description = 17;
 
   // CreatedBy 创建者用户ID，记录部门创建人
   // 用于审计追踪和权限验证
-  int64 created_by = 17;
+  int64 created_by = 18;
   
   // UpdatedBy 最后更新者用户ID，记录最近修改人
   // 用于变更追踪和责任确认
-  int64 updated_by = 18;
+  int64 updated_by = 19;
 
-  google.protobuf.Timestamp created_at = 19;
-  google.protobuf.Timestamp updated_at = 20;
+  google.protobuf.Timestamp created_at = 20;
+  google.protobuf.Timestamp updated_at = 21;
 }
 
 // Policy 策略定义

@@ -17,6 +17,7 @@ import "known/admin/v1/user.proto";
 import "known/admin/v1/roles.proto";
 import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
+import "known/admin/v1/scope.proto";
 
 service KnownAdmin {
   // 本地配置
@@ -32,10 +33,21 @@ service KnownAdmin {
   rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
 
   // 资源管理
+  rpc GetResource(GetResourceRequest) returns(Resource);
   rpc ListResources(ListResourcesRequest) returns(ListResourcesResponse);
   rpc CreateResource(CreateResourceRequest) returns(Resource);
   rpc UpdateResource(UpdateResourceRequest) returns(Resource);
   rpc DeleteResource(DeleteResourceRequest) returns(google.protobuf.Empty);
+  rpc CreateResourceScopes(CreateResourceScopesRequest) returns(CreateResourceScopesResponse);
+
+  // 作用域管理
+  rpc ListScopes(ListScopesRequest) returns(ListScopesResponse);
+  rpc CreateScope(CreateScopeRequest) returns(Scope);
+  rpc UpdateScope(UpdateScopeRequest) returns(Scope);
+  rpc DeleteScope(DeleteScopeRequest) returns(google.protobuf.Empty);
+  rpc ListScopeResources(ListScopeResourcesRequest) returns(ListScopeResourcesResponse);
+  rpc DeleteScopeResource(DeleteScopeResourceRequest) returns(google.protobuf.Empty);
+  rpc CreateScopeResources(CreateScopeResourcesRequest) returns(CreateScopeResourcesResponse);
 
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);

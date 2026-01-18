@@ -94,5 +94,18 @@ message UpdateResourceRequest {
 }
 
 message DeleteResourceRequest {
-  int32 id = 1;
+  int64 id = 1;
+}
+
+message CreateResourceScopesRequest {
+  int64 resource_id = 1;
+  repeated Scope scopes = 2;
+}
+
+message CreateResourceScopesResponse {
+  repeated Scope scopes = 1;
+}
+
+message GetResourceRequest {
+  int64 id = 1;
 }

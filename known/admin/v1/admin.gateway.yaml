@@ -29,6 +29,9 @@ http:
     body: "provider"
 
     # 资源管理
+    ## 获取资源
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetResource
+    get: "/builtin/admin/api/v1/resources/{id}"
     ## 资源列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListResources
     get: "/builtin/admin/api/v1/resources"
@@ -43,6 +46,36 @@ http:
     ## 删除资源
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteResource
     delete: "/builtin/admin/api/v1/resources/{id}"
+    ## 一个资源关联多个作用域
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateResourceScopes
+    post: "/builtin/admin/api/v1/resources/{resource_id}/scopes"
+    body: "scopes"
+
+    # 作用域管理
+    ## 作用域列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListScopes
+    get: "/builtin/admin/api/v1/scopes"
+    ## 创建作用域
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateScope
+    post: "/builtin/admin/api/v1/scopes"
+    body: "scope"
+    ## 更新作用域
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateScope
+    patch: "/builtin/admin/api/v1/scopes/{scope.id}"
+    body: "scope"
+    ## 删除作用域
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteScope
+    delete: "/builtin/admin/api/v1/scopes/{id}"
+    ## 指定作用域下的资源列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListScopeResources
+    get: "/builtin/admin/api/v1/scopes/{scope_id}/resources"
+    ## 删除作用域资源
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteScopeResource
+    delete: "/builtin/admin/api/v1/scopes/{scope_id}/resources/{resource_id}"
+    ## 一个作用域关联多个资源
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateScopeResources
+    post: "/builtin/admin/api/v1/scopes/{scope_id}/resources"
+    body: "resources"
 
     # 角色管理
     ## 角色列表
