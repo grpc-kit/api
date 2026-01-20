@@ -18,6 +18,7 @@ import "known/admin/v1/roles.proto";
 import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
 import "known/admin/v1/scope.proto";
+import "known/admin/v1/policy.proto";
 
 service KnownAdmin {
   // 本地配置
@@ -48,6 +49,12 @@ service KnownAdmin {
   rpc ListScopeResources(ListScopeResourcesRequest) returns(ListScopeResourcesResponse);
   rpc DeleteScopeResource(DeleteScopeResourceRequest) returns(google.protobuf.Empty);
   rpc CreateScopeResources(CreateScopeResourcesRequest) returns(CreateScopeResourcesResponse);
+
+  // 策略管理
+  rpc ListPolicies(ListPoliciesRequest) returns(ListPoliciesResponse);
+  rpc CreatePolicy(CreatePolicyRequest) returns(Policy);
+  rpc UpdatePolicy(UpdatePolicyRequest) returns(Policy);
+  rpc DeletePolicy(DeletePolicyRequest) returns(google.protobuf.Empty);
 
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);

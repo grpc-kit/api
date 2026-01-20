@@ -77,6 +77,22 @@ http:
     post: "/builtin/admin/api/v1/scopes/{scope_id}/resources"
     body: "resources"
 
+    # 策略管理
+    ## 策略列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPolicies
+    get: "/builtin/admin/api/v1/policies"
+    ## 创建策略
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreatePolicy
+    post: "/builtin/admin/api/v1/policies"
+    body: "policy"
+    ## 更新策略
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdatePolicy
+    patch: "/builtin/admin/api/v1/policies/{policy.id}"
+    body: "policy"
+    ## 删除策略
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePolicy
+    delete: "/builtin/admin/api/v1/policies/{id}"
+
     # 角色管理
     ## 角色列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoles
