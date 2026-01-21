@@ -345,7 +345,15 @@ message Policy {
 
 message Permission {
   // ID 资源 ID
-  int32 id = 1;
+  int64 id = 1;
+  string code = 2;
+  string display_name = 3;
+
+  Policy policy = 4;
+
+  repeated Resource resources = 5;
+
+  string description = 6;
 }
 
 // User 用户实体，表示系统中的账号信息

@@ -19,6 +19,7 @@ import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
 import "known/admin/v1/scope.proto";
 import "known/admin/v1/policy.proto";
+import "known/admin/v1/permission.proto";
 
 service KnownAdmin {
   // 本地配置
@@ -56,6 +57,13 @@ service KnownAdmin {
   rpc UpdatePolicy(UpdatePolicyRequest) returns(Policy);
   rpc DeletePolicy(DeletePolicyRequest) returns(google.protobuf.Empty);
 
+  // 权限管理
+  rpc ListPermissions(ListPermissionsRequest) returns(ListPermissionsResponse);
+  rpc GetPermission(GetPermissionRequest) returns(Permission);
+  rpc CreatePermission(CreatePermissionRequest) returns(Permission);
+  rpc UpdatePermission(UpdatePermissionRequest) returns(Permission);
+  rpc DeletePermission(DeletePermissionRequest) returns(google.protobuf.Empty);
+
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);
   rpc UpdateRole(UpdateRoleRequest) returns(Role);
@@ -64,6 +72,9 @@ service KnownAdmin {
   rpc ListRoleUsers(ListRoleUsersRequest) returns(ListRoleUsersResponse);
   rpc DeleteRoleUser(DeleteRoleUserRequest) returns(google.protobuf.Empty);
   rpc AssignRoleToUser(AssignRoleToUserRequest) returns(google.protobuf.Empty);
+  rpc CreateRolePermissions(CreateRolePermissionsRequest) returns(CreateRolePermissionsResponse);
+  rpc DeleteRolePermission(DeleteRolePermissionRequest) returns(google.protobuf.Empty);
+  rpc ListRolePermissions(ListRolePermissionsRequest) returns(ListRolePermissionsResponse);
 
   // 部门管理
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);

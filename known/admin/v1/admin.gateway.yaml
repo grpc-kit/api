@@ -93,6 +93,22 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePolicy
     delete: "/builtin/admin/api/v1/policies/{id}"
 
+    # 权限管理
+    ## 权限列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPermissions
+    get: "/builtin/admin/api/v1/permissions"
+    ## 创建权限
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreatePermission
+    post: "/builtin/admin/api/v1/permissions"
+    body: "permission"
+    ## 更新权限
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdatePermission
+    patch: "/builtin/admin/api/v1/permissions/{permission.id}"
+    body: "permission"
+    ## 删除权限
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePermission
+    delete: "/builtin/admin/api/v1/permissions/{id}"
+
     # 角色管理
     ## 角色列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoles
@@ -118,6 +134,16 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.AssignRoleToUser
     post: "/builtin/admin/api/v1/roles/{role_id}:assign"
     body: "*"
+    ## 为角色关联权限
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRolePermissions
+    post: "/builtin/admin/api/v1/roles/{role_id}/permissions"
+    body: "permissions"
+    ## 删除角色下关联权限
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRolePermission
+    delete: "/builtin/admin/api/v1/roles/{role_id}/permissions/{permission_id}"
+    ## 列出角色下关联权限
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRolePermissions
+    get: "/builtin/admin/api/v1/roles/{role_id}/permissions"
 
     # 部门管理
     ## 创建部门
