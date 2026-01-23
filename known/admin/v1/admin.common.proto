@@ -22,11 +22,11 @@ enum View {
 // 通用：用于任何支持层级 / 关系返回的 List API
 enum Structure {
   STRUCTURE_UNSPECIFIED = 0;
-  // 平铺列表（默认）
+  // 平铺列表（默认），支持分页
   FLAT = 1;
-  // 层级结构（父子）
+  // 层级结构（父子），不支持分页
   TREE = 2;
-  // 层级结构 + 全展开
+  // 层级结构 + 全展开，不支持分页
   TREE_EXPANDED = 3;
 }
 
@@ -468,14 +468,20 @@ message Role {
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："admin"、"user_manager"、"guest"
   // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
-  string code = 2;
+
+  // ParentID 父角色ID，构建树形组织结构
+  // 值为 0 表示顶级角色（如：系统内置角色）
+  // 支持多级嵌套，建议层级深度不超过 3 级以保证查询性能
+  int32 parent_id = 2;
+
+  string code = 3;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于角色名称的多语言显示，便于不同地区用户理解角色含义
-  string display_name = 3;
+  string display_name = 4;
   // SortOrder 角色排序顺序，用于同级角色的显示顺序
   // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
   // 默认值：100，范围：1-9999
-  int32 sort_order = 4;
+  int32 sort_order = 5;
 
   // Type 角色类型枚举，定义角色的来源和管理方式
   // 用于区分不同类型的角色，影响角色的可编辑性和权限管理策略
@@ -486,7 +492,7 @@ message Role {
     TYPE_TEMPLATE = 3;     // 模板角色：预设的角色模板，可基于此创建新角色
   }
   // type 角色类型，决定角色的管理策略和可操作性
-  Type type = 5;
+  Type type = 6;
 
   // Status 角色状态枚举，控制角色的可用性和生命周期
   // 用于角色的启用/禁用管理，影响用户权限的实际生效
@@ -496,20 +502,23 @@ message Role {
     STATUS_DISABLED = 2;     // 禁用状态：角色被停用，权限不生效
   }
   // status 角色状态，控制角色是否可用和权限是否生效
-  Status status = 6;
+  Status status = 7;
 
   // CreatedBy 创建者用户ID，记录部门创建人
   // 用于审计追踪和权限验证
-  int64 created_by = 7;
+  int64 created_by = 8;
   
   // UpdatedBy 最后更新者用户ID，记录最近修改人
   // 用于变更追踪和责任确认
-  int64 updated_by = 8;
+  int64 updated_by = 9;
 
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
 
-  string description = 11;
+  string description = 12;
+
+  // Children 直接子角色列表，用于构建完整的角色树
+  repeated Role children = 13;
 }
 
 // Group 群组实体，表示一类相同维度的用户集合

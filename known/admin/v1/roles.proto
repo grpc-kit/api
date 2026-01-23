@@ -13,6 +13,10 @@ message CreateRoleRequest {
   Role role = 1;
 }
 
+message GetRoleRequest {
+  int32 id = 1;
+}
+
 message UpdateRoleRequest {
   Role role = 1;
 

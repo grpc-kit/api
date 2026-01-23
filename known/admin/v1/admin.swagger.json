@@ -71,7 +71,7 @@
     },
     "/builtin/admin/api/v1/auth/login": {
       "post": {
-        "summary": "认证鉴权",
+        "summary": "登录认证",
         "operationId": "KnownAdmin_CreateAuthLogin",
         "responses": {
           "200": {
@@ -159,6 +159,202 @@
             "schema": {
               "$ref": "#/definitions/v1AuthProvider"
             }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/auth/providers/{id}": {
+      "get": {
+        "operationId": "KnownAdmin_GetAuthProvider",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthProvider"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "KnownAdmin_DeleteAuthProvider",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/auth/providers/{provider.id}": {
+      "patch": {
+        "operationId": "KnownAdmin_UpdateAuthProvider",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthProvider"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "provider.id",
+            "description": "ID 全局唯一标识",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "provider.code",
+            "description": "Name 身份提供商名称，全局唯一",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "TYPE_UNSPECIFIED",
+              "TYPE_LOCAL",
+              "TYPE_LDAP",
+              "TYPE_OIDC",
+              "TYPE_OAUTH2",
+              "TYPE_GITHUB",
+              "TYPE_GOOGLE",
+              "TYPE_WECHAT"
+            ],
+            "default": "TYPE_UNSPECIFIED"
+          },
+          {
+            "name": "provider.client_id",
+            "description": "ClientID 身份提供商客户端 ID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.client_secret",
+            "description": "ClientSecret 身份提供商客户端密钥",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.enabled",
+            "description": "Enabled 身份提供商是否启用",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "provider.redirect_uri",
+            "description": "RedirectURI 身份提供商回调地址",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.scopes",
+            "description": "Scopes 身份提供商授权范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.issuer",
+            "description": "Issuer 身份提供商标识",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.authorization_endpoint",
+            "description": "身份提供商授权端点",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.token_endpoint",
+            "description": "身份提供商令牌端点",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "provider.userinfo_endpoint",
+            "description": "身份提供商用户信息端点",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       }
@@ -1336,7 +1532,7 @@
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1577,7 +1773,7 @@
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1846,7 +2042,7 @@
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
@@ -2303,6 +2499,38 @@
       }
     },
     "/builtin/admin/api/v1/roles/{id}": {
+      "get": {
+        "operationId": "KnownAdmin_GetRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/adminv1Role"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
+      },
       "delete": {
         "operationId": "KnownAdmin_DeleteRole",
         "responses": {
@@ -2476,7 +2704,7 @@
         "parameters": [
           {
             "name": "role.id",
-            "description": "ID 角色 ID，全局唯一标识",
+            "description": "ID 角色 ID，全局唯一标识\n\nName 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n 要求：仅支持英文字母、数字和下划线，全局唯一标识符\n 示例：\"admin\"、\"user_manager\"、\"guest\"\n 注意：此字段创建后不支持修改，以确保权限关联的稳定性",
             "in": "path",
             "required": true,
             "type": "integer",
@@ -2490,9 +2718,13 @@
             "schema": {
               "type": "object",
               "properties": {
+                "parent_id": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "ParentID 父角色ID，构建树形组织结构\n值为 0 表示顶级角色（如：系统内置角色）\n支持多级嵌套，建议层级深度不超过 3 级以保证查询性能"
+                },
                 "code": {
-                  "type": "string",
-                  "title": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"admin\"、\"user_manager\"、\"guest\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+                  "type": "string"
                 },
                 "display_name": {
                   "type": "string",
@@ -2531,6 +2763,14 @@
                 },
                 "description": {
                   "type": "string"
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/adminv1Role"
+                  },
+                  "title": "Children 直接子角色列表，用于构建完整的角色树"
                 }
               },
               "title": "Role 角色实体，表示用户在系统上的权限和功能"
@@ -2838,7 +3078,7 @@
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
@@ -3079,7 +3319,7 @@
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
@@ -3775,11 +4015,16 @@
         "id": {
           "type": "integer",
           "format": "int32",
+          "description": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n 要求：仅支持英文字母、数字和下划线，全局唯一标识符\n 示例：\"admin\"、\"user_manager\"、\"guest\"\n 注意：此字段创建后不支持修改，以确保权限关联的稳定性",
           "title": "ID 角色 ID，全局唯一标识"
         },
+        "parent_id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ParentID 父角色ID，构建树形组织结构\n值为 0 表示顶级角色（如：系统内置角色）\n支持多级嵌套，建议层级深度不超过 3 级以保证查询性能"
+        },
         "code": {
-          "type": "string",
-          "title": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"admin\"、\"user_manager\"、\"guest\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+          "type": "string"
         },
         "display_name": {
           "type": "string",
@@ -3818,6 +4063,14 @@
         },
         "description": {
           "type": "string"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/adminv1Role"
+          },
+          "title": "Children 直接子角色列表，用于构建完整的角色树"
         }
       },
       "title": "Role 角色实体，表示用户在系统上的权限和功能"
@@ -5552,7 +5805,7 @@
         "TREE_EXPANDED"
       ],
       "default": "STRUCTURE_UNSPECIFIED",
-      "description": "- FLAT: 平铺列表（默认）\n - TREE: 层级结构（父子）\n - TREE_EXPANDED: 层级结构 + 全展开",
+      "description": "- FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
       "title": "通用：用于任何支持层级 / 关系返回的 List API"
     },
     "v1UpdateDepartmentMembersResponse": {

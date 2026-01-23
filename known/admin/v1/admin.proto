@@ -27,12 +27,16 @@ service KnownAdmin {
   rpc GetConfigSecurity(GetConfigSecurityRequest) returns (SecurityConfig);
 
   // 认证鉴权
+  rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
+  rpc ListAuthProviders(ListAuthProvidersRequest) returns(ListAuthProvidersResponse);
+  rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
+  rpc GetAuthProvider(GetAuthProviderRequest) returns(AuthProvider);
+  rpc DeleteAuthProvider(DeleteAuthProviderRequest) returns(google.protobuf.Empty);
+  rpc UpdateAuthProvider(UpdateAuthProviderRequest) returns(AuthProvider);
+  // 登录认证
   rpc CreateAuthLogin(CreateAuthLoginRequest) returns (AuthToken);
   rpc CreateAuthToken(CreateAuthTokenRequest) returns (AuthToken);
-  rpc ListAuthProviders(ListAuthProvidersRequest) returns(ListAuthProvidersResponse);
-  rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
-  rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
 
   // 资源管理
   rpc GetResource(GetResourceRequest) returns(Resource);
@@ -66,6 +70,7 @@ service KnownAdmin {
 
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);
+  rpc GetRole(GetRoleRequest) returns(Role);
   rpc UpdateRole(UpdateRoleRequest) returns(Role);
   rpc DeleteRole(DeleteRoleRequest) returns(google.protobuf.Empty);
   rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);

@@ -67,3 +67,16 @@ message GetAuthCallbackResponse {
 message CreateAuthProviderRequest {
   AuthProvider provider = 1;
 }
+
+message GetAuthProviderRequest {
+  int32 id = 1;
+}
+
+message DeleteAuthProviderRequest {
+  int32 id = 1;
+}
+
+message UpdateAuthProviderRequest {
+  int32 id = 1;
+  AuthProvider provider = 2;
+}

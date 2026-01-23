@@ -14,19 +14,31 @@ http:
     get: "/builtin/admin/api/v1/config/security"
 
     # 认证鉴权
+    ## 创建认证令牌
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthToken
     post: "/builtin/admin/api/v1/auth/token"
     body: "*"
+    ## 获取认证提供方列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListAuthProviders
     get: "/builtin/admin/api/v1/auth/providers"
+    ## 创建认证提供方
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthProvider
+    post: "/builtin/admin/api/v1/auth/providers"
+    body: "provider"
+    ## 获取认证提供方
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthProvider
+    get: "/builtin/admin/api/v1/auth/providers/{id}"
+    ## 删除认证提供方
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteAuthProvider
+    delete: "/builtin/admin/api/v1/auth/providers/{id}"
+    ## 更新认证提供方
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateAuthProvider
+    patch: "/builtin/admin/api/v1/auth/providers/{provider.id}"
   #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpsertAuthProviders
   #  post: "/builtin/admin/api/v1/auth/providers"
   #  body: "*"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthCallback
     get: "/builtin/admin/api/v1/auth/callback/{provider_name}"
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthProvider
-    post: "/builtin/admin/api/v1/auth/providers"
-    body: "provider"
 
     # 资源管理
     ## 获取资源
@@ -123,6 +135,9 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRole
     post: "/builtin/admin/api/v1/roles"
     body: "role"
+    ## 角色
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetRole
+    get: "/builtin/admin/api/v1/roles/{id}"
     ## 更新角色
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateRole
     patch: "/builtin/admin/api/v1/roles/{role.id}"
