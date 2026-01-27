@@ -2781,12 +2781,12 @@
     },
     "/builtin/admin/api/v1/roles/{role_id}/departments": {
       "get": {
-        "operationId": "KnownAdmin_ListRoleDepartments",
+        "operationId": "KnownAdmin_ListRoleDataScopes",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ListRoleDepartmentsResponse"
+              "$ref": "#/definitions/v1ListRoleDataScopesResponse"
             }
           },
           "4xx": {
@@ -2865,12 +2865,12 @@
         ]
       },
       "post": {
-        "operationId": "KnownAdmin_CreateRoleDepartments",
+        "operationId": "KnownAdmin_CreateRoleDataScopes",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateRoleDepartmentsResponse"
+              "$ref": "#/definitions/v1CreateRoleDataScopesResponse"
             }
           },
           "4xx": {
@@ -2911,7 +2911,7 @@
     },
     "/builtin/admin/api/v1/roles/{role_id}/departments/{department_id}": {
       "delete": {
-        "operationId": "KnownAdmin_DeleteRoleDepartment",
+        "operationId": "KnownAdmin_DeleteRoleDataScopes",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -4516,7 +4516,7 @@
         }
       }
     },
-    "v1CreateRoleDepartmentsResponse": {
+    "v1CreateRoleDataScopesResponse": {
       "type": "object",
       "properties": {
         "departments": {
@@ -5379,7 +5379,7 @@
         }
       }
     },
-    "v1ListRoleDepartmentsResponse": {
+    "v1ListRoleDataScopesResponse": {
       "type": "object",
       "properties": {
         "departments": {
