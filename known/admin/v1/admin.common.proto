@@ -1040,3 +1040,39 @@ message AuthToken {
   string token_type = 2;
   int32 expires_in = 3;
 }
+
+message RoleDataRange {
+  int64 id = 1;
+
+  // 关联的角色 ID
+  int64 role_id = 12;
+
+  // 数据类型：表示数据维度
+  enum DataType {
+    DATA_TYPE_UNSPECIFIED = 0;
+    RESOURCE = 1;
+    DEPARTMENT = 2;
+  }
+  DataType data_type = 2;
+
+  // 数据对象 ID：对应具体的部门、项目或资源 ID
+  // 当 strategy 为 SPECIFIED 时，此字段必须有值
+  int64 data_id = 3;
+
+  // 是否递归包含子节点（仅在 data_type 为树状结构如部门时有效）
+  bool is_recursive = 4;
+
+  // 系统内部唯一标识符（如：DEPT_S01）
+  string code = 5;
+
+  // 可展示名称（如：华南区研发部范围）
+  string display_name = 6;
+
+  string description = 7;
+
+  // 审计信息
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  int64 created_by = 10;
+  int64 updated_by = 11;
+}

@@ -197,21 +197,21 @@ message ListRolePermissionsResponse {
   int32 total_size = 3;
 }
 
-message CreateRoleDataScopesRequest {
+message CreateRoleDataRangesRequest {
   int32 role_id = 1;
-  repeated Department departments = 2;
+  repeated RoleDataRange data_ranges = 2;
 }
 
-message CreateRoleDataScopesResponse {
-  repeated Department departments = 1;
+message CreateRoleDataRangesResponse {
+  repeated RoleDataRange data_ranges = 1;
 }
 
-message DeleteRoleDataScopesRequest { 
+message DeleteRoleDataRangesRequest { 
   int32 role_id = 1;
-  int32 department_id = 2;
+  int32 data_range_id = 2;
 }
 
-message ListRoleDataScopesRequest {
+message ListRoleDataRangesRequest {
   // 角色 ID，从路径参数中获取
   int32 role_id = 1;
 
@@ -241,8 +241,8 @@ message ListRoleDataScopesRequest {
   string order_by = 7;
 }
 
-message ListRoleDataScopesResponse {
-  repeated Department departments = 1;
+message ListRoleDataRangesResponse {
+  repeated RoleDataRange data_ranges = 1;
 
   // 用于获取下一页结果的 token。
   // - 如果为空，表示没有更多结果。
