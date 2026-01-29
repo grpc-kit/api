@@ -1593,7 +1593,7 @@
         "parameters": [
           {
             "name": "permission",
-            "description": "{\n\"code\": \"permission_001\",\n\"display_name\": \"管理用户列表\",\n\"policy_id\": 1,\n\"resources\": [\n{\n\"id\": 1\n}\n],\n\"description\": \"允许查看和管理用户列表\"\n}",
+            "description": "{\n\"code\": \"permission_001\",\n\"display_name\": \"管理用户列表\",\n\"policy\": {\n\"id\": \"10\",\n},\n\"bindings\": [\n{\n\"resource_scope_id\": 1\n\"is_recursive\": true\n}\n],\n\"description\": \"允许查看和管理用户列表\"\n}",
             "in": "body",
             "required": true,
             "schema": {
@@ -1691,10 +1691,19 @@
                   "items": {
                     "type": "object",
                     "$ref": "#/definitions/v1Resource"
-                  }
+                  },
+                  "title": "废弃，使用 Binding 替代"
                 },
                 "description": {
                   "type": "string"
+                },
+                "bindings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/PermissionBinding"
+                  },
+                  "title": "权限绑定资源集合"
                 }
               }
             }
@@ -4168,6 +4177,27 @@
         }
       }
     },
+    "PermissionBinding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "resource_scope_id": {
+          "type": "string",
+          "format": "int64",
+          "title": "资源范围"
+        },
+        "is_recursive": {
+          "type": "boolean",
+          "title": "是否递归子资源"
+        },
+        "resources": {
+          "$ref": "#/definitions/v1Resource"
+        }
+      }
+    },
     "RoleDataRangeDataType": {
       "type": "string",
       "enum": [
@@ -5713,10 +5743,19 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1Resource"
-          }
+          },
+          "title": "废弃，使用 Binding 替代"
         },
         "description": {
           "type": "string"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/PermissionBinding"
+          },
+          "title": "权限绑定资源集合"
         }
       }
     },

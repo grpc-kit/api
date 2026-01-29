@@ -109,6 +109,9 @@ http:
     ## 权限列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPermissions
     get: "/builtin/admin/api/v1/permissions"
+    ## 权限详情
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetPermission
+    get: "/builtin/admin/api/v1/permissions/{id}"
     ## 创建权限
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreatePermission
     post: "/builtin/admin/api/v1/permissions"

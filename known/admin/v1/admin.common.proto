@@ -351,9 +351,24 @@ message Permission {
 
   Policy policy = 4;
 
+  // 废弃，使用 Binding 替代
   repeated Resource resources = 5;
 
   string description = 6;
+
+  message Binding {
+    int64 id = 1;
+
+    // 资源范围
+    int64 resource_scope_id = 2;
+    // 是否递归子资源
+    bool is_recursive = 3;
+
+    Resource resources = 5;
+  }
+
+  // 权限绑定资源集合
+  repeated Binding bindings = 7;
 }
 
 // User 用户实体，表示系统中的账号信息
