@@ -107,6 +107,12 @@ message ListScopeResourcesRequest {
   string order_by = 8;
 }
 
+// ScopeResourceItem 作用域下的资源项，包含 resource_scope_id 供权限绑定使用
+message ScopeResourceItem {
+  int64 resource_scope_id = 1;
+  Resource resource = 2;
+}
+
 message ListScopeResourcesResponse {
   repeated Resource resources = 1;
 
@@ -121,6 +127,9 @@ message ListScopeResourcesResponse {
   // - 注意：可能会因性能原因而近似。
   // AIP-132: total_size 是可选字段。
   int32 total_size = 3;
+
+  // 作用域下的资源项（含 resource_scope_id），用于权限绑定等场景
+  repeated ScopeResourceItem scope_resource_items = 4;
 }
 
 message DeleteScopeResourceRequest {
