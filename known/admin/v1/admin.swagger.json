@@ -2820,180 +2820,9 @@
         ]
       }
     },
-    "/builtin/admin/api/v1/roles/{role_id}/data/ranges": {
-      "get": {
-        "operationId": "KnownAdmin_ListRoleDataRanges",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ListRoleDataRangesResponse"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "role_id",
-            "description": "角色 ID，从路径参数中获取",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "page_size",
-            "description": "每页返回的最大权限数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "page_token",
-            "description": "Cursor-based 分页",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "offset",
-            "description": "Offset-based 分页",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "enum": [
-              "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
-            ],
-            "default": "VIEW_UNSPECIFIED"
-          },
-          {
-            "name": "filter",
-            "description": "过滤条件，采用 AIP-160 定义的标准 filter 语法。\n示例: `code=\"permission_001\"`",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "order_by",
-            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"create_time desc, code asc\"\nAIP-132: order_by 是可选字段。",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ]
-      },
-      "post": {
-        "operationId": "KnownAdmin_CreateRoleDataRanges",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CreateRoleDataRangesResponse"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "role_id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "data_ranges",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "$ref": "#/definitions/v1RoleDataRange"
-              }
-            }
-          }
-        ]
-      }
-    },
-    "/builtin/admin/api/v1/roles/{role_id}/data/ranges/{data_range_id}": {
-      "delete": {
-        "operationId": "KnownAdmin_DeleteRoleDataRanges",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "role_id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "data_range_id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          }
-        ]
-      }
-    },
     "/builtin/admin/api/v1/roles/{role_id}/permissions": {
       "get": {
+        "summary": "rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);\nrpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);\nrpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);",
         "operationId": "KnownAdmin_ListRolePermissions",
         "responses": {
           "200": {
@@ -4230,16 +4059,6 @@
         }
       }
     },
-    "RoleDataRangeDataType": {
-      "type": "string",
-      "enum": [
-        "DATA_TYPE_UNSPECIFIED",
-        "RESOURCE",
-        "DEPARTMENT"
-      ],
-      "default": "DATA_TYPE_UNSPECIFIED",
-      "title": "数据类型：表示数据维度"
-    },
     "UserGender": {
       "type": "string",
       "enum": [
@@ -4584,18 +4403,6 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1Scope"
-          }
-        }
-      }
-    },
-    "v1CreateRoleDataRangesResponse": {
-      "type": "object",
-      "properties": {
-        "data_ranges": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1RoleDataRange"
           }
         }
       }
@@ -5451,27 +5258,6 @@
         }
       }
     },
-    "v1ListRoleDataRangesResponse": {
-      "type": "object",
-      "properties": {
-        "data_ranges": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1RoleDataRange"
-          }
-        },
-        "next_page_token": {
-          "type": "string",
-          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
-        },
-        "total_size": {
-          "type": "integer",
-          "format": "int32",
-          "title": "符合条件的权限总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
-        }
-      }
-    },
     "v1ListRolePermissionsResponse": {
       "type": "object",
       "properties": {
@@ -6003,60 +5789,6 @@
       "default": "VISIBILITY_UNSPECIFIED",
       "description": "- VISIBLE: 正常显示\n - HIDDEN: 自身隐藏\n - HIDE_CHILDREN: 自身显示，子资源隐藏\n - INTERNAL: 内部使用（API/系统）",
       "title": "Visibility 资源可见性/展示策略"
-    },
-    "v1RoleDataRange": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
-        },
-        "role_id": {
-          "type": "string",
-          "format": "int64",
-          "title": "关联的角色 ID"
-        },
-        "data_type": {
-          "$ref": "#/definitions/RoleDataRangeDataType"
-        },
-        "data_id": {
-          "type": "string",
-          "format": "int64",
-          "title": "数据对象 ID：对应具体的部门、项目或资源 ID\n当 strategy 为 SPECIFIED 时，此字段必须有值"
-        },
-        "is_recursive": {
-          "type": "boolean",
-          "title": "是否递归包含子节点（仅在 data_type 为树状结构如部门时有效）"
-        },
-        "code": {
-          "type": "string",
-          "title": "系统内部唯一标识符（如：DEPT_S01）"
-        },
-        "display_name": {
-          "type": "string",
-          "title": "可展示名称（如：华南区研发部范围）"
-        },
-        "description": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "title": "审计信息"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "created_by": {
-          "type": "string",
-          "format": "int64"
-        },
-        "updated_by": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
     },
     "v1RoleStatus": {
       "type": "string",

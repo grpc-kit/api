@@ -162,16 +162,16 @@ http:
     ## 列出角色下关联权限
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRolePermissions
     get: "/builtin/admin/api/v1/roles/{role_id}/permissions"
-    ## 为角色关联资源数据范围
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRoleDataRanges
-    post: "/builtin/admin/api/v1/roles/{role_id}/data/ranges"
-    body: "data_ranges"
-    ## 删除角色下关联资源数据范围
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleDataRanges
-    delete: "/builtin/admin/api/v1/roles/{role_id}/data/ranges/{data_range_id}"
-    ## 列出角色下关联资源数据范围
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoleDataRanges
-    get: "/builtin/admin/api/v1/roles/{role_id}/data/ranges"
+    # ## 为角色关联资源数据范围（临时注释）
+    # - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRoleDataRanges
+    #   post: "/builtin/admin/api/v1/roles/{role_id}/data/ranges"
+    #   body: "data_ranges"
+    # ## 删除角色下关联资源数据范围
+    # - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleDataRanges
+    #   delete: "/builtin/admin/api/v1/roles/{role_id}/data/ranges/{data_range_id}"
+    # ## 列出角色下关联资源数据范围
+    # - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoleDataRanges
+    #   get: "/builtin/admin/api/v1/roles/{role_id}/data/ranges"
 
     # 部门管理
     ## 创建部门

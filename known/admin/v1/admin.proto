@@ -80,9 +80,9 @@ service KnownAdmin {
   rpc CreateRolePermissions(CreateRolePermissionsRequest) returns(CreateRolePermissionsResponse);
   rpc DeleteRolePermission(DeleteRolePermissionRequest) returns(google.protobuf.Empty);
   rpc ListRolePermissions(ListRolePermissionsRequest) returns(ListRolePermissionsResponse);
-  rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);
-  rpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);
-  rpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);
+  //rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);
+  //rpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);
+  //rpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);
 
   // 部门管理
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
