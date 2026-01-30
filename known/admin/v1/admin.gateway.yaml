@@ -218,29 +218,32 @@ http:
     put: "/builtin/admin/api/v1/users/{user_id}/password"
     body: "*"
 
-  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUserIdentity
-  #  post: "/builtin/admin/api/v1/users/{id}/identities"
-  #  body: "identity"
-    # 群组相关
-  #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGroups
-  #  get: "/builtin/admin/api/v1/groups"
+    # 群组管理
+    ## 创建群组
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateGroup
     post: "/builtin/admin/api/v1/groups"
     body: "group"
+    ## 群组列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGroups
     get: "/builtin/admin/api/v1/groups"
+    ## 更新群组
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateGroup
     patch: "/builtin/admin/api/v1/groups/{group.id}"
     body: "group"
+    ## 删除群组
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteGroup
     delete: "/builtin/admin/api/v1/groups/{id}"
+    ## 群组成员列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGroupMembers
     get: "/builtin/admin/api/v1/groups/{parent}/members"
+    ## 创建群组成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateGroupMembers
     post: "/builtin/admin/api/v1/groups/{parent}/members"
     body: "group_members"
+    ## 删除群组成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteGroupMember
     delete: "/builtin/admin/api/v1/groups/{parent}/members/{user_id}"
+    ## 更新群组成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateGroupMember
     patch: "/builtin/admin/api/v1/groups/{parent}/members/{user_id}"
     body: "group_member"
