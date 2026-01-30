@@ -184,7 +184,7 @@ message Department {
     HIDE_CHILDREN = 3;     // 自身显示，子资源隐藏，仅可看同部门成员列表，不包含子部门
     INTERNAL = 4;          // 内部使用（API/系统）
   }
-  Visibility visibility = 8;
+  Visibility visibility = 24;
 }
 
 // Scope 作用域

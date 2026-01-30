@@ -540,7 +540,96 @@
               "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源名称，用于限定范围。\n格式示例: \"departments/123\" 表示仅返回 parent_id=123 的直接子部门；空表示不按父级过滤。",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "description": "每页返回的最大部门数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "description": "Cursor-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "description": "Offset-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "view",
+            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "BASIC",
+              "STANDARD",
+              "FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "structure",
+            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRUCTURE_UNSPECIFIED",
+              "FLAT",
+              "TREE",
+              "TREE_EXPANDED"
+            ],
+            "default": "STRUCTURE_UNSPECIFIED"
+          },
+          {
+            "name": "filter",
+            "description": "过滤条件，采用 AIP-160 定义的标准 filter 语法。\n示例: `email=\"alice@example.com\" AND state=\"ACTIVE\"`",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"create_time desc, name asc\"\nAIP-132: order_by 是可选字段。",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "department_type",
+            "description": "TODO；以下将来会统一使用 filter 参数实现过滤",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "department_status",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
       },
       "post": {
         "summary": "部门管理",
@@ -721,6 +810,9 @@
                 "description": {
                   "type": "string",
                   "title": "Description 部门描述信息，详细说明部门职责和业务范围\n用于组织介绍、职责说明、业务范围描述等\n建议长度：500 字符以内，支持富文本格式"
+                },
+                "visibility": {
+                  "$ref": "#/definitions/v1DepartmentVisibility"
                 }
               },
               "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
@@ -4723,6 +4815,9 @@
         "description": {
           "type": "string",
           "title": "Description 部门描述信息，详细说明部门职责和业务范围\n用于组织介绍、职责说明、业务范围描述等\n建议长度：500 字符以内，支持富文本格式"
+        },
+        "visibility": {
+          "$ref": "#/definitions/v1DepartmentVisibility"
         }
       },
       "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
@@ -4857,6 +4952,19 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_BUSINESS: 业务部门 - 直接产生收入的核心业务单位\n - TYPE_SUPPORT: 支持部门 - 为业务部门提供服务支撑（如：IT、HR）\n - TYPE_MANAGEMENT: 管理部门 - 负责决策和监督的管理层级\n - TYPE_VIRTUAL: 虚拟部门 - 项目组、临时团队等非固定组织",
       "title": "Type 部门类型分类，用于业务逻辑和权限控制"
+    },
+    "v1DepartmentVisibility": {
+      "type": "string",
+      "enum": [
+        "VISIBILITY_UNSPECIFIED",
+        "VISIBLE",
+        "HIDDEN",
+        "HIDE_CHILDREN",
+        "INTERNAL"
+      ],
+      "default": "VISIBILITY_UNSPECIFIED",
+      "description": "- VISIBLE: 正常显示，同部门可获取成员列表，包含子部门\n - HIDDEN: 自身隐藏，同部门或者子部门均不可查询成员列表\n - HIDE_CHILDREN: 自身显示，子资源隐藏，仅可看同部门成员列表，不包含子部门\n - INTERNAL: 内部使用（API/系统）",
+      "title": "Visibility 资源可见性/展示策略"
     },
     "v1DiscoverConfig": {
       "type": "object",
@@ -5149,6 +5257,15 @@
             "type": "object",
             "$ref": "#/definitions/v1Department"
           }
+        },
+        "next_page_token": {
+          "type": "string",
+          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
     },
