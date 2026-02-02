@@ -74,11 +74,11 @@ message UpdateScopeRequest {
 }
 
 message DeleteScopeRequest {
-  int32 id = 1;
+  int64 id = 1;
 }
 
 message ListScopeResourcesRequest {
-  int32 scope_id = 1;
+  int64 scope_id = 1;
 
   // 每页返回的最大用户数。
   // - 如果未指定，则使用服务端默认值 (如 20)。
@@ -133,8 +133,8 @@ message ListScopeResourcesResponse {
 }
 
 message DeleteScopeResourceRequest {
-  int32 scope_id = 1;
-  int32 resource_id = 2;
+  int64 scope_id = 1;
+  int64 resource_id = 2;
 }
 
 message CreateScopeResourcesRequest {

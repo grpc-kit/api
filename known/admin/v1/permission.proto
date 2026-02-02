@@ -41,7 +41,7 @@ message ListPermissionsRequest {
   string order_by = 8;
 
   // TODO；以下将来会统一使用 filter 参数实现过滤
-  int32 policy_id = 9;
+  int64 policy_id = 9;
 }
 
 message ListPermissionsResponse {

@@ -69,14 +69,14 @@ message CreateAuthProviderRequest {
 }
 
 message GetAuthProviderRequest {
-  int32 id = 1;
+  int64 id = 1;
 }
 
 message DeleteAuthProviderRequest {
-  int32 id = 1;
+  int64 id = 1;
 }
 
 message UpdateAuthProviderRequest {
-  int32 id = 1;
+  int64 id = 1;
   AuthProvider provider = 2;
 }

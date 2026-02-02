@@ -191,8 +191,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       },
@@ -224,8 +224,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -259,15 +259,15 @@
             "description": "ID 全局唯一标识",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "id",
             "in": "query",
             "required": false,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "provider.code",
@@ -695,8 +695,8 @@
             "description": "ID 部门唯一标识符，系统自动生成\n用于数据库主键和跨系统引用，建议使用自增整型",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "department",
@@ -707,8 +707,8 @@
               "type": "object",
               "properties": {
                 "parent_id": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "ParentID 父部门ID，构建树形组织结构\n值为 0 表示顶级部门（如：总公司、集团总部）\n支持多级嵌套，建议层级深度不超过 6 级以保证查询性能"
                 },
                 "code": {
@@ -850,8 +850,8 @@
             "name": "department_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "department_members",
@@ -894,8 +894,8 @@
             "name": "department_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "department_members",
@@ -941,8 +941,8 @@
             "name": "department_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "user_id",
@@ -983,8 +983,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -1222,8 +1222,8 @@
             "description": "ID 群组 ID，全局唯一标识",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "group",
@@ -1253,8 +1253,8 @@
                   "title": "SortOrder 群组排序顺序，用于同级群组的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
                 "parent_id": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "ParentID 父群组ID，用于支持群组嵌套，为0表示顶级群组，支持树形组织结构"
                 },
                 "max_members": {
@@ -1270,8 +1270,8 @@
                   "title": "Metadata 元数据，用于存储自定义属性，支持业务扩展"
                 },
                 "department_id": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "DepartmentID 部门ID，用于与部门的联动"
                 },
                 "external_id": {
@@ -1343,8 +1343,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -1500,8 +1500,8 @@
             "name": "user_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       },
@@ -1539,8 +1539,8 @@
             "name": "user_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "group_member",
@@ -1730,8 +1730,8 @@
             "description": "TODO；以下将来会统一使用 filter 参数实现过滤",
             "in": "query",
             "required": false,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       },
@@ -2088,8 +2088,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -2123,8 +2123,8 @@
             "description": "ID 资源 ID",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "policy",
@@ -2735,8 +2735,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       },
@@ -2768,8 +2768,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -2881,8 +2881,8 @@
             "name": "user_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -2916,8 +2916,8 @@
             "description": "ID 角色 ID，全局唯一标识\n\nName 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n 要求：仅支持英文字母、数字和下划线，全局唯一标识符\n 示例：\"admin\"、\"user_manager\"、\"guest\"\n 注意：此字段创建后不支持修改，以确保权限关联的稳定性",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "role",
@@ -2928,8 +2928,8 @@
               "type": "object",
               "properties": {
                 "parent_id": {
-                  "type": "integer",
-                  "format": "int32",
+                  "type": "string",
+                  "format": "int64",
                   "title": "ParentID 父角色ID，构建树形组织结构\n值为 0 表示顶级角色（如：系统内置角色）\n支持多级嵌套，建议层级深度不超过 3 级以保证查询性能"
                 },
                 "code": {
@@ -3018,8 +3018,8 @@
             "description": "角色 ID，从路径参数中获取",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "page_size",
@@ -3102,8 +3102,8 @@
             "description": "角色 ID，从路径参数中获取",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "permissions",
@@ -3151,8 +3151,8 @@
             "description": "角色 ID，从路径参数中获取",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "permission_id",
@@ -3194,8 +3194,8 @@
             "name": "role_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "body",
@@ -3393,8 +3393,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -3487,8 +3487,8 @@
             "name": "scope_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "page_size",
@@ -3631,15 +3631,15 @@
             "name": "scope_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "resource_id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       }
@@ -3823,8 +3823,8 @@
             "description": "ID 用户 ID，全局唯一标识",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "username",
@@ -4242,14 +4242,14 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "description": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n 要求：仅支持英文字母、数字和下划线，全局唯一标识符\n 示例：\"admin\"、\"user_manager\"、\"guest\"\n 注意：此字段创建后不支持修改，以确保权限关联的稳定性",
           "title": "ID 角色 ID，全局唯一标识"
         },
         "parent_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ParentID 父角色ID，构建树形组织结构\n值为 0 表示顶级角色（如：系统内置角色）\n支持多级嵌套，建议层级深度不超过 3 级以保证查询性能"
         },
         "code": {
@@ -4329,8 +4329,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ID 全局唯一标识"
         },
         "code": {
@@ -4602,8 +4602,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "凭证唯一 ID"
         },
         "code": {
@@ -4767,13 +4767,13 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ID 部门唯一标识符，系统自动生成\n用于数据库主键和跨系统引用，建议使用自增整型"
         },
         "parent_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ParentID 父部门ID，构建树形组织结构\n值为 0 表示顶级部门（如：总公司、集团总部）\n支持多级嵌套，建议层级深度不超过 6 级以保证查询性能"
         },
         "code": {
@@ -4887,8 +4887,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ID 部门成员关系唯一标识符，系统自动生成\n用于数据库主键和关系追踪，支持历史记录查询"
         },
         "user_id": {
@@ -4905,8 +4905,8 @@
           "title": "Nickname 用户昵称或显示名称，用于友好的界面展示\n支持中文名称、英文名称等多种显示格式\n用于组织架构图、通讯录等场景的显示"
         },
         "department_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "DepartmentID 部门唯一标识符，建立与部门实体的关联\n支持用户在多个部门中的复杂组织关系"
         },
         "member_role": {
@@ -5051,8 +5051,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ID 群组 ID，全局唯一标识"
         },
         "code": {
@@ -5075,8 +5075,8 @@
           "title": "SortOrder 群组排序顺序，用于同级群组的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
         "parent_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ParentID 父群组ID，用于支持群组嵌套，为0表示顶级群组，支持树形组织结构"
         },
         "max_members": {
@@ -5092,8 +5092,8 @@
           "title": "Metadata 元数据，用于存储自定义属性，支持业务扩展"
         },
         "department_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "DepartmentID 部门ID，用于与部门的联动"
         },
         "external_id": {
@@ -5136,8 +5136,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ID 群组成员关系 ID，全局唯一标识"
         },
         "user_id": {
@@ -5154,8 +5154,8 @@
           "title": "Nickname 用户昵称，来自用户表"
         },
         "group_id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "GroupID 群组 ID，关联群组表"
         },
         "member_role": {
@@ -5768,8 +5768,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
+          "format": "int64",
           "title": "ID 资源 ID"
         },
         "type": {

@@ -68,7 +68,7 @@ message UpdateGroupRequest {
 }
 
 message DeleteGroupRequest {
-  int32 id = 1;
+  int64 id = 1;
 }
 
 message ListGroupMembersRequest {
@@ -133,7 +133,7 @@ message DeleteGroupMemberRequest {
   // 格式示例: "organizations/123" 或 "projects/456"。
   string parent = 1;
   
-  int32 user_id = 2;
+  int64 user_id = 2;
 }
 
 message UpdateGroupMemberRequest {
@@ -141,7 +141,7 @@ message UpdateGroupMemberRequest {
   // 格式示例: "organizations/123" 或 "projects/456"。
   string parent = 1;
   
-  int32 user_id = 2;
+  int64 user_id = 2;
 
   GroupMember group_member = 3;
 

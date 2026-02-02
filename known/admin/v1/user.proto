@@ -96,7 +96,7 @@ message UpdateUserRequest {
 
 message GetUserRequest {
   // ID 用户 ID，全局唯一标识
-  int32 id = 1;
+  int64 id = 1;
   // 用户名，系统登录凭证，通常唯一
   string username = 2;
 }

@@ -82,5 +82,5 @@ message UpdatePolicyRequest {
 }
 
 message DeletePolicyRequest {
-  int32 id = 1;
+  int64 id = 1;
 }

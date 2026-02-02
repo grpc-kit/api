@@ -86,12 +86,12 @@ message PhoneNumber {
 message Department {
   // ID 部门唯一标识符，系统自动生成
   // 用于数据库主键和跨系统引用，建议使用自增整型
-  int32 id = 1;
+  int64 id = 1;
   
   // ParentID 父部门ID，构建树形组织结构
   // 值为 0 表示顶级部门（如：总公司、集团总部）
   // 支持多级嵌套，建议层级深度不超过 6 级以保证查询性能
-  int32 parent_id = 2;
+  int64 parent_id = 2;
   
   // Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
   // 要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复
@@ -323,7 +323,7 @@ message Resource {
 // Policy 策略定义
 message Policy {
   // ID 资源 ID
-  int32 id = 1;
+  int64 id = 1;
 
   // Type 策略类型
   enum Type {
@@ -502,7 +502,7 @@ message User {
 // Role 角色实体，表示用户在系统上的权限和功能
 message Role {
   // ID 角色 ID，全局唯一标识
-  int32 id = 1;
+  int64 id = 1;
   // Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："admin"、"user_manager"、"guest"
@@ -511,7 +511,7 @@ message Role {
   // ParentID 父角色ID，构建树形组织结构
   // 值为 0 表示顶级角色（如：系统内置角色）
   // 支持多级嵌套，建议层级深度不超过 3 级以保证查询性能
-  int32 parent_id = 2;
+  int64 parent_id = 2;
 
   string code = 3;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
@@ -564,7 +564,7 @@ message Role {
 // 该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理
 message Group {
   // ID 群组 ID，全局唯一标识
-  int32 id = 1;
+  int64 id = 1;
   // Name 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："dev_team"、"project_alpha"、"admin_group"
@@ -602,13 +602,13 @@ message Group {
   // 默认值：100，范围：1-9999
   int32 sort_order = 6;
   // ParentID 父群组ID，用于支持群组嵌套，为0表示顶级群组，支持树形组织结构
-  int32 parent_id = 7;
+  int64 parent_id = 7;
   // MaxMembers 群组最大成员数量限制，0表示不限制
   int32 max_members = 8;
   // Metadata 元数据，用于存储自定义属性，支持业务扩展
   map<string, string> metadata = 9;
   // DepartmentID 部门ID，用于与部门的联动
-  int32 department_id = 10;
+  int64 department_id = 10;
   // ExternalID 外部系统ID，用于与外部系统集成，实现跨系统用户组同步
   string external_id = 11;
   // Description 群组描述，详细说明群组的目的和用途
@@ -629,7 +629,7 @@ message Group {
 // 该模型用于描述用户与群组之间的关联关系，支持多状态管理和角色定义
 message GroupMember {
   // ID 群组成员关系 ID，全局唯一标识
-  int32 id = 1;
+  int64 id = 1;
   // UserID 用户 ID，关联用户表
   int64 user_id = 2;
   // Username 用户名，来自用户表
@@ -637,7 +637,7 @@ message GroupMember {
   // Nickname 用户昵称，来自用户表
   string nickname = 4;
   // GroupID 群组 ID，关联群组表
-  int32 group_id = 5;
+  int64 group_id = 5;
 
   // Role 用户在群组中的角色
   // 用户在群组中的角色枚举
@@ -687,7 +687,7 @@ message GroupMember {
 message DepartmentMember {
   // ID 部门成员关系唯一标识符，系统自动生成
   // 用于数据库主键和关系追踪，支持历史记录查询
-  int32 id = 1;
+  int64 id = 1;
 
   // UserID 用户唯一标识符，建立与用户实体的关联
   // 支持一个用户在多个部门中拥有不同角色和权限
@@ -705,7 +705,7 @@ message DepartmentMember {
 
   // DepartmentID 部门唯一标识符，建立与部门实体的关联
   // 支持用户在多个部门中的复杂组织关系
-  int32 department_id = 5;
+  int64 department_id = 5;
 
   // Role 部门角色枚举，定义用户在部门中的职责和权限层级
   // 支持角色继承和权限控制，可用于业务逻辑判断
@@ -860,7 +860,7 @@ message DepartmentMember {
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
 message AuthProvider {
   // ID 全局唯一标识
-  int32 id = 1;
+  int64 id = 1;
   // Name 身份提供商名称，全局唯一
   string code = 2;
 
@@ -994,7 +994,7 @@ message Credential {
     EXTERNAL = 4;    // 外部导入
   }
 
-  int32 id = 1;             // 凭证唯一 ID
+  int64 id = 1;             // 凭证唯一 ID
   string code = 2;          // 凭证显示名称
 
   Type type = 3;             // 凭证类型
