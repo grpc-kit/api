@@ -8,26 +8,29 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 // 引入 google 公共类型
 import "google/protobuf/timestamp.proto";
 
+// enum 参考以下规范 https://google.aip.dev/126
+// 包级枚举取值应带枚举名前缀
+
 // 通用：用于所有 List / Get / BatchGet
 enum View {
   VIEW_UNSPECIFIED = 0;
   // List 默认
-  BASIC = 1;
+  VIEW_BASIC = 1;
   // 常规详情
-  STANDARD = 2;
+  VIEW_STANDARD = 2;
   // 全量
-  FULL = 3;
+  VIEW_FULL = 3;
 }
 
 // 通用：用于任何支持层级 / 关系返回的 List API
 enum Structure {
   STRUCTURE_UNSPECIFIED = 0;
   // 平铺列表（默认），支持分页
-  FLAT = 1;
+  STRUCTURE_FLAT = 1;
   // 层级结构（父子），不支持分页
-  TREE = 2;
+  STRUCTURE_TREE = 2;
   // 层级结构 + 全展开，不支持分页
-  TREE_EXPANDED = 3;
+  STRUCTURE_TREE_EXPANDED = 3;
 }
 
 // 可见性是“前置过滤”，权限是“后置校验”
@@ -37,26 +40,26 @@ enum Visibility {
 
   // 全开：跨部门、跨层级全局可见
   // 资源/部门：系统中所有合法用户均可检索/看到
-  GLOBAL = 1;
+  VISIBILITY_GLOBAL = 1;
 
   // 组织架构树可见：本部门及下属部门可见（向下递归）
   // 部门：成员处于相同节点或上级节点可见其下属节点（不管下级节点设置的可见性）
   // 资源：同部门及子部门成员可见
-  SUBTREE = 2;
+  VISIBILITY_SUBTREE = 2;
 
   // 仅本级可见：仅限本部门成员，不包含子部门
   // 部门：仅同级成员可见，不向下扩散
   // 资源：仅本节点成员可见
-  LOCAL = 3;
+  VISIBILITY_LOCAL = 3;
 
   // 私有：仅创建者/负责人及系统内部可见（最严限制）
   // 部门：同级成员也不可见，仅管理员或特定负责人可见
   // 资源：仅创建者或指定授权人可见
-  RESTRICTED = 4;
-  
+  VISIBILITY_RESTRICTED = 4;
+
   // 特定受众：基于白名单（如特定团队、特定角色）
   // 如果逻辑复杂，通常此项作为占位，具体配置存入关联表
-  SPECIFIC = 5; 
+  VISIBILITY_SPECIFIC = 5;
 }
 
 // Address 用户地址
@@ -103,20 +106,20 @@ message Department {
   // Type 部门类型分类，用于业务逻辑和权限控制
   enum Type {
     TYPE_UNSPECIFIED = 0;  // 未指定类型
-    TYPE_BUSINESS = 1;     // 业务部门 - 直接产生收入的核心业务单位
-    TYPE_SUPPORT = 2;      // 支持部门 - 为业务部门提供服务支撑（如：IT、HR）
-    TYPE_MANAGEMENT = 3;   // 管理部门 - 负责决策和监督的管理层级
-    TYPE_VIRTUAL = 4;      // 虚拟部门 - 项目组、临时团队等非固定组织
+    BUSINESS = 1;     // 业务部门 - 直接产生收入的核心业务单位
+    SUPPORT = 2;      // 支持部门 - 为业务部门提供服务支撑（如：IT、HR）
+    MANAGEMENT = 3;   // 管理部门 - 负责决策和监督的管理层级
+    VIRTUAL = 4;      // 虚拟部门 - 项目组、临时团队等非固定组织
   }
   Type type = 5;
 
   // Status 部门运营状态，用于生命周期管理
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
-    STATUS_ACTIVE = 1;       // 正常运营 - 部门正常工作，可分配员工和任务
-    STATUS_INACTIVE = 2;     // 暂停运营 - 临时停止业务，员工可能被临时调配
-    STATUS_DISSOLVED = 3;    // 已解散 - 部门正式撤销，员工需重新分配
-    STATUS_MERGING = 4;      // 合并中 - 正在与其他部门合并，处于过渡状态
+    ACTIVE = 1;       // 正常运营 - 部门正常工作，可分配员工和任务
+    INACTIVE = 2;     // 暂停运营 - 临时停止业务，员工可能被临时调配
+    DISSOLVED = 3;    // 已解散 - 部门正式撤销，员工需重新分配
+    MERGING = 4;      // 合并中 - 正在与其他部门合并，处于过渡状态
   }
   Status status = 6;
 
@@ -420,16 +423,16 @@ message User {
     TYPE_UNSPECIFIED = 0;  // 默认值
 
     // 外部用户 / 业务伙伴
-    TYPE_CUSTOMER = 1;     // 前台用户 / 消费者
-    TYPE_MERCHANT = 2;     // 商户 / 卖家
-    TYPE_SUPPLIER = 3;     // 供应商 / 合作方
+    CUSTOMER = 1;     // 前台用户 / 消费者
+    MERCHANT = 2;     // 商户 / 卖家
+    SUPPLIER = 3;     // 供应商 / 合作方
 
     // 内部用户 / 员工
-    TYPE_EMPLOYEE = 10;    // 后台用户 / 内部员工
-    TYPE_ADMIN = 11;       // 系统管理员
+    EMPLOYEE = 10;    // 后台用户 / 内部员工
+    ADMIN = 11;       // 系统管理员
 
     // 系统账户 (为安全和区分，编号拉开)
-    TYPE_SYSTEM = 99;      // 系统集成账户 / 机器人
+    SYSTEM = 99;      // 系统集成账户 / 机器人
   }
   Type type = 9;
 
@@ -437,23 +440,23 @@ message User {
   // 可以根据业务再增加状态
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 默认值／未知状态
-    STATUS_PENDING = 1;      // 待激活／待验证
-    STATUS_ACTIVE = 2;       // 正常启用状态
-    STATUS_LOCKED = 3;       // 被锁定（如连续密码错误、账号风控等）
-    STATUS_DISABLED = 4;     // 禁用（人工停用）
-    STATUS_EXPIRED = 5;      // 过期等（订阅过期、账号注销等）
-    STATUS_SUSPENDED = 6;   // 暂时冻结（如风控触发、投诉处理中）
-    STATUS_DELETED = 7;     // 已注销（区别软删除）
+    PENDING = 1;      // 待激活／待验证
+    ACTIVE = 2;       // 正常启用状态
+    LOCKED = 3;       // 被锁定（如连续密码错误、账号风控等）
+    DISABLED = 4;     // 禁用（人工停用）
+    EXPIRED = 5;      // 过期等（订阅过期、账号注销等）
+    SUSPENDED = 6;   // 暂时冻结（如风控触发、投诉处理中）
+    DELETED = 7;     // 已注销（区别软删除）
   }
   Status status = 10;
 
   // Gender 用户性别
   enum Gender {
     GENDER_UNSPECIFIED = 0;
-    GENDER_MALE = 1;        // 男性
-    GENDER_FEMALE = 2;      // 女性
-    GENDER_OTHER = 3;       // 其他
-    GENDER_PRIVATE = 4;     // 保密，不愿透露
+    MALE = 1;        // 男性
+    FEMALE = 2;      // 女性
+    OTHER = 3;       // 其他
+    PRIVATE = 4;     // 保密，不愿透露
   }
   Gender gender = 11;
 
@@ -523,9 +526,9 @@ message Role {
   // 用于区分不同类型的角色，影响角色的可编辑性和权限管理策略
   enum Type {
     TYPE_UNSPECIFIED = 0;  // 默认值／未指定类型：系统默认值，通常不直接使用
-    TYPE_SYSTEM = 1;       // 系统内置角色：由系统预定义，不可删除，权限固定
-    TYPE_CUSTOM = 2;       // 自定义角色：用户创建的角色，可完全自定义权限
-    TYPE_TEMPLATE = 3;     // 模板角色：预设的角色模板，可基于此创建新角色
+    SYSTEM = 1;       // 系统内置角色：由系统预定义，不可删除，权限固定
+    CUSTOM = 2;       // 自定义角色：用户创建的角色，可完全自定义权限
+    TEMPLATE = 3;     // 模板角色：预设的角色模板，可基于此创建新角色
   }
   // type 角色类型，决定角色的管理策略和可操作性
   Type type = 6;
@@ -534,8 +537,8 @@ message Role {
   // 用于角色的启用/禁用管理，影响用户权限的实际生效
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
-    STATUS_ACTIVE = 1;       // 正常启用状态：角色正常可用，权限生效
-    STATUS_DISABLED = 2;     // 禁用状态：角色被停用，权限不生效
+    ACTIVE = 1;       // 正常启用状态：角色正常可用，权限生效
+    DISABLED = 2;     // 禁用状态：角色被停用，权限不生效
   }
   // status 角色状态，控制角色是否可用和权限是否生效
   Status status = 7;
@@ -572,10 +575,10 @@ message Group {
   // 群组类型，用于区分不同用途的群组
   enum Type {
     TYPE_UNSPECIFIED = 0;  // 默认值/未指定：系统默认值，通常不直接使用
-    TYPE_DEPARTMENT = 1;   // 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id
-    TYPE_PROJECT = 2;      // 项目群组：基于项目或任务的临时分组
-    TYPE_ROLE = 3;         // 角色群组：基于用户角色或权限的分组
-    TYPE_CUSTOM = 4;       // 自定义群组：用户根据特定业务需求自定义的分组
+    DEPARTMENT = 1;   // 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id
+    PROJECT = 2;      // 项目群组：基于项目或任务的临时分组
+    ROLE = 3;         // 角色群组：基于用户角色或权限的分组
+    CUSTOM = 4;       // 自定义群组：用户根据特定业务需求自定义的分组
   }
   Type type = 3;
 
@@ -584,10 +587,10 @@ message Group {
   // 可以根据业务再增加状态
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
-    STATUS_PENDING = 1;      // 待激活／待验证：创建后等待审核或激活的状态
-    STATUS_ACTIVE = 2;       // 正常启用状态：群组正常运行中，可以进行成员管理和权限分配
-    STATUS_ARCHIVED = 3;     // 被归档，但可查询：群组不再活跃但保留历史数据，成员不允许变更
-    STATUS_DISABLED = 4;     // 禁用，不可查询：群组被临时停用，通常为人工操作结果
+    PENDING = 1;      // 待激活／待验证：创建后等待审核或激活的状态
+    ACTIVE = 2;       // 正常启用状态：群组正常运行中，可以进行成员管理和权限分配
+    ARCHIVED = 3;     // 被归档，但可查询：群组不再活跃但保留历史数据，成员不允许变更
+    DISABLED = 4;     // 禁用，不可查询：群组被临时停用，通常为人工操作结果
   }
   Status status = 4;
 
@@ -640,10 +643,10 @@ message GroupMember {
   // 用户在群组中的角色枚举
   enum Role {
     ROLE_UNSPECIFIED = 0;  // 默认值/未指定
-    ROLE_OWNER = 1;        // 所有者：拥有群组最高权限
-    ROLE_ADMIN = 2;        // 管理员：管理群组成员和基本设置
-    ROLE_MEMBER = 3;       // 普通成员：拥有基本访问权限
-    ROLE_GUEST = 4;        // 访客：拥有受限访问权限
+    OWNER = 1;        // 所有者：拥有群组最高权限
+    ADMIN = 2;        // 管理员：管理群组成员和基本设置
+    MEMBER = 3;       // 普通成员：拥有基本访问权限
+    GUEST = 4;        // 访客：拥有受限访问权限
   }
   Role member_role = 6;
 
@@ -651,12 +654,12 @@ message GroupMember {
   // 群组成员关系状态
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
-    STATUS_PENDING = 1;      // 待激活／待验证：用户申请加入群组等待审批
-    STATUS_ACTIVE = 2;       // 正常启用状态：用户正式加入群组
-    STATUS_INVITED = 3;      // 被邀请加入：用户收到群组邀请但尚未回应
-    STATUS_DISABLED = 4;     // 禁用（人工停用）：用户被临时限制群组权限
-    STATUS_REJECTED = 5;     // 被拒绝加入：用户申请或邀请被拒绝
-    STATUS_LEFT = 6;         // 已退出：用户主动退出群组
+    PENDING = 1;      // 待激活／待验证：用户申请加入群组等待审批
+    ACTIVE = 2;       // 正常启用状态：用户正式加入群组
+    INVITED = 3;      // 被邀请加入：用户收到群组邀请但尚未回应
+    DISABLED = 4;     // 禁用（人工停用）：用户被临时限制群组权限
+    REJECTED = 5;     // 被拒绝加入：用户申请或邀请被拒绝
+    LEFT = 6;         // 已退出：用户主动退出群组
   }
   Status member_status = 7;
 
@@ -709,17 +712,17 @@ message DepartmentMember {
   // 角色变更需要审批流程和历史记录追踪
   enum Role {
     ROLE_UNSPECIFIED = 0;  // 未指定角色（系统默认值）
-    ROLE_OWNER = 1;        // 部门负责人 - 拥有部门最高管理权限
-    ROLE_DEPUTY = 2;       // 副负责人 - 协助负责人管理部门，拥有大部分管理权限
-    ROLE_MANAGER = 3;      // 经理 - 负责具体业务管理和团队领导
-    ROLE_SUPERVISOR = 4;   // 主管 - 负责日常业务监督和指导
-    ROLE_LEAD = 5;         // 组长 - 负责小组或项目的直接管理
-    ROLE_SENIOR = 6;       // 高级成员 - 资深员工，可能承担指导职责
-    ROLE_MEMBER = 7;       // 普通成员 - 标准部门员工
-    ROLE_INTERN = 8;       // 实习生 - 临时学习和工作的人员
-    ROLE_CONSULTANT = 9;   // 顾问 - 提供专业建议和指导的外部专家
-    ROLE_CONTRACTOR = 10;  // 外包人员 - 临时合作的外部工作人员
-    ROLE_ASSISTANT = 11;   // 助理 - 提供行政和事务支持的人员
+    OWNER = 1;        // 部门负责人 - 拥有部门最高管理权限
+    DEPUTY = 2;       // 副负责人 - 协助负责人管理部门，拥有大部分管理权限
+    MANAGER = 3;      // 经理 - 负责具体业务管理和团队领导
+    SUPERVISOR = 4;   // 主管 - 负责日常业务监督和指导
+    LEAD = 5;         // 组长 - 负责小组或项目的直接管理
+    SENIOR = 6;       // 高级成员 - 资深员工，可能承担指导职责
+    MEMBER = 7;       // 普通成员 - 标准部门员工
+    INTERN = 8;       // 实习生 - 临时学习和工作的人员
+    CONSULTANT = 9;   // 顾问 - 提供专业建议和指导的外部专家
+    CONTRACTOR = 10;  // 外包人员 - 临时合作的外部工作人员
+    ASSISTANT = 11;   // 助理 - 提供行政和事务支持的人员
   }
   Role member_role = 6;
 
@@ -728,12 +731,12 @@ message DepartmentMember {
   // 状态变更会影响用户的访问权限和业务操作
   enum Status {
     STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
-    STATUS_ACTIVE = 1;       // 正常状态 - 用户正常工作，拥有完整权限
-    STATUS_DISABLED = 2;     // 已禁用 - 临时禁用，保留关系但无法访问
-    STATUS_LEFT = 3;         // 已离开 - 用户已离职或调离，保留历史记录
-    STATUS_PENDING = 4;      // 待加入 - 申请中或等待审批的状态
-    STATUS_SUSPENDED = 5;    // 暂停 - 临时暂停工作，如休假、停职等
-    STATUS_TRANSFERRING = 6; // 调动中 - 正在进行部门间调动的过渡状态
+    ACTIVE = 1;       // 正常状态 - 用户正常工作，拥有完整权限
+    DISABLED = 2;     // 已禁用 - 临时禁用，保留关系但无法访问
+    LEFT = 3;         // 已离开 - 用户已离职或调离，保留历史记录
+    PENDING = 4;      // 待加入 - 申请中或等待审批的状态
+    SUSPENDED = 5;    // 暂停 - 临时暂停工作，如休假、停职等
+    TRANSFERRING = 6; // 调动中 - 正在进行部门间调动的过渡状态
   }
   Status member_status = 7;
 
@@ -785,9 +788,9 @@ message DepartmentMember {
   // MemberType 成员关系类型，区分主部门和兼职部门
   enum MemberType {
     TYPE_UNSPECIFIED = 0;  // 未指定
-    TYPE_PRIMARY = 1;      // 主部门/主成员 - 用户的主要工作、汇报、考勤部门
-    TYPE_DUAL = 2;         // 兼职部门/次要成员 - 协作、项目或次要行政隶属
-    TYPE_ADVISORY = 3;     // 顾问关系/临时关系 - 仅提供指导或临时服务的关系
+    PRIMARY = 1;      // 主部门/主成员 - 用户的主要工作、汇报、考勤部门
+    DUAL = 2;         // 兼职部门/次要成员 - 协作、项目或次要行政隶属
+    ADVISORY = 3;     // 顾问关系/临时关系 - 仅提供指导或临时服务的关系
   }
   MemberType member_type = 17;
   // 【系统约束】：针对同一个 UserID，只能有一个 DepartmentMember 记录的 MemberType 为 TYPE_PRIMARY。
@@ -864,13 +867,13 @@ message AuthProvider {
   // Type 身份提供商类型
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    TYPE_LOCAL = 1;
-    TYPE_LDAP = 2;
-    TYPE_OIDC = 3;
-    TYPE_OAUTH2 = 4;
-    TYPE_GITHUB = 5;
-    TYPE_GOOGLE = 6;
-    TYPE_WECHAT = 7;
+    LOCAL = 1;
+    LDAP = 2;
+    OIDC = 3;
+    OAUTH2 = 4;
+    GITHUB = 5;
+    GOOGLE = 6;
+    WECHAT = 7;
   }
   Type type = 3;
 
@@ -927,15 +930,15 @@ message Credential {
   // 凭证类型（载体/结构）
   enum Type {
     TYPE_UNSPECIFIED = 0;     // 未指定类型
-    TYPE_API_KEY = 1;         // API Key
-    TYPE_SYMMETRIC_KEY = 2;   // 对称密钥 / HMAC / AES
-    TYPE_KEY_PAIR = 3;        // 公私钥对
-    TYPE_X509 = 4;            // X.509 证书凭证（包含主证书、私钥、CA链）
-    TYPE_LICENSE = 5;         // 软件许可证
-    TYPE_JWKS = 6;            // JSON Web Key Set URI / 内容
-    TYPE_HSM_REF = 7;         // 外部安全模块 (KMS/HSM) 引用
-    TYPE_FIDO = 8;            // 硬件安全密钥 / 多因素认证设备
-    TYPE_OTHER = 99;          // 未来扩展自定义类型
+    API_KEY = 1;         // API Key
+    SYMMETRIC_KEY = 2;   // 对称密钥 / HMAC / AES
+    KEY_PAIR = 3;        // 公私钥对
+    X509 = 4;            // X.509 证书凭证（包含主证书、私钥、CA链）
+    LICENSE = 5;         // 软件许可证
+    JWKS = 6;            // JSON Web Key Set URI / 内容
+    HSM_REF = 7;         // 外部安全模块 (KMS/HSM) 引用
+    FIDO = 8;            // 硬件安全密钥 / 多因素认证设备
+    // OTHER = 99;          // 未来扩展自定义类型
   }
 
   // 算法类型枚举
@@ -943,19 +946,19 @@ message Credential {
     ALGORITHM_UNSPECIFIED = 0; // 未指定
 
     // 非对称签名/加密算法
-    ALGORITHM_RSA = 1;          // RSA 公私钥算法
-    ALGORITHM_ECDSA = 2;        // ECDSA 椭圆曲线签名算法
-    ALGORITHM_ED25519 = 3;      // Ed25519 高性能椭圆曲线签名算法
+    RSA = 1;          // RSA 公私钥算法
+    ECDSA = 2;        // ECDSA 椭圆曲线签名算法
+    ED25519 = 3;      // Ed25519 高性能椭圆曲线签名算法
 
     // 对称签名 / HMAC
-    ALGORITHM_HMAC = 4;         // HMAC 对称签名算法，hash 类型可在 metadata 指定 (SHA256, SHA512, SHA3 等)
+    HMAC = 4;         // HMAC 对称签名算法，hash 类型可在 metadata 指定 (SHA256, SHA512, SHA3 等)
 
     // 对称加密算法
-    ALGORITHM_AES = 5;          // AES 对称加密算法，可在 metadata 指定 key 长度 (128/256) 和模式 (GCM/CBC 等)
-    ALGORITHM_CHACHA20_POLY1305 = 6; // ChaCha20-Poly1305 对称加密 + 完整性验证，高性能
+    AES = 5;          // AES 对称加密算法，可在 metadata 指定 key 长度 (128/256) 和模式 (GCM/CBC 等)
+    CHACHA20_POLY1305 = 6; // ChaCha20-Poly1305 对称加密 + 完整性验证，高性能
 
     // 国密 / 自定义算法
-    ALGORITHM_OTHER = 99;       // 自定义算法或国密算法（如 SM2/SM3/SM4 或企业自研算法）
+    // OTHER = 99;       // 自定义算法或国密算法（如 SM2/SM3/SM4 或企业自研算法）
   }
 
   // 凭证用途
@@ -963,32 +966,32 @@ message Credential {
     USAGE_UNSPECIFIED = 0; // 未指定用途
 
     // 技术用途
-    USAGE_SIGNING = 1;     // 数据签名/完整性验证
-    USAGE_ENCRYPTION = 2;  // 数据加密/解密
+    SIGNING = 1;     // 数据签名/完整性验证
+    ENCRYPTION = 2;  // 数据加密/解密
 
     // 业务用途
-    USAGE_AUTH = 10;        // 身份认证/授权
-    USAGE_LICENSE = 11;     // 软件许可证验证
-    USAGE_OTP = 12;         // 一次性密码 / TOTP
+    AUTH = 10;        // 身份认证/授权
+    // LICENSE = 11;     // 软件许可证验证
+    OTP = 12;         // 一次性密码 / TOTP
   }
 
   // 凭证状态
   enum Status {
     STATUS_UNSPECIFIED = 0; // 未指定状态
-    STATUS_ACTIVE = 1;      // 有效且正在使用
-    STATUS_PENDING = 2;     // 待激活/待验证
-    STATUS_DISABLED = 3;    // 手动禁用
-    STATUS_EXPIRED = 4;     // 已过期
-    STATUS_REVOKED = 5;     // 已吊销/废弃
+    ACTIVE = 1;      // 有效且正在使用
+    PENDING = 2;     // 待激活/待验证
+    DISABLED = 3;    // 手动禁用
+    EXPIRED = 4;     // 已过期
+    REVOKED = 5;     // 已吊销/废弃
   }
 
   // 凭证来源
   enum Source {
     SOURCE_UNSPECIFIED = 0; // 未指定
-    SOURCE_SYSTEM = 1;      // 系统自动生成
-    SOURCE_USER = 2;        // 用户创建
-    SOURCE_KMS = 3;         // KMS/HSM 生成
-    SOURCE_EXTERNAL = 4;    // 外部导入
+    SYSTEM = 1;      // 系统自动生成
+    USER = 2;        // 用户创建
+    KMS = 3;         // KMS/HSM 生成
+    EXTERNAL = 4;    // 外部导入
   }
 
   int32 id = 1;             // 凭证唯一 ID
@@ -1007,7 +1010,7 @@ message Credential {
   oneof key_material {
     ApiKeyData api_key = 10;                // API Key
     KeyPairData key_pair = 11;              // 公私钥对
-    X509Data x509 = 12;   // X.509 证书数据
+    X509Data x509_data = 12;   // X.509 证书数据
     LicenseData license = 13;                // 软件许可证
     bytes symmetric_key = 14;              // 对称密钥 / HMAC / JWT
     string jwks_uri = 15;                    // JWKS URI

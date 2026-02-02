@@ -283,13 +283,13 @@
             "type": "string",
             "enum": [
               "TYPE_UNSPECIFIED",
-              "TYPE_LOCAL",
-              "TYPE_LDAP",
-              "TYPE_OIDC",
-              "TYPE_OAUTH2",
-              "TYPE_GITHUB",
-              "TYPE_GOOGLE",
-              "TYPE_WECHAT"
+              "LOCAL",
+              "LDAP",
+              "OIDC",
+              "OAUTH2",
+              "GITHUB",
+              "GOOGLE",
+              "WECHAT"
             ],
             "default": "TYPE_UNSPECIFIED"
           },
@@ -574,29 +574,29 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "STRUCTURE_UNSPECIFIED",
-              "FLAT",
-              "TREE",
-              "TREE_EXPANDED"
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           },
@@ -1116,29 +1116,29 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "STRUCTURE_UNSPECIFIED",
-              "FLAT",
-              "TREE",
-              "TREE_EXPANDED"
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           },
@@ -1685,29 +1685,29 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "STRUCTURE_UNSPECIFIED",
-              "FLAT",
-              "TREE",
-              "TREE_EXPANDED"
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           },
@@ -1967,29 +1967,29 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "STRUCTURE_UNSPECIFIED",
-              "FLAT",
-              "TREE",
-              "TREE_EXPANDED"
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           },
@@ -2236,29 +2236,29 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "STRUCTURE_UNSPECIFIED",
-              "FLAT",
-              "TREE",
-              "TREE_EXPANDED"
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           },
@@ -3046,15 +3046,15 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
@@ -3274,29 +3274,29 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "STRUCTURE_UNSPECIFIED",
-              "FLAT",
-              "TREE",
-              "TREE_EXPANDED"
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           },
@@ -3515,29 +3515,29 @@
           },
           {
             "name": "view",
-            "description": " - BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "VIEW_UNSPECIFIED",
-              "BASIC",
-              "STANDARD",
-              "FULL"
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
             ],
             "default": "VIEW_UNSPECIFIED"
           },
           {
             "name": "structure",
-            "description": " - FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "STRUCTURE_UNSPECIFIED",
-              "FLAT",
-              "TREE",
-              "TREE_EXPANDED"
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           },
@@ -4048,16 +4048,15 @@
       "type": "string",
       "enum": [
         "ALGORITHM_UNSPECIFIED",
-        "ALGORITHM_RSA",
-        "ALGORITHM_ECDSA",
-        "ALGORITHM_ED25519",
-        "ALGORITHM_HMAC",
-        "ALGORITHM_AES",
-        "ALGORITHM_CHACHA20_POLY1305",
-        "ALGORITHM_OTHER"
+        "RSA",
+        "ECDSA",
+        "ED25519",
+        "HMAC",
+        "AES",
+        "CHACHA20_POLY1305"
       ],
       "default": "ALGORITHM_UNSPECIFIED",
-      "description": "- ALGORITHM_UNSPECIFIED: 未指定\n - ALGORITHM_RSA: 非对称签名/加密算法\n\nRSA 公私钥算法\n - ALGORITHM_ECDSA: ECDSA 椭圆曲线签名算法\n - ALGORITHM_ED25519: Ed25519 高性能椭圆曲线签名算法\n - ALGORITHM_HMAC: 对称签名 / HMAC\n\nHMAC 对称签名算法，hash 类型可在 metadata 指定 (SHA256, SHA512, SHA3 等)\n - ALGORITHM_AES: 对称加密算法\n\nAES 对称加密算法，可在 metadata 指定 key 长度 (128/256) 和模式 (GCM/CBC 等)\n - ALGORITHM_CHACHA20_POLY1305: ChaCha20-Poly1305 对称加密 + 完整性验证，高性能\n - ALGORITHM_OTHER: 国密 / 自定义算法\n\n自定义算法或国密算法（如 SM2/SM3/SM4 或企业自研算法）",
+      "description": "- ALGORITHM_UNSPECIFIED: 未指定\n - RSA: 非对称签名/加密算法\n\nRSA 公私钥算法\n - ECDSA: ECDSA 椭圆曲线签名算法\n - ED25519: Ed25519 高性能椭圆曲线签名算法\n - HMAC: 对称签名 / HMAC\n\nHMAC 对称签名算法，hash 类型可在 metadata 指定 (SHA256, SHA512, SHA3 等)\n - AES: 对称加密算法\n\nAES 对称加密算法，可在 metadata 指定 key 长度 (128/256) 和模式 (GCM/CBC 等)\n - CHACHA20_POLY1305: ChaCha20-Poly1305 对称加密 + 完整性验证，高性能",
       "title": "算法类型枚举"
     },
     "CredentialApiKeyData": {
@@ -4114,27 +4113,26 @@
       "type": "string",
       "enum": [
         "SOURCE_UNSPECIFIED",
-        "SOURCE_SYSTEM",
-        "SOURCE_USER",
-        "SOURCE_KMS",
-        "SOURCE_EXTERNAL"
+        "SYSTEM",
+        "USER",
+        "KMS",
+        "EXTERNAL"
       ],
       "default": "SOURCE_UNSPECIFIED",
-      "description": "- SOURCE_UNSPECIFIED: 未指定\n - SOURCE_SYSTEM: 系统自动生成\n - SOURCE_USER: 用户创建\n - SOURCE_KMS: KMS/HSM 生成\n - SOURCE_EXTERNAL: 外部导入",
+      "description": "- SOURCE_UNSPECIFIED: 未指定\n - SYSTEM: 系统自动生成\n - USER: 用户创建\n - KMS: KMS/HSM 生成\n - EXTERNAL: 外部导入",
       "title": "凭证来源"
     },
     "CredentialUsage": {
       "type": "string",
       "enum": [
         "USAGE_UNSPECIFIED",
-        "USAGE_SIGNING",
-        "USAGE_ENCRYPTION",
-        "USAGE_AUTH",
-        "USAGE_LICENSE",
-        "USAGE_OTP"
+        "SIGNING",
+        "ENCRYPTION",
+        "AUTH",
+        "OTP"
       ],
       "default": "USAGE_UNSPECIFIED",
-      "description": "- USAGE_UNSPECIFIED: 未指定用途\n - USAGE_SIGNING: 技术用途\n\n数据签名/完整性验证\n - USAGE_ENCRYPTION: 数据加密/解密\n - USAGE_AUTH: 业务用途\n\n身份认证/授权\n - USAGE_LICENSE: 软件许可证验证\n - USAGE_OTP: 一次性密码 / TOTP",
+      "description": "- USAGE_UNSPECIFIED: 未指定用途\n - SIGNING: 技术用途\n\n数据签名/完整性验证\n - ENCRYPTION: 数据加密/解密\n - AUTH: 业务用途\n\n身份认证/授权\n - OTP: LICENSE = 11;     // 软件许可证验证\n\n一次性密码 / TOTP",
       "title": "凭证用途"
     },
     "CredentialX509Data": {
@@ -4165,12 +4163,12 @@
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_PRIMARY",
-        "TYPE_DUAL",
-        "TYPE_ADVISORY"
+        "PRIMARY",
+        "DUAL",
+        "ADVISORY"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 未指定\n - TYPE_PRIMARY: 主部门/主成员 - 用户的主要工作、汇报、考勤部门\n - TYPE_DUAL: 兼职部门/次要成员 - 协作、项目或次要行政隶属\n - TYPE_ADVISORY: 顾问关系/临时关系 - 仅提供指导或临时服务的关系",
+      "description": "- TYPE_UNSPECIFIED: 未指定\n - PRIMARY: 主部门/主成员 - 用户的主要工作、汇报、考勤部门\n - DUAL: 兼职部门/次要成员 - 协作、项目或次要行政隶属\n - ADVISORY: 顾问关系/临时关系 - 仅提供指导或临时服务的关系",
       "title": "IsPrimaryDepartment 是否为用户的主部门标识\ntrue: 主部门（用户的主要工作部门，影响薪资、考勤等）\nfalse: 兼职部门（用户的兼职或协作部门）\n一个用户只能有一个主部门，但可以有多个兼职部门\nMemberType 成员关系类型，区分主部门和兼职部门"
     },
     "ListUsersRequestUserView": {
@@ -4231,13 +4229,13 @@
       "type": "string",
       "enum": [
         "GENDER_UNSPECIFIED",
-        "GENDER_MALE",
-        "GENDER_FEMALE",
-        "GENDER_OTHER",
-        "GENDER_PRIVATE"
+        "MALE",
+        "FEMALE",
+        "OTHER",
+        "PRIVATE"
       ],
       "default": "GENDER_UNSPECIFIED",
-      "description": "- GENDER_MALE: 男性\n - GENDER_FEMALE: 女性\n - GENDER_OTHER: 其他\n - GENDER_PRIVATE: 保密，不愿透露",
+      "description": "- MALE: 男性\n - FEMALE: 女性\n - OTHER: 其他\n - PRIVATE: 保密，不愿透露",
       "title": "Gender 用户性别"
     },
     "adminv1Role": {
@@ -4385,13 +4383,13 @@
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_LOCAL",
-        "TYPE_LDAP",
-        "TYPE_OIDC",
-        "TYPE_OAUTH2",
-        "TYPE_GITHUB",
-        "TYPE_GOOGLE",
-        "TYPE_WECHAT"
+        "LOCAL",
+        "LDAP",
+        "OIDC",
+        "OAUTH2",
+        "GITHUB",
+        "GOOGLE",
+        "WECHAT"
       ],
       "default": "TYPE_UNSPECIFIED",
       "title": "Type 身份提供商类型"
@@ -4648,7 +4646,7 @@
           "$ref": "#/definitions/CredentialKeyPairData",
           "title": "公私钥对"
         },
-        "x509": {
+        "x509_data": {
           "$ref": "#/definitions/CredentialX509Data",
           "title": "X.509 证书数据"
         },
@@ -4716,32 +4714,31 @@
       "type": "string",
       "enum": [
         "STATUS_UNSPECIFIED",
-        "STATUS_ACTIVE",
-        "STATUS_PENDING",
-        "STATUS_DISABLED",
-        "STATUS_EXPIRED",
-        "STATUS_REVOKED"
+        "ACTIVE",
+        "PENDING",
+        "DISABLED",
+        "EXPIRED",
+        "REVOKED"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 未指定状态\n - STATUS_ACTIVE: 有效且正在使用\n - STATUS_PENDING: 待激活/待验证\n - STATUS_DISABLED: 手动禁用\n - STATUS_EXPIRED: 已过期\n - STATUS_REVOKED: 已吊销/废弃",
+      "description": "- STATUS_UNSPECIFIED: 未指定状态\n - ACTIVE: 有效且正在使用\n - PENDING: 待激活/待验证\n - DISABLED: 手动禁用\n - EXPIRED: 已过期\n - REVOKED: 已吊销/废弃",
       "title": "凭证状态"
     },
     "v1CredentialType": {
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_API_KEY",
-        "TYPE_SYMMETRIC_KEY",
-        "TYPE_KEY_PAIR",
-        "TYPE_X509",
-        "TYPE_LICENSE",
-        "TYPE_JWKS",
-        "TYPE_HSM_REF",
-        "TYPE_FIDO",
-        "TYPE_OTHER"
+        "API_KEY",
+        "SYMMETRIC_KEY",
+        "KEY_PAIR",
+        "X509",
+        "LICENSE",
+        "JWKS",
+        "HSM_REF",
+        "FIDO"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_API_KEY: API Key\n - TYPE_SYMMETRIC_KEY: 对称密钥 / HMAC / AES\n - TYPE_KEY_PAIR: 公私钥对\n - TYPE_X509: X.509 证书凭证（包含主证书、私钥、CA链）\n - TYPE_LICENSE: 软件许可证\n - TYPE_JWKS: JSON Web Key Set URI / 内容\n - TYPE_HSM_REF: 外部安全模块 (KMS/HSM) 引用\n - TYPE_FIDO: 硬件安全密钥 / 多因素认证设备\n - TYPE_OTHER: 未来扩展自定义类型",
+      "description": "- TYPE_UNSPECIFIED: 未指定类型\n - API_KEY: API Key\n - SYMMETRIC_KEY: 对称密钥 / HMAC / AES\n - KEY_PAIR: 公私钥对\n - X509: X.509 证书凭证（包含主证书、私钥、CA链）\n - LICENSE: 软件许可证\n - JWKS: JSON Web Key Set URI / 内容\n - HSM_REF: 外部安全模块 (KMS/HSM) 引用\n - FIDO: 硬件安全密钥 / 多因素认证设备",
       "title": "凭证类型（载体/结构）"
     },
     "v1DatabaseConfig": {
@@ -4960,61 +4957,61 @@
       "type": "string",
       "enum": [
         "ROLE_UNSPECIFIED",
-        "ROLE_OWNER",
-        "ROLE_DEPUTY",
-        "ROLE_MANAGER",
-        "ROLE_SUPERVISOR",
-        "ROLE_LEAD",
-        "ROLE_SENIOR",
-        "ROLE_MEMBER",
-        "ROLE_INTERN",
-        "ROLE_CONSULTANT",
-        "ROLE_CONTRACTOR",
-        "ROLE_ASSISTANT"
+        "OWNER",
+        "DEPUTY",
+        "MANAGER",
+        "SUPERVISOR",
+        "LEAD",
+        "SENIOR",
+        "MEMBER",
+        "INTERN",
+        "CONSULTANT",
+        "CONTRACTOR",
+        "ASSISTANT"
       ],
       "default": "ROLE_UNSPECIFIED",
-      "description": "- ROLE_UNSPECIFIED: 未指定角色（系统默认值）\n - ROLE_OWNER: 部门负责人 - 拥有部门最高管理权限\n - ROLE_DEPUTY: 副负责人 - 协助负责人管理部门，拥有大部分管理权限\n - ROLE_MANAGER: 经理 - 负责具体业务管理和团队领导\n - ROLE_SUPERVISOR: 主管 - 负责日常业务监督和指导\n - ROLE_LEAD: 组长 - 负责小组或项目的直接管理\n - ROLE_SENIOR: 高级成员 - 资深员工，可能承担指导职责\n - ROLE_MEMBER: 普通成员 - 标准部门员工\n - ROLE_INTERN: 实习生 - 临时学习和工作的人员\n - ROLE_CONSULTANT: 顾问 - 提供专业建议和指导的外部专家\n - ROLE_CONTRACTOR: 外包人员 - 临时合作的外部工作人员\n - ROLE_ASSISTANT: 助理 - 提供行政和事务支持的人员",
+      "description": "- ROLE_UNSPECIFIED: 未指定角色（系统默认值）\n - OWNER: 部门负责人 - 拥有部门最高管理权限\n - DEPUTY: 副负责人 - 协助负责人管理部门，拥有大部分管理权限\n - MANAGER: 经理 - 负责具体业务管理和团队领导\n - SUPERVISOR: 主管 - 负责日常业务监督和指导\n - LEAD: 组长 - 负责小组或项目的直接管理\n - SENIOR: 高级成员 - 资深员工，可能承担指导职责\n - MEMBER: 普通成员 - 标准部门员工\n - INTERN: 实习生 - 临时学习和工作的人员\n - CONSULTANT: 顾问 - 提供专业建议和指导的外部专家\n - CONTRACTOR: 外包人员 - 临时合作的外部工作人员\n - ASSISTANT: 助理 - 提供行政和事务支持的人员",
       "title": "Role 部门角色枚举，定义用户在部门中的职责和权限层级\n支持角色继承和权限控制，可用于业务逻辑判断\n角色变更需要审批流程和历史记录追踪"
     },
     "v1DepartmentMemberStatus": {
       "type": "string",
       "enum": [
         "STATUS_UNSPECIFIED",
-        "STATUS_ACTIVE",
-        "STATUS_DISABLED",
-        "STATUS_LEFT",
-        "STATUS_PENDING",
-        "STATUS_SUSPENDED",
-        "STATUS_TRANSFERRING"
+        "ACTIVE",
+        "DISABLED",
+        "LEFT",
+        "PENDING",
+        "SUSPENDED",
+        "TRANSFERRING"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - STATUS_ACTIVE: 正常状态 - 用户正常工作，拥有完整权限\n - STATUS_DISABLED: 已禁用 - 临时禁用，保留关系但无法访问\n - STATUS_LEFT: 已离开 - 用户已离职或调离，保留历史记录\n - STATUS_PENDING: 待加入 - 申请中或等待审批的状态\n - STATUS_SUSPENDED: 暂停 - 临时暂停工作，如休假、停职等\n - STATUS_TRANSFERRING: 调动中 - 正在进行部门间调动的过渡状态",
+      "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - ACTIVE: 正常状态 - 用户正常工作，拥有完整权限\n - DISABLED: 已禁用 - 临时禁用，保留关系但无法访问\n - LEFT: 已离开 - 用户已离职或调离，保留历史记录\n - PENDING: 待加入 - 申请中或等待审批的状态\n - SUSPENDED: 暂停 - 临时暂停工作，如休假、停职等\n - TRANSFERRING: 调动中 - 正在进行部门间调动的过渡状态",
       "title": "Status 成员状态枚举，管理用户在部门中的生命周期状态\n支持状态流转和业务流程控制\n状态变更会影响用户的访问权限和业务操作"
     },
     "v1DepartmentStatus": {
       "type": "string",
       "enum": [
         "STATUS_UNSPECIFIED",
-        "STATUS_ACTIVE",
-        "STATUS_INACTIVE",
-        "STATUS_DISSOLVED",
-        "STATUS_MERGING"
+        "ACTIVE",
+        "INACTIVE",
+        "DISSOLVED",
+        "MERGING"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - STATUS_ACTIVE: 正常运营 - 部门正常工作，可分配员工和任务\n - STATUS_INACTIVE: 暂停运营 - 临时停止业务，员工可能被临时调配\n - STATUS_DISSOLVED: 已解散 - 部门正式撤销，员工需重新分配\n - STATUS_MERGING: 合并中 - 正在与其他部门合并，处于过渡状态",
+      "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - ACTIVE: 正常运营 - 部门正常工作，可分配员工和任务\n - INACTIVE: 暂停运营 - 临时停止业务，员工可能被临时调配\n - DISSOLVED: 已解散 - 部门正式撤销，员工需重新分配\n - MERGING: 合并中 - 正在与其他部门合并，处于过渡状态",
       "title": "Status 部门运营状态，用于生命周期管理"
     },
     "v1DepartmentType": {
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_BUSINESS",
-        "TYPE_SUPPORT",
-        "TYPE_MANAGEMENT",
-        "TYPE_VIRTUAL"
+        "BUSINESS",
+        "SUPPORT",
+        "MANAGEMENT",
+        "VIRTUAL"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_BUSINESS: 业务部门 - 直接产生收入的核心业务单位\n - TYPE_SUPPORT: 支持部门 - 为业务部门提供服务支撑（如：IT、HR）\n - TYPE_MANAGEMENT: 管理部门 - 负责决策和监督的管理层级\n - TYPE_VIRTUAL: 虚拟部门 - 项目组、临时团队等非固定组织",
+      "description": "- TYPE_UNSPECIFIED: 未指定类型\n - BUSINESS: 业务部门 - 直接产生收入的核心业务单位\n - SUPPORT: 支持部门 - 为业务部门提供服务支撑（如：IT、HR）\n - MANAGEMENT: 管理部门 - 负责决策和监督的管理层级\n - VIRTUAL: 虚拟部门 - 项目组、临时团队等非固定组织",
       "title": "Type 部门类型分类，用于业务逻辑和权限控制"
     },
     "v1DiscoverConfig": {
@@ -5215,54 +5212,54 @@
       "type": "string",
       "enum": [
         "ROLE_UNSPECIFIED",
-        "ROLE_OWNER",
-        "ROLE_ADMIN",
-        "ROLE_MEMBER",
-        "ROLE_GUEST"
+        "OWNER",
+        "ADMIN",
+        "MEMBER",
+        "GUEST"
       ],
       "default": "ROLE_UNSPECIFIED",
-      "description": "- ROLE_UNSPECIFIED: 默认值/未指定\n - ROLE_OWNER: 所有者：拥有群组最高权限\n - ROLE_ADMIN: 管理员：管理群组成员和基本设置\n - ROLE_MEMBER: 普通成员：拥有基本访问权限\n - ROLE_GUEST: 访客：拥有受限访问权限",
+      "description": "- ROLE_UNSPECIFIED: 默认值/未指定\n - OWNER: 所有者：拥有群组最高权限\n - ADMIN: 管理员：管理群组成员和基本设置\n - MEMBER: 普通成员：拥有基本访问权限\n - GUEST: 访客：拥有受限访问权限",
       "title": "Role 用户在群组中的角色\n用户在群组中的角色枚举"
     },
     "v1GroupMemberStatus": {
       "type": "string",
       "enum": [
         "STATUS_UNSPECIFIED",
-        "STATUS_PENDING",
-        "STATUS_ACTIVE",
-        "STATUS_INVITED",
-        "STATUS_DISABLED",
-        "STATUS_REJECTED",
-        "STATUS_LEFT"
+        "PENDING",
+        "ACTIVE",
+        "INVITED",
+        "DISABLED",
+        "REJECTED",
+        "LEFT"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - STATUS_PENDING: 待激活／待验证：用户申请加入群组等待审批\n - STATUS_ACTIVE: 正常启用状态：用户正式加入群组\n - STATUS_INVITED: 被邀请加入：用户收到群组邀请但尚未回应\n - STATUS_DISABLED: 禁用（人工停用）：用户被临时限制群组权限\n - STATUS_REJECTED: 被拒绝加入：用户申请或邀请被拒绝\n - STATUS_LEFT: 已退出：用户主动退出群组",
+      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - PENDING: 待激活／待验证：用户申请加入群组等待审批\n - ACTIVE: 正常启用状态：用户正式加入群组\n - INVITED: 被邀请加入：用户收到群组邀请但尚未回应\n - DISABLED: 禁用（人工停用）：用户被临时限制群组权限\n - REJECTED: 被拒绝加入：用户申请或邀请被拒绝\n - LEFT: 已退出：用户主动退出群组",
       "title": "Status 群组成员关系状态\n群组成员关系状态"
     },
     "v1GroupStatus": {
       "type": "string",
       "enum": [
         "STATUS_UNSPECIFIED",
-        "STATUS_PENDING",
-        "STATUS_ACTIVE",
-        "STATUS_ARCHIVED",
-        "STATUS_DISABLED"
+        "PENDING",
+        "ACTIVE",
+        "ARCHIVED",
+        "DISABLED"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - STATUS_PENDING: 待激活／待验证：创建后等待审核或激活的状态\n - STATUS_ACTIVE: 正常启用状态：群组正常运行中，可以进行成员管理和权限分配\n - STATUS_ARCHIVED: 被归档，但可查询：群组不再活跃但保留历史数据，成员不允许变更\n - STATUS_DISABLED: 禁用，不可查询：群组被临时停用，通常为人工操作结果",
+      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - PENDING: 待激活／待验证：创建后等待审核或激活的状态\n - ACTIVE: 正常启用状态：群组正常运行中，可以进行成员管理和权限分配\n - ARCHIVED: 被归档，但可查询：群组不再活跃但保留历史数据，成员不允许变更\n - DISABLED: 禁用，不可查询：群组被临时停用，通常为人工操作结果",
       "title": "Status 群组状态，控制群组的可用状态\n群组状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
     },
     "v1GroupType": {
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_DEPARTMENT",
-        "TYPE_PROJECT",
-        "TYPE_ROLE",
-        "TYPE_CUSTOM"
+        "DEPARTMENT",
+        "PROJECT",
+        "ROLE",
+        "CUSTOM"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - TYPE_DEPARTMENT: 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id\n - TYPE_PROJECT: 项目群组：基于项目或任务的临时分组\n - TYPE_ROLE: 角色群组：基于用户角色或权限的分组\n - TYPE_CUSTOM: 自定义群组：用户根据特定业务需求自定义的分组",
+      "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - DEPARTMENT: 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id\n - PROJECT: 项目群组：基于项目或任务的临时分组\n - ROLE: 角色群组：基于用户角色或权限的分组\n - CUSTOM: 自定义群组：用户根据特定业务需求自定义的分组",
       "title": "Type 群组类型，标识群组的业务用途\n群组类型，用于区分不同用途的群组"
     },
     "v1ListAuthProvidersResponse": {
@@ -5950,23 +5947,23 @@
       "type": "string",
       "enum": [
         "STATUS_UNSPECIFIED",
-        "STATUS_ACTIVE",
-        "STATUS_DISABLED"
+        "ACTIVE",
+        "DISABLED"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - STATUS_ACTIVE: 正常启用状态：角色正常可用，权限生效\n - STATUS_DISABLED: 禁用状态：角色被停用，权限不生效",
+      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态：系统默认值，通常不直接使用\n - ACTIVE: 正常启用状态：角色正常可用，权限生效\n - DISABLED: 禁用状态：角色被停用，权限不生效",
       "title": "Status 角色状态枚举，控制角色的可用性和生命周期\n用于角色的启用/禁用管理，影响用户权限的实际生效"
     },
     "v1RoleType": {
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_SYSTEM",
-        "TYPE_CUSTOM",
-        "TYPE_TEMPLATE"
+        "SYSTEM",
+        "CUSTOM",
+        "TEMPLATE"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 默认值／未指定类型：系统默认值，通常不直接使用\n - TYPE_SYSTEM: 系统内置角色：由系统预定义，不可删除，权限固定\n - TYPE_CUSTOM: 自定义角色：用户创建的角色，可完全自定义权限\n - TYPE_TEMPLATE: 模板角色：预设的角色模板，可基于此创建新角色",
+      "description": "- TYPE_UNSPECIFIED: 默认值／未指定类型：系统默认值，通常不直接使用\n - SYSTEM: 系统内置角色：由系统预定义，不可删除，权限固定\n - CUSTOM: 自定义角色：用户创建的角色，可完全自定义权限\n - TEMPLATE: 模板角色：预设的角色模板，可基于此创建新角色",
       "title": "Type 角色类型枚举，定义角色的来源和管理方式\n用于区分不同类型的角色，影响角色的可编辑性和权限管理策略"
     },
     "v1Scope": {
@@ -6049,12 +6046,12 @@
       "type": "string",
       "enum": [
         "STRUCTURE_UNSPECIFIED",
-        "FLAT",
-        "TREE",
-        "TREE_EXPANDED"
+        "STRUCTURE_FLAT",
+        "STRUCTURE_TREE",
+        "STRUCTURE_TREE_EXPANDED"
       ],
       "default": "STRUCTURE_UNSPECIFIED",
-      "description": "- FLAT: 平铺列表（默认），支持分页\n - TREE: 层级结构（父子），不支持分页\n - TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+      "description": "- STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
       "title": "通用：用于任何支持层级 / 关系返回的 List API"
     },
     "v1UpdateDepartmentMembersResponse": {
@@ -6193,57 +6190,57 @@
       "type": "string",
       "enum": [
         "STATUS_UNSPECIFIED",
-        "STATUS_PENDING",
-        "STATUS_ACTIVE",
-        "STATUS_LOCKED",
-        "STATUS_DISABLED",
-        "STATUS_EXPIRED",
-        "STATUS_SUSPENDED",
-        "STATUS_DELETED"
+        "PENDING",
+        "ACTIVE",
+        "LOCKED",
+        "DISABLED",
+        "EXPIRED",
+        "SUSPENDED",
+        "DELETED"
       ],
       "default": "STATUS_UNSPECIFIED",
-      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态\n - STATUS_PENDING: 待激活／待验证\n - STATUS_ACTIVE: 正常启用状态\n - STATUS_LOCKED: 被锁定（如连续密码错误、账号风控等）\n - STATUS_DISABLED: 禁用（人工停用）\n - STATUS_EXPIRED: 过期等（订阅过期、账号注销等）\n - STATUS_SUSPENDED: 暂时冻结（如风控触发、投诉处理中）\n - STATUS_DELETED: 已注销（区别软删除）",
+      "description": "- STATUS_UNSPECIFIED: 默认值／未知状态\n - PENDING: 待激活／待验证\n - ACTIVE: 正常启用状态\n - LOCKED: 被锁定（如连续密码错误、账号风控等）\n - DISABLED: 禁用（人工停用）\n - EXPIRED: 过期等（订阅过期、账号注销等）\n - SUSPENDED: 暂时冻结（如风控触发、投诉处理中）\n - DELETED: 已注销（区别软删除）",
       "title": "用户状态（枚举值预计不会太频繁变化）\n可以根据业务再增加状态"
     },
     "v1UserType": {
       "type": "string",
       "enum": [
         "TYPE_UNSPECIFIED",
-        "TYPE_CUSTOMER",
-        "TYPE_MERCHANT",
-        "TYPE_SUPPLIER",
-        "TYPE_EMPLOYEE",
-        "TYPE_ADMIN",
-        "TYPE_SYSTEM"
+        "CUSTOMER",
+        "MERCHANT",
+        "SUPPLIER",
+        "EMPLOYEE",
+        "ADMIN",
+        "SYSTEM"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 默认值\n - TYPE_CUSTOMER: 外部用户 / 业务伙伴\n\n前台用户 / 消费者\n - TYPE_MERCHANT: 商户 / 卖家\n - TYPE_SUPPLIER: 供应商 / 合作方\n - TYPE_EMPLOYEE: 内部用户 / 员工\n\n后台用户 / 内部员工\n - TYPE_ADMIN: 系统管理员\n - TYPE_SYSTEM: 系统账户 (为安全和区分，编号拉开)\n\n系统集成账户 / 机器人",
+      "description": "- TYPE_UNSPECIFIED: 默认值\n - CUSTOMER: 外部用户 / 业务伙伴\n\n前台用户 / 消费者\n - MERCHANT: 商户 / 卖家\n - SUPPLIER: 供应商 / 合作方\n - EMPLOYEE: 内部用户 / 员工\n\n后台用户 / 内部员工\n - ADMIN: 系统管理员\n - SYSTEM: 系统账户 (为安全和区分，编号拉开)\n\n系统集成账户 / 机器人",
       "title": "用户的基础身份类型，后端自动维护更新，非人为更新"
     },
     "v1View": {
       "type": "string",
       "enum": [
         "VIEW_UNSPECIFIED",
-        "BASIC",
-        "STANDARD",
-        "FULL"
+        "VIEW_BASIC",
+        "VIEW_STANDARD",
+        "VIEW_FULL"
       ],
       "default": "VIEW_UNSPECIFIED",
-      "description": "- BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
+      "description": "- VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
       "title": "通用：用于所有 List / Get / BatchGet"
     },
     "v1Visibility": {
       "type": "string",
       "enum": [
         "VISIBILITY_UNSPECIFIED",
-        "GLOBAL",
-        "SUBTREE",
-        "LOCAL",
-        "RESTRICTED",
-        "SPECIFIC"
+        "VISIBILITY_GLOBAL",
+        "VISIBILITY_SUBTREE",
+        "VISIBILITY_LOCAL",
+        "VISIBILITY_RESTRICTED",
+        "VISIBILITY_SPECIFIC"
       ],
       "default": "VISIBILITY_UNSPECIFIED",
-      "description": "- GLOBAL: 全开：跨部门、跨层级全局可见\n资源/部门：系统中所有合法用户均可检索/看到\n - SUBTREE: 组织架构树可见：本部门及下属部门可见（向下递归）\n部门：成员处于相同节点或上级节点可见其下属节点（不管下级节点设置的可见性）\n资源：同部门及子部门成员可见\n - LOCAL: 仅本级可见：仅限本部门成员，不包含子部门\n部门：仅同级成员可见，不向下扩散\n资源：仅本节点成员可见\n - RESTRICTED: 私有：仅创建者/负责人及系统内部可见（最严限制）\n部门：同级成员也不可见，仅管理员或特定负责人可见\n资源：仅创建者或指定授权人可见\n - SPECIFIC: 特定受众：基于白名单（如特定团队、特定角色）\n如果逻辑复杂，通常此项作为占位，具体配置存入关联表",
+      "description": "- VISIBILITY_GLOBAL: 全开：跨部门、跨层级全局可见\n资源/部门：系统中所有合法用户均可检索/看到\n - VISIBILITY_SUBTREE: 组织架构树可见：本部门及下属部门可见（向下递归）\n部门：成员处于相同节点或上级节点可见其下属节点（不管下级节点设置的可见性）\n资源：同部门及子部门成员可见\n - VISIBILITY_LOCAL: 仅本级可见：仅限本部门成员，不包含子部门\n部门：仅同级成员可见，不向下扩散\n资源：仅本节点成员可见\n - VISIBILITY_RESTRICTED: 私有：仅创建者/负责人及系统内部可见（最严限制）\n部门：同级成员也不可见，仅管理员或特定负责人可见\n资源：仅创建者或指定授权人可见\n - VISIBILITY_SPECIFIC: 特定受众：基于白名单（如特定团队、特定角色）\n如果逻辑复杂，通常此项作为占位，具体配置存入关联表",
       "title": "可见性是“前置过滤”，权限是“后置校验”\n通用：部门/资源/凭证的可见性策略"
     }
   },
