@@ -730,13 +730,13 @@
                   "format": "int32",
                   "title": "SortOrder 部门排序顺序，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
-                "managers": {
+                "members": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "$ref": "#/definitions/v1DepartmentMember"
                   },
-                  "title": "Managers 部门管理者列表，包含各级管理人员和负责人\n通过 DepartmentMember 关系表维护，支持精细化角色区分\n支持的管理角色：部门经理、副经理、主管、组长等\n可根据 DepartmentMember.member_role 字段区分具体的管理职责和权限级别"
+                  "title": "Members 部门成员列表"
                 },
                 "children": {
                   "type": "array",
@@ -4798,13 +4798,13 @@
           "format": "int32",
           "title": "SortOrder 部门排序顺序，用于同级部门的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
-        "managers": {
+        "members": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1DepartmentMember"
           },
-          "title": "Managers 部门管理者列表，包含各级管理人员和负责人\n通过 DepartmentMember 关系表维护，支持精细化角色区分\n支持的管理角色：部门经理、副经理、主管、组长等\n可根据 DepartmentMember.member_role 字段区分具体的管理职责和权限级别"
+          "title": "Members 部门成员列表"
         },
         "children": {
           "type": "array",
@@ -6243,7 +6243,7 @@
         "SPECIFIC"
       ],
       "default": "VISIBILITY_UNSPECIFIED",
-      "description": "- GLOBAL: 全开：跨部门、跨层级全局可见\n资源/部门：系统中所有合法用户均可检索/看到\n - SUBTREE: 组织架构树可见：本部门及下属部门可见（向下递归）\n部门：成员处于相同节点或上级节点可见其下属节点\n资源：同部门及子部门成员可见\n - LOCAL: 仅本级可见：仅限本部门成员，不包含子部门\n部门：仅同级成员可见，不向下扩散\n资源：仅本节点成员可见\n - RESTRICTED: 私有：仅创建者/负责人及系统内部可见（最严限制）\n部门：同级成员也不可见，仅管理员或特定负责人可见\n资源：仅创建者或指定授权人可见\n - SPECIFIC: 特定受众：基于白名单（如特定团队、特定角色）\n如果逻辑复杂，通常此项作为占位，具体配置存入关联表",
+      "description": "- GLOBAL: 全开：跨部门、跨层级全局可见\n资源/部门：系统中所有合法用户均可检索/看到\n - SUBTREE: 组织架构树可见：本部门及下属部门可见（向下递归）\n部门：成员处于相同节点或上级节点可见其下属节点（不管下级节点设置的可见性）\n资源：同部门及子部门成员可见\n - LOCAL: 仅本级可见：仅限本部门成员，不包含子部门\n部门：仅同级成员可见，不向下扩散\n资源：仅本节点成员可见\n - RESTRICTED: 私有：仅创建者/负责人及系统内部可见（最严限制）\n部门：同级成员也不可见，仅管理员或特定负责人可见\n资源：仅创建者或指定授权人可见\n - SPECIFIC: 特定受众：基于白名单（如特定团队、特定角色）\n如果逻辑复杂，通常此项作为占位，具体配置存入关联表",
       "title": "可见性是“前置过滤”，权限是“后置校验”\n通用：部门/资源/凭证的可见性策略"
     }
   },
