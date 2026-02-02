@@ -30,6 +30,35 @@ enum Structure {
   TREE_EXPANDED = 3;
 }
 
+// 可见性是“前置过滤”，权限是“后置校验”
+// 通用：部门/资源/凭证的可见性策略
+enum Visibility {
+  VISIBILITY_UNSPECIFIED = 0;
+
+  // 全开：跨部门、跨层级全局可见
+  // 资源/部门：系统中所有合法用户均可检索/看到
+  GLOBAL = 1;
+
+  // 组织架构树可见：本部门及下属部门可见（向下递归）
+  // 部门：成员处于相同节点或上级节点可见其下属节点（不管下级节点设置的可见性）
+  // 资源：同部门及子部门成员可见
+  SUBTREE = 2;
+
+  // 仅本级可见：仅限本部门成员，不包含子部门
+  // 部门：仅同级成员可见，不向下扩散
+  // 资源：仅本节点成员可见
+  LOCAL = 3;
+
+  // 私有：仅创建者/负责人及系统内部可见（最严限制）
+  // 部门：同级成员也不可见，仅管理员或特定负责人可见
+  // 资源：仅创建者或指定授权人可见
+  RESTRICTED = 4;
+  
+  // 特定受众：基于白名单（如特定团队、特定角色）
+  // 如果逻辑复杂，通常此项作为占位，具体配置存入关联表
+  SPECIFIC = 5; 
+}
+
 // Address 用户地址
 // https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim
 message Address {
@@ -175,15 +204,7 @@ message Department {
   // 建议长度：500 字符以内，支持富文本格式
   string description = 23;
 
-  // Visibility 资源可见性/展示策略
-  enum Visibility {
-    VISIBILITY_UNSPECIFIED = 0;
-
-    VISIBLE = 1;           // 正常显示，同部门可获取成员列表，包含子部门
-    HIDDEN = 2;            // 自身隐藏，同部门或者子部门均不可查询成员列表
-    HIDE_CHILDREN = 3;     // 自身显示，子资源隐藏，仅可看同部门成员列表，不包含子部门
-    INTERNAL = 4;          // 内部使用（API/系统）
-  }
+  // Visibility 部门及成员列表的可见性策略（使用公共枚举 Visibility）
   Visibility visibility = 24;
 }
 
@@ -267,15 +288,7 @@ message Resource {
   // HideChildren 是否在资源列表中隐藏子项
   // bool hide_children = 10;
 
-  // Visibility 资源可见性/展示策略
-  enum Visibility {
-    VISIBILITY_UNSPECIFIED = 0;
-
-    VISIBLE = 1;           // 正常显示
-    HIDDEN = 2;            // 自身隐藏
-    HIDE_CHILDREN = 3;     // 自身显示，子资源隐藏
-    INTERNAL = 4;          // 内部使用（API/系统）
-  }
+  // Visibility 资源可见性/展示策略（使用公共枚举 Visibility）
   Visibility visibility = 8;
 
   // Locator 资源路径，我怎么找到你
@@ -960,15 +973,6 @@ message Credential {
     USAGE_AUTH = 10;        // 身份认证/授权
     USAGE_LICENSE = 11;     // 软件许可证验证
     USAGE_OTP = 12;         // 一次性密码 / TOTP
-  }
-
-  // 凭证可见性
-  enum Visibility {
-    VISIBILITY_UNSPECIFIED = 0; // 未指定
-    VISIBILITY_PRIVATE = 1;     // 仅创建者/管理员可见
-    VISIBILITY_INTERNAL = 2;    // 系统内部服务可访问
-    VISIBILITY_PUBLIC = 3;      // 可公开（公钥/证书）
-    VISIBILITY_GROUP = 4;       // 特定团队可访问
   }
 
   // 凭证状态

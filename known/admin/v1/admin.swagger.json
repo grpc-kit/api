@@ -812,7 +812,8 @@
                   "title": "Description 部门描述信息，详细说明部门职责和业务范围\n用于组织介绍、职责说明、业务范围描述等\n建议长度：500 字符以内，支持富文本格式"
                 },
                 "visibility": {
-                  "$ref": "#/definitions/v1DepartmentVisibility"
+                  "$ref": "#/definitions/v1Visibility",
+                  "title": "Visibility 部门及成员列表的可见性策略（使用公共枚举 Visibility）"
                 }
               },
               "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
@@ -2490,7 +2491,8 @@
                   "$ref": "#/definitions/v1ResourceStatus"
                 },
                 "visibility": {
-                  "$ref": "#/definitions/v1ResourceVisibility"
+                  "$ref": "#/definitions/v1Visibility",
+                  "title": "Visibility 资源可见性/展示策略（使用公共枚举 Visibility）"
                 },
                 "locator": {
                   "type": "string",
@@ -4623,7 +4625,7 @@
           "title": "业务用途"
         },
         "visibility": {
-          "$ref": "#/definitions/v1CredentialVisibility",
+          "$ref": "#/definitions/v1Visibility",
           "title": "可见性"
         },
         "status": {
@@ -4741,19 +4743,6 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_API_KEY: API Key\n - TYPE_SYMMETRIC_KEY: 对称密钥 / HMAC / AES\n - TYPE_KEY_PAIR: 公私钥对\n - TYPE_X509: X.509 证书凭证（包含主证书、私钥、CA链）\n - TYPE_LICENSE: 软件许可证\n - TYPE_JWKS: JSON Web Key Set URI / 内容\n - TYPE_HSM_REF: 外部安全模块 (KMS/HSM) 引用\n - TYPE_FIDO: 硬件安全密钥 / 多因素认证设备\n - TYPE_OTHER: 未来扩展自定义类型",
       "title": "凭证类型（载体/结构）"
-    },
-    "v1CredentialVisibility": {
-      "type": "string",
-      "enum": [
-        "VISIBILITY_UNSPECIFIED",
-        "VISIBILITY_PRIVATE",
-        "VISIBILITY_INTERNAL",
-        "VISIBILITY_PUBLIC",
-        "VISIBILITY_GROUP"
-      ],
-      "default": "VISIBILITY_UNSPECIFIED",
-      "description": "- VISIBILITY_UNSPECIFIED: 未指定\n - VISIBILITY_PRIVATE: 仅创建者/管理员可见\n - VISIBILITY_INTERNAL: 系统内部服务可访问\n - VISIBILITY_PUBLIC: 可公开（公钥/证书）\n - VISIBILITY_GROUP: 特定团队可访问",
-      "title": "凭证可见性"
     },
     "v1DatabaseConfig": {
       "type": "object",
@@ -4891,7 +4880,8 @@
           "title": "Description 部门描述信息，详细说明部门职责和业务范围\n用于组织介绍、职责说明、业务范围描述等\n建议长度：500 字符以内，支持富文本格式"
         },
         "visibility": {
-          "$ref": "#/definitions/v1DepartmentVisibility"
+          "$ref": "#/definitions/v1Visibility",
+          "title": "Visibility 部门及成员列表的可见性策略（使用公共枚举 Visibility）"
         }
       },
       "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
@@ -5026,19 +5016,6 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 未指定类型\n - TYPE_BUSINESS: 业务部门 - 直接产生收入的核心业务单位\n - TYPE_SUPPORT: 支持部门 - 为业务部门提供服务支撑（如：IT、HR）\n - TYPE_MANAGEMENT: 管理部门 - 负责决策和监督的管理层级\n - TYPE_VIRTUAL: 虚拟部门 - 项目组、临时团队等非固定组织",
       "title": "Type 部门类型分类，用于业务逻辑和权限控制"
-    },
-    "v1DepartmentVisibility": {
-      "type": "string",
-      "enum": [
-        "VISIBILITY_UNSPECIFIED",
-        "VISIBLE",
-        "HIDDEN",
-        "HIDE_CHILDREN",
-        "INTERNAL"
-      ],
-      "default": "VISIBILITY_UNSPECIFIED",
-      "description": "- VISIBLE: 正常显示，同部门可获取成员列表，包含子部门\n - HIDDEN: 自身隐藏，同部门或者子部门均不可查询成员列表\n - HIDE_CHILDREN: 自身显示，子资源隐藏，仅可看同部门成员列表，不包含子部门\n - INTERNAL: 内部使用（API/系统）",
-      "title": "Visibility 资源可见性/展示策略"
     },
     "v1DiscoverConfig": {
       "type": "object",
@@ -5882,7 +5859,8 @@
           "$ref": "#/definitions/v1ResourceStatus"
         },
         "visibility": {
-          "$ref": "#/definitions/v1ResourceVisibility"
+          "$ref": "#/definitions/v1Visibility",
+          "title": "Visibility 资源可见性/展示策略（使用公共枚举 Visibility）"
         },
         "locator": {
           "type": "string",
@@ -5967,19 +5945,6 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- MENU: 菜单（页面入口，会在菜单栏中显示）\n - PAGE: 页面（路由级，不会在菜单栏中显示）\n - BUTTON: 按钮 / UI 操作\n - API: 后端接口（包含 grpc、http 等）\n - DATA: 数据级资源（行 / 字段）\n - SYSTEM: 系统级 / 非 UI 资源（如：系统设置、系统日志等）",
       "title": "Type 资源类型"
-    },
-    "v1ResourceVisibility": {
-      "type": "string",
-      "enum": [
-        "VISIBILITY_UNSPECIFIED",
-        "VISIBLE",
-        "HIDDEN",
-        "HIDE_CHILDREN",
-        "INTERNAL"
-      ],
-      "default": "VISIBILITY_UNSPECIFIED",
-      "description": "- VISIBLE: 正常显示\n - HIDDEN: 自身隐藏\n - HIDE_CHILDREN: 自身显示，子资源隐藏\n - INTERNAL: 内部使用（API/系统）",
-      "title": "Visibility 资源可见性/展示策略"
     },
     "v1RoleStatus": {
       "type": "string",
@@ -6266,6 +6231,20 @@
       "default": "VIEW_UNSPECIFIED",
       "description": "- BASIC: List 默认\n - STANDARD: 常规详情\n - FULL: 全量",
       "title": "通用：用于所有 List / Get / BatchGet"
+    },
+    "v1Visibility": {
+      "type": "string",
+      "enum": [
+        "VISIBILITY_UNSPECIFIED",
+        "GLOBAL",
+        "SUBTREE",
+        "LOCAL",
+        "RESTRICTED",
+        "SPECIFIC"
+      ],
+      "default": "VISIBILITY_UNSPECIFIED",
+      "description": "- GLOBAL: 全开：跨部门、跨层级全局可见\n资源/部门：系统中所有合法用户均可检索/看到\n - SUBTREE: 组织架构树可见：本部门及下属部门可见（向下递归）\n部门：成员处于相同节点或上级节点可见其下属节点\n资源：同部门及子部门成员可见\n - LOCAL: 仅本级可见：仅限本部门成员，不包含子部门\n部门：仅同级成员可见，不向下扩散\n资源：仅本节点成员可见\n - RESTRICTED: 私有：仅创建者/负责人及系统内部可见（最严限制）\n部门：同级成员也不可见，仅管理员或特定负责人可见\n资源：仅创建者或指定授权人可见\n - SPECIFIC: 特定受众：基于白名单（如特定团队、特定角色）\n如果逻辑复杂，通常此项作为占位，具体配置存入关联表",
+      "title": "可见性是“前置过滤”，权限是“后置校验”\n通用：部门/资源/凭证的可见性策略"
     }
   },
   "securityDefinitions": {
