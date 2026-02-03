@@ -560,12 +560,12 @@ message Role {
   repeated Role children = 13;
 }
 
-// Group 群组实体，表示一类相同维度的用户集合
+// Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形
 // 该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理
 message Group {
   // ID 群组 ID，全局唯一标识
   int64 id = 1;
-  // Name 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
+  // Code 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑
   // 要求：仅支持英文字母、数字和下划线，全局唯一标识符
   // 示例："dev_team"、"project_alpha"、"admin_group"
   // 注意：此字段创建后不支持修改，以确保权限关联的稳定性
@@ -575,10 +575,35 @@ message Group {
   // 群组类型，用于区分不同用途的群组
   enum Type {
     TYPE_UNSPECIFIED = 0;  // 默认值/未指定：系统默认值，通常不直接使用
-    DEPARTMENT = 1;   // 部门群组：基于组织架构的部门划分，则 external_id 对应 department_id
-    PROJECT = 2;      // 项目群组：基于项目或任务的临时分组
-    ROLE = 3;         // 角色群组：基于用户角色或权限的分组
-    CUSTOM = 4;       // 自定义群组：用户根据特定业务需求自定义的分组
+
+    // 1. 组织架构型 (Administrative/Organizational)
+    // 逻辑：反映公司真实的行政隶属关系。通常与组织架构同步。
+    DEPARTMENT = 1;
+
+    // 2. 权限/安全型 (Security/Permission)
+    // 逻辑：纯粹为了授权而存在。例如 "财务审批组"、"代码库管理员组"。
+    // 这种组不一定对应行政部门，而是跨部门的权限集合。
+    SECURITY = 2;
+
+    // 3. 项目/任务型 (Project/Workstream)
+    // 逻辑：为了完成特定目标而临时或长期建立的协同组织。有明确的生命周期（结束后归档）。
+    PROJECT = 3;
+
+    // 4. 自动化/动态规则型 (Dynamic/Attribute-based)
+    // 逻辑：成员不是手动添加的，而是根据规则（如 "JobTitle == 'Manager' AND City == 'Shanghai'"）自动维护。
+    DYNAMIC = 4;
+
+    // 5. 系统内置型 (System/Built-in)
+    // 逻辑：系统预设，不可删除。例如 "Everyone" (全员组)、"Authenticated Users"。
+    SYSTEM = 5;
+
+    // 6. 外部协作型 (External/Guest)
+    // 逻辑：用于管理外部供应商、合作伙伴、客户。在权限审计时通常需要特殊标记。
+    EXTERNAL = 6;
+
+    // 7. 虚拟/兴趣小组 (Virtual/Community)
+    // 逻辑：非正式组织，如“技术委员会”、“羽毛球协会”，通常用于非核心业务的通知和交流。
+    COMMUNITY = 7;
   }
   Type type = 3;
 
@@ -597,20 +622,22 @@ message Group {
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于群组名称的多语言显示，提升群组管理的用户体验和可读性
   string display_name = 5;
-  // SortOrder 群组排序顺序，用于同级群组的显示顺序
+  // SortOrder 群组排序顺序，用于群组在列表中的显示顺序（扁平结构）
   // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
   // 默认值：100，范围：1-9999
   int32 sort_order = 6;
-  // ParentID 父群组ID，用于支持群组嵌套，为0表示顶级群组，支持树形组织结构
-  int64 parent_id = 7;
+  reserved 7;  // 原 parent_id，扁平结构暂不支持树形，预留字段号避免后续冲突
   // MaxMembers 群组最大成员数量限制，0表示不限制
   int32 max_members = 8;
   // Metadata 元数据，用于存储自定义属性，支持业务扩展
   map<string, string> metadata = 9;
-  // DepartmentID 部门ID，用于与部门的联动
+  // DepartmentID 部门ID，用于与部门的联动；当 type 为 DEPARTMENT 时必填
   int64 department_id = 10;
-  // ExternalID 外部系统ID，用于与外部系统集成，实现跨系统用户组同步
+  // ExternalID 外部系统ID，用于与外部系统（如 LDAP/SSO）群组映射，与 department_id 含义不同
   string external_id = 11;
+  // ExternalSource 外部系统来源，用于与外部系统（如 LDAP/SSO）群组映射，与 external_id 含义不同
+  // 示例："ldap"、"sso"、"custom"
+  string external_source = 19;
   // Description 群组描述，详细说明群组的目的和用途
   string description = 12;
   // CreatedBy 群组创建者/所有者ID，记录创建该群组的用户
@@ -621,8 +648,11 @@ message Group {
   google.protobuf.Timestamp created_at = 15;
   // UpdatedAt 更新时间，记录群组的最后修改时间戳
   google.protobuf.Timestamp updated_at = 16;
-  // DeleteAt 删除时间，用于软删除机制，记录群组标记为删除的时间
+  // DeletedAt 软删除时间戳，非空表示已删除，空值表示正常状态
   google.protobuf.Timestamp deleted_at = 17;
+
+  // Visibility 群组可见性，控制群组是否对外可见
+  Visibility visibility = 18;
 }
 
 // GroupMember 群组成员关系
