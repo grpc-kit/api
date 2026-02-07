@@ -1309,6 +1309,11 @@
                 "visibility": {
                   "$ref": "#/definitions/v1Visibility",
                   "title": "Visibility 群组可见性，控制群组是否对外可见"
+                },
+                "role_id": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "RoleID 角色ID，用于与角色的联动；当 type 为 ROLE 时必填"
                 }
               },
               "title": "Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形\n该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理"
@@ -1887,14 +1892,6 @@
                 },
                 "policy": {
                   "$ref": "#/definitions/v1Policy"
-                },
-                "resources": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "$ref": "#/definitions/v1Resource"
-                  },
-                  "title": "废弃，使用 Binding 替代"
                 },
                 "description": {
                   "type": "string"
@@ -4234,7 +4231,7 @@
           "type": "boolean",
           "title": "是否递归子资源"
         },
-        "resources": {
+        "resource": {
           "$ref": "#/definitions/v1Resource"
         }
       }
@@ -5040,6 +5037,11 @@
         "visibility": {
           "$ref": "#/definitions/v1Visibility",
           "title": "Visibility 群组可见性，控制群组是否对外可见"
+        },
+        "role_id": {
+          "type": "string",
+          "format": "int64",
+          "title": "RoleID 角色ID，用于与角色的联动；当 type 为 ROLE 时必填"
         }
       },
       "title": "Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形\n该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理"
@@ -5062,7 +5064,7 @@
       "enum": [
         "TYPE_UNSPECIFIED",
         "DEPARTMENT",
-        "SECURITY",
+        "ROLE",
         "PROJECT",
         "DYNAMIC",
         "SYSTEM",
@@ -5070,7 +5072,7 @@
         "COMMUNITY"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - DEPARTMENT: 1. 组织架构型 (Administrative/Organizational)\n逻辑：反映公司真实的行政隶属关系。通常与组织架构同步。\n - SECURITY: 2. 权限/安全型 (Security/Permission)\n逻辑：纯粹为了授权而存在。例如 \"财务审批组\"、\"代码库管理员组\"。\n这种组不一定对应行政部门，而是跨部门的权限集合。\n - PROJECT: 3. 项目/任务型 (Project/Workstream)\n逻辑：为了完成特定目标而临时或长期建立的协同组织。有明确的生命周期（结束后归档）。\n - DYNAMIC: 4. 自动化/动态规则型 (Dynamic/Attribute-based)\n逻辑：成员不是手动添加的，而是根据规则（如 \"JobTitle == 'Manager' AND City == 'Shanghai'\"）自动维护。\n - SYSTEM: 5. 系统内置型 (System/Built-in)\n逻辑：系统预设，不可删除。例如 \"Everyone\" (全员组)、\"Authenticated Users\"。\n - EXTERNAL: 6. 外部协作型 (External/Guest)\n逻辑：用于管理外部供应商、合作伙伴、客户。在权限审计时通常需要特殊标记。\n - COMMUNITY: 7. 虚拟/兴趣小组 (Virtual/Community)\n逻辑：非正式组织，如“技术委员会”、“羽毛球协会”，通常用于非核心业务的通知和交流。",
+      "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - DEPARTMENT: 1. 组织架构型 (Administrative/Organizational)\n逻辑：反映公司真实的行政隶属关系。通常与组织架构同步。\n - ROLE: 2. 角色/权限型 (Role/Permission)\n逻辑：纯粹为了授权而存在。例如 \"财务审批组\"、\"代码库管理员组\"。\n这种组不一定对应行政部门，而是跨部门的权限集合。\n - PROJECT: 3. 项目/任务型 (Project/Workstream)\n逻辑：为了完成特定目标而临时或长期建立的协同组织。有明确的生命周期（结束后归档）。\n - DYNAMIC: 4. 自动化/动态规则型 (Dynamic/Attribute-based)\n逻辑：成员不是手动添加的，而是根据规则（如 \"JobTitle == 'Manager' AND City == 'Shanghai'\"）自动维护。\n - SYSTEM: 5. 系统内置型 (System/Built-in)\n逻辑：系统预设，不可删除。例如 \"Everyone\" (全员组)、\"Authenticated Users\"。\n - EXTERNAL: 6. 外部协作型 (External/Guest)\n逻辑：用于管理外部供应商、合作伙伴、客户。在权限审计时通常需要特殊标记。\n - COMMUNITY: 7. 虚拟/兴趣小组 (Virtual/Community)\n逻辑：非正式组织，如“技术委员会”、“羽毛球协会”，通常用于非核心业务的通知和交流。",
       "title": "Type 群组类型，标识群组的业务用途\n群组类型，用于区分不同用途的群组"
     },
     "v1ListAuthProvidersResponse": {
@@ -5510,7 +5512,7 @@
       ],
       "default": "ROLE_UNSPECIFIED",
       "description": "- ROLE_UNSPECIFIED: 未指定角色（系统默认值）\n - OWNER: 所有者/负责人 - 拥有最高管理权限\n - ADMIN: 管理员 - 管理成员和基本设置\n - MEMBER: 普通成员 - 拥有基本访问权限\n - GUEST: 访客 - 拥有受限访问权限\n - DEPUTY: 副负责人 - 协助负责人管理\n - MANAGER: 经理 - 负责具体业务管理和团队领导\n - SUPERVISOR: 主管 - 负责日常业务监督和指导\n - LEAD: 组长 - 负责小组或项目的直接管理\n - SENIOR: 高级成员 - 资深员工\n - INTERN: 实习生 - 临时学习和工作的人员\n - CONSULTANT: 顾问 - 提供专业建议和指导\n - CONTRACTOR: 外包人员 - 临时合作的外部人员\n - ASSISTANT: 助理 - 提供行政和事务支持",
-      "title": "Role 用户在目标实体中的角色\n合并群组角色和部门角色的超集，不同 target_type 下使用不同的角色子集\n- GROUP 场景常用: OWNER, ADMIN, MEMBER, GUEST\n- DEPARTMENT 场景常用: OWNER, DEPUTY, MANAGER, SUPERVISOR, LEAD, SENIOR, MEMBER, INTERN, CONSULTANT, CONTRACTOR, ASSISTANT"
+      "title": "Role 用户在目标实体中的角色\n不同 target_type 下使用不同的角色子集\n- GROUP 场景常用: OWNER, ADMIN, MEMBER, GUEST\n- DEPARTMENT 场景常用: OWNER, DEPUTY, MANAGER, SUPERVISOR, LEAD, SENIOR, MEMBER, INTERN, CONSULTANT, CONTRACTOR, ASSISTANT"
     },
     "v1MembershipStatus": {
       "type": "string",
@@ -5527,7 +5529,7 @@
       ],
       "default": "STATUS_UNSPECIFIED",
       "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - PENDING: 待审批 - 申请加入等待审批\n - ACTIVE: 正常状态 - 正式成员，拥有完整权限\n - INVITED: 被邀请 - 收到邀请但尚未回应\n - DISABLED: 已禁用 - 临时限制权限\n - REJECTED: 被拒绝 - 申请或邀请被拒绝\n - LEFT: 已退出 - 主动退出或离职\n - SUSPENDED: 已暂停 - 临时暂停，如休假、停职等\n - TRANSFERRING: 调动中 - 正在进行组织间调动的过渡状态",
-      "title": "Status 成员关系状态，管理成员的生命周期\n合并群组状态和部门状态的超集"
+      "title": "Status 成员关系状态，管理成员的生命周期"
     },
     "v1OAuth2Discovery": {
       "type": "object",
@@ -5660,14 +5662,6 @@
         },
         "policy": {
           "$ref": "#/definitions/v1Policy"
-        },
-        "resources": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1Resource"
-          },
-          "title": "废弃，使用 Binding 替代"
         },
         "description": {
           "type": "string"
