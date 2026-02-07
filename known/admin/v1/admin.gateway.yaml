@@ -194,11 +194,11 @@ http:
     ## 添加部门成员，通过该接口让用户加入多个部门
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateDepartmentMembers
     post: "/builtin/admin/api/v1/departments/{department_id}/members"
-    body: "department_members"
+    body: "members"
     ## 更新部门成员，通过该接口更新指定部门成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartmentMembers
     patch: "/builtin/admin/api/v1/departments/{department_id}/members"
-    body: "department_members"
+    body: "members"
     ## 移除部门成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartmentMember
     delete: "/builtin/admin/api/v1/departments/{department_id}/members/{user_id}"
@@ -239,14 +239,14 @@ http:
     ## 创建群组成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateGroupMembers
     post: "/builtin/admin/api/v1/groups/{parent}/members"
-    body: "group_members"
+    body: "members"
     ## 删除群组成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteGroupMember
     delete: "/builtin/admin/api/v1/groups/{parent}/members/{user_id}"
     ## 更新群组成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateGroupMember
     patch: "/builtin/admin/api/v1/groups/{parent}/members/{user_id}"
-    body: "group_member"
+    body: "member"
 
     # 安全相关
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateCredential
