@@ -54,6 +54,8 @@ message ListGroupsRequest {
   // TODO；以下将来会统一使用 filter 参数实现过滤
   int32 group_type = 9;
   int32 group_status = 10;
+  string code = 11;
+  string display_name = 12;
 }
 
 message ListGroupsResponse {

@@ -1151,7 +1151,7 @@
           },
           {
             "name": "order_by",
-            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"create_time desc, name asc\"\nAIP-132: order_by 是可选字段。",
+            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"sort_order asc\", \"created_at desc\"\n默认值: \"sort_order asc\"（按 sort_order 升序排列，数值越小越靠前）\nAIP-132: order_by 是可选字段。",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1170,6 +1170,18 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "display_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       },
