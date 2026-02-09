@@ -46,7 +46,8 @@ message ListGroupsRequest {
 
   // 排序规则，指定结果返回顺序。
   // 格式: "field_name [asc|desc], ..."。
-  // 示例: "create_time desc, name asc"
+  // 示例: "sort_order asc", "created_at desc"
+  // 默认值: "sort_order asc"（按 sort_order 升序排列，数值越小越靠前）
   // AIP-132: order_by 是可选字段。
   string order_by = 8;
 
