@@ -111,6 +111,7 @@ service KnownAdmin {
   rpc CreateGroupMembers(CreateGroupMembersRequest) returns(CreateGroupMembersResponse);
   rpc DeleteGroupMember(DeleteGroupMemberRequest) returns(google.protobuf.Empty);
   rpc UpdateGroupMember(UpdateGroupMemberRequest) returns(Membership);
+  rpc GetGroup(GetGroupRequest) returns(Group);
 
   // 安全相关
   rpc CreateCredential(CreateCredentialRequest) returns(Credential);

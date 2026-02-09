@@ -13,6 +13,12 @@ message CreateGroupRequest {
   Group group = 1;    
 }
 
+message GetGroupRequest {
+  int64 id = 1;
+  View view = 5;
+  Structure structure = 6;
+}
+
 message ListGroupsRequest {
   // 父资源名称，用于限定范围。
   // 格式示例: "organizations/123" 或 "projects/456"。
@@ -43,6 +49,10 @@ message ListGroupsRequest {
   // 示例: "create_time desc, name asc"
   // AIP-132: order_by 是可选字段。
   string order_by = 8;
+
+  // TODO；以下将来会统一使用 filter 参数实现过滤
+  int32 group_type = 9;
+  int32 group_status = 10;
 }
 
 message ListGroupsResponse {

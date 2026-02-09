@@ -1155,6 +1155,21 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "group_type",
+            "description": "TODO；以下将来会统一使用 filter 参数实现过滤",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "group_status",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ]
       },
@@ -1264,19 +1279,6 @@
                   },
                   "title": "Metadata 元数据，用于存储自定义属性，支持业务扩展"
                 },
-                "department_id": {
-                  "type": "string",
-                  "format": "int64",
-                  "title": "DepartmentID 部门ID，用于与部门的联动；当 type 为 DEPARTMENT 时必填"
-                },
-                "external_id": {
-                  "type": "string",
-                  "title": "ExternalID 外部系统ID，用于与外部系统（如 LDAP/SSO）群组映射，与 department_id 含义不同"
-                },
-                "external_source": {
-                  "type": "string",
-                  "title": "ExternalSource 外部系统来源，用于与外部系统（如 LDAP/SSO）群组映射，与 external_id 含义不同\n示例：\"ldap\"、\"sso\"、\"custom\""
-                },
                 "description": {
                   "type": "string",
                   "title": "Description 群组描述，详细说明群组的目的和用途"
@@ -1310,10 +1312,14 @@
                   "$ref": "#/definitions/v1Visibility",
                   "title": "Visibility 群组可见性，控制群组是否对外可见"
                 },
-                "role_id": {
+                "ref_id": {
                   "type": "string",
                   "format": "int64",
-                  "title": "RoleID 角色ID，用于与角色的联动；当 type 为 ROLE 时必填"
+                  "title": "RefID 类型关联引用ID，根据 type 赋予不同语义：\n  DEPARTMENT → 关联部门ID (departments.id)\n  ROLE       → 关联角色ID (roles.id)\n  其他类型   → 0"
+                },
+                "ref_expr": {
+                  "type": "string",
+                  "title": "RefExpr 类型关联表达式，根据 type 赋予不同语义：\n  DYNAMIC  → 成员过滤规则，如 \"user_type = 10 AND user_status = 3\"\n  EXTERNAL → 外部源描述(JSON)，如 {\"external_id\":\"ldap-001\",\"external_source\":\"ldap\"}\n  其他类型 → 空字符串"
                 }
               },
               "title": "Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形\n该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理"
@@ -1323,6 +1329,66 @@
       }
     },
     "/builtin/admin/api/v1/groups/{id}": {
+      "get": {
+        "operationId": "KnownAdmin_GetGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Group"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "view",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "structure",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRUCTURE_UNSPECIFIED",
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
+            ],
+            "default": "STRUCTURE_UNSPECIFIED"
+          }
+        ]
+      },
       "delete": {
         "operationId": "KnownAdmin_DeleteGroup",
         "responses": {
@@ -4992,19 +5058,6 @@
           },
           "title": "Metadata 元数据，用于存储自定义属性，支持业务扩展"
         },
-        "department_id": {
-          "type": "string",
-          "format": "int64",
-          "title": "DepartmentID 部门ID，用于与部门的联动；当 type 为 DEPARTMENT 时必填"
-        },
-        "external_id": {
-          "type": "string",
-          "title": "ExternalID 外部系统ID，用于与外部系统（如 LDAP/SSO）群组映射，与 department_id 含义不同"
-        },
-        "external_source": {
-          "type": "string",
-          "title": "ExternalSource 外部系统来源，用于与外部系统（如 LDAP/SSO）群组映射，与 external_id 含义不同\n示例：\"ldap\"、\"sso\"、\"custom\""
-        },
         "description": {
           "type": "string",
           "title": "Description 群组描述，详细说明群组的目的和用途"
@@ -5038,10 +5091,14 @@
           "$ref": "#/definitions/v1Visibility",
           "title": "Visibility 群组可见性，控制群组是否对外可见"
         },
-        "role_id": {
+        "ref_id": {
           "type": "string",
           "format": "int64",
-          "title": "RoleID 角色ID，用于与角色的联动；当 type 为 ROLE 时必填"
+          "title": "RefID 类型关联引用ID，根据 type 赋予不同语义：\n  DEPARTMENT → 关联部门ID (departments.id)\n  ROLE       → 关联角色ID (roles.id)\n  其他类型   → 0"
+        },
+        "ref_expr": {
+          "type": "string",
+          "title": "RefExpr 类型关联表达式，根据 type 赋予不同语义：\n  DYNAMIC  → 成员过滤规则，如 \"user_type = 10 AND user_status = 3\"\n  EXTERNAL → 外部源描述(JSON)，如 {\"external_id\":\"ldap-001\",\"external_source\":\"ldap\"}\n  其他类型 → 空字符串"
         }
       },
       "title": "Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形\n该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理"
@@ -5065,14 +5122,14 @@
         "TYPE_UNSPECIFIED",
         "DEPARTMENT",
         "ROLE",
-        "PROJECT",
         "DYNAMIC",
         "SYSTEM",
+        "PROJECT",
         "EXTERNAL",
         "COMMUNITY"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - DEPARTMENT: 1. 组织架构型 (Administrative/Organizational)\n逻辑：反映公司真实的行政隶属关系。通常与组织架构同步。\n - ROLE: 2. 角色/权限型 (Role/Permission)\n逻辑：纯粹为了授权而存在。例如 \"财务审批组\"、\"代码库管理员组\"。\n这种组不一定对应行政部门，而是跨部门的权限集合。\n - PROJECT: 3. 项目/任务型 (Project/Workstream)\n逻辑：为了完成特定目标而临时或长期建立的协同组织。有明确的生命周期（结束后归档）。\n - DYNAMIC: 4. 自动化/动态规则型 (Dynamic/Attribute-based)\n逻辑：成员不是手动添加的，而是根据规则（如 \"JobTitle == 'Manager' AND City == 'Shanghai'\"）自动维护。\n - SYSTEM: 5. 系统内置型 (System/Built-in)\n逻辑：系统预设，不可删除。例如 \"Everyone\" (全员组)、\"Authenticated Users\"。\n - EXTERNAL: 6. 外部协作型 (External/Guest)\n逻辑：用于管理外部供应商、合作伙伴、客户。在权限审计时通常需要特殊标记。\n - COMMUNITY: 7. 虚拟/兴趣小组 (Virtual/Community)\n逻辑：非正式组织，如“技术委员会”、“羽毛球协会”，通常用于非核心业务的通知和交流。",
+      "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - DEPARTMENT: 1. 组织架构型 (Administrative/Organizational)\n逻辑：反映公司真实的行政隶属关系。通常与组织架构同步。\n - ROLE: 2. 角色/权限型 (Role/Permission)\n逻辑：纯粹为了授权而存在。例如 \"财务审批组\"、\"代码库管理员组\"。\n这种组不一定对应行政部门，而是跨部门的权限集合。\n - DYNAMIC: 3. 自动化/动态规则型 (Dynamic/Attribute-based)\n逻辑：成员不是手动添加的，而是根据 user 的属性（如 \"JobTitle == 'Manager' AND City == 'Shanghai'\"）自动维护。\n - SYSTEM: 4. 系统内置型 (System/Built-in)\n逻辑：系统预设，不可删除。例如 \"Everyone\" (全员组)、\"Authenticated Users\"。\n - PROJECT: 5. 项目/任务型 (Project/Workstream)\n逻辑：为了完成特定目标而临时或长期建立的协同组织。有明确的生命周期（结束后归档）。\n - EXTERNAL: 6. 外部协作型 (External/Guest)\n逻辑：用于管理外部供应商、合作伙伴、客户。在权限审计时通常需要特殊标记。\n - COMMUNITY: 7. 虚拟/兴趣小组 (Virtual/Community)\n逻辑：非正式组织，如“技术委员会”、“羽毛球协会”，通常用于非核心业务的通知和交流。",
       "title": "Type 群组类型，标识群组的业务用途\n群组类型，用于区分不同用途的群组"
     },
     "v1ListAuthProvidersResponse": {
