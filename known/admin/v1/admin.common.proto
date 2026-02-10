@@ -658,6 +658,7 @@ message Group {
 
   // RefExpr 类型关联表达式，根据 type 赋予不同语义：
   //   DYNAMIC  → 成员过滤规则，如 "user_type = 10 AND user_status = 3"
+  //   SYSTEM   → 同 DYNAMIC，成员过滤规则（系统内置，创建后不可修改）
   //   EXTERNAL → 外部源描述(JSON)，如 {"external_id":"ldap-001","external_source":"ldap"}
   //   其他类型 → 空字符串
   string ref_expr = 21;
