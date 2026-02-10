@@ -271,7 +271,7 @@
           },
           {
             "name": "provider.code",
-            "description": "Name 身份提供商名称，全局唯一",
+            "description": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"github\"、\"corp-ldap\"；自动 \"a7k2m3x9b5f1\"",
             "in": "query",
             "required": false,
             "type": "string"
@@ -713,7 +713,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复\n示例：\"tech_dept\"、\"marketing_dept\"、\"hr_dept\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"tech-dept\"、\"hr\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "display_name": {
                   "type": "string",
@@ -1262,7 +1262,7 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "title": "Code 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"dev_team\"、\"project_alpha\"、\"admin_group\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"dev-team\"、\"project-alpha\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "type": {
                   "$ref": "#/definitions/v1GroupType"
@@ -1846,7 +1846,7 @@
         "parameters": [
           {
             "name": "permission",
-            "description": "{\n\"code\": \"permission_001\",\n\"display_name\": \"管理用户列表\",\n\"policy\": {\n\"id\": \"10\",\n},\n\"bindings\": [\n{\n\"resource_scope_id\": 1\n\"is_recursive\": true\n}\n],\n\"description\": \"允许查看和管理用户列表\"\n}",
+            "description": "{\n\"code\": \"manage-users\",\n\"display_name\": \"管理用户列表\",\n\"policy\": {\n\"id\": \"10\"\n},\n\"bindings\": [\n{\n\"resource_scope_id\": 1,\n\"is_recursive\": true\n}\n],\n\"description\": \"允许查看和管理用户列表\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9-]，长度 2-32，不允许连续 \"--\"。",
             "in": "body",
             "required": true,
             "schema": {
@@ -1963,7 +1963,8 @@
               "type": "object",
               "properties": {
                 "code": {
-                  "type": "string"
+                  "type": "string",
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码"
                 },
                 "display_name": {
                   "type": "string"
@@ -2127,7 +2128,7 @@
         "parameters": [
           {
             "name": "policy",
-            "description": "{\n\"code\": \"policy_001\",\n\"display_name\": \"管理员策略\",\n\"type\": \"ROLE\",\n\"status\": \"ENABLED\",\n\"value\": \"admin\",\n\"description\": \"管理员权限策略\"\n}",
+            "description": "{\n\"code\": \"admin-policy\",\n\"display_name\": \"管理员策略\",\n\"type\": \"ROLE\",\n\"status\": \"ENABLED\",\n\"value\": \"admin\",\n\"description\": \"管理员权限策略\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9-]，长度 2-32，不允许连续 \"--\"。",
             "in": "body",
             "required": true,
             "schema": {
@@ -2220,7 +2221,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Name 策略系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow-read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "display_name": {
                   "type": "string",
@@ -2426,7 +2427,7 @@
         "parameters": [
           {
             "name": "resource",
-            "description": "{\n\"parent_id\": \"1\",\n\"code\": \"hello.test\",\n\"display_name\": \"admin\",\n\"sort_order\": 0,\n\"type\": \"MENU\",\n\"status\": \"ENABLED\",\n\"visibility\": \"VISIBLE\",\n\"locator\": \"/hello/world\",\n\"visual\": \"avatar\",\n\"manifest\": \"\",\n\"metadata\": {\n\"hello\": \"world\"\n},\n\"description\": \"admin\"\n}",
+            "description": "{\n\"parent_id\": \"1\",\n\"code\": \"user-management\",\n\"display_name\": \"用户管理\",\n\"sort_order\": 0,\n\"type\": \"MENU\",\n\"status\": \"ENABLED\",\n\"visibility\": \"VISIBLE\",\n\"locator\": \"/hello/world\",\n\"visual\": \"avatar\",\n\"manifest\": \"\",\n\"metadata\": {\n\"hello\": \"world\"\n},\n\"description\": \"admin\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9-]，长度 2-32，不允许连续 \"--\"。",
             "in": "body",
             "required": true,
             "schema": {
@@ -2551,7 +2552,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"user_management\"、\"role_admin\"、\"system_config\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user-management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "display_name": {
                   "type": "string",
@@ -2991,7 +2992,7 @@
         "parameters": [
           {
             "name": "role.id",
-            "description": "ID 角色 ID，全局唯一标识\n\nName 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n 要求：仅支持英文字母、数字和下划线，全局唯一标识符\n 示例：\"admin\"、\"user_manager\"、\"guest\"\n 注意：此字段创建后不支持修改，以确保权限关联的稳定性",
+            "description": "ID 角色 ID，全局唯一标识",
             "in": "path",
             "required": true,
             "type": "string",
@@ -3011,7 +3012,8 @@
                   "title": "ParentID 父角色ID，构建树形组织结构\n值为 0 表示顶级角色（如：系统内置角色）\n支持多级嵌套，建议层级深度不超过 3 级以保证查询性能"
                 },
                 "code": {
-                  "type": "string"
+                  "type": "string",
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"user-manager\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "display_name": {
                   "type": "string",
@@ -3522,7 +3524,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Name 作用域系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n默认存在以下内部作用域：\nadmin 后天用户菜单查看权限\nuser 前端用户菜单查看权限"
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"readonly\"；自动 \"a7k2m3x9b5f1\"\n默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）"
                 },
                 "display_name": {
                   "type": "string"
@@ -4333,7 +4335,6 @@
         "id": {
           "type": "string",
           "format": "int64",
-          "description": "Name 角色系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n 要求：仅支持英文字母、数字和下划线，全局唯一标识符\n 示例：\"admin\"、\"user_manager\"、\"guest\"\n 注意：此字段创建后不支持修改，以确保权限关联的稳定性",
           "title": "ID 角色 ID，全局唯一标识"
         },
         "parent_id": {
@@ -4342,7 +4343,8 @@
           "title": "ParentID 父角色ID，构建树形组织结构\n值为 0 表示顶级角色（如：系统内置角色）\n支持多级嵌套，建议层级深度不超过 3 级以保证查询性能"
         },
         "code": {
-          "type": "string"
+          "type": "string",
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"user-manager\"；自动 \"a7k2m3x9b5f1\""
         },
         "display_name": {
           "type": "string",
@@ -4424,7 +4426,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Name 身份提供商名称，全局唯一"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"github\"、\"corp-ldap\"；自动 \"a7k2m3x9b5f1\""
         },
         "type": {
           "$ref": "#/definitions/v1AuthProviderType"
@@ -4697,7 +4699,7 @@
         },
         "code": {
           "type": "string",
-          "title": "凭证显示名称"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"api-signing-key\"、\"tls-cert\"；自动 \"a7k2m3x9b5f1\""
         },
         "type": {
           "$ref": "#/definitions/v1CredentialType",
@@ -4867,7 +4869,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Name 部门系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：长度 1-100 字符，仅支持英文字母、数字和下划线，同级部门标识符不可重复\n示例：\"tech_dept\"、\"marketing_dept\"、\"hr_dept\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"tech-dept\"、\"hr\"；自动 \"a7k2m3x9b5f1\""
         },
         "display_name": {
           "type": "string",
@@ -5041,7 +5043,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 群组系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"dev_team\"、\"project_alpha\"、\"admin_group\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"dev-team\"、\"project-alpha\"；自动 \"a7k2m3x9b5f1\""
         },
         "type": {
           "$ref": "#/definitions/v1GroupType"
@@ -5724,7 +5726,8 @@
           "title": "ID 资源 ID"
         },
         "code": {
-          "type": "string"
+          "type": "string",
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码"
         },
         "display_name": {
           "type": "string"
@@ -5775,7 +5778,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Name 策略系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow-read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
         },
         "display_name": {
           "type": "string",
@@ -5833,7 +5836,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Name 资源系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n要求：仅支持英文字母、数字和下划线，全局唯一标识符\n示例：\"user_management\"、\"role_admin\"、\"system_config\"\n注意：此字段创建后不支持修改，以确保权限关联的稳定性"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user-management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
         },
         "display_name": {
           "type": "string",
@@ -5974,7 +5977,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Name 作用域系统标识符，仅支持英文字符，用于权限表关联和系统内部逻辑\n默认存在以下内部作用域：\nadmin 后天用户菜单查看权限\nuser 前端用户菜单查看权限"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"readonly\"；自动 \"a7k2m3x9b5f1\"\n默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）"
         },
         "display_name": {
           "type": "string"
