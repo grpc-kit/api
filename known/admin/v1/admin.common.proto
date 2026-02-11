@@ -766,6 +766,8 @@ message Membership {
 
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
 message AuthProvider {
+  // ======== 标识区（1-4） ========
+
   // ID 全局唯一标识
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
@@ -787,24 +789,169 @@ message AuthProvider {
   }
   Type type = 3;
 
-  // ClientID 身份提供商客户端 ID
-  string client_id = 4;
-  // ClientSecret 身份提供商客户端密钥
-  string client_secret = 5;
-  // Enabled 身份提供商是否启用
-  bool enabled = 6;
-  // RedirectURI 身份提供商回调地址
-  string redirect_uri = 7;
-  // Scopes 身份提供商授权范围
-  string scopes = 8;
-  // Issuer 身份提供商标识
-  string issuer = 9;
-  // 身份提供商授权端点
-  string authorization_endpoint = 10;
-  // 身份提供商令牌端点
-  string token_endpoint = 11;
-  // 身份提供商用户信息端点
-  string userinfo_endpoint = 12;
+  // Status 身份提供商状态，控制提供商的可用性和生命周期
+  enum Status {
+    STATUS_UNSPECIFIED = 0; // 未指定状态
+    ACTIVE = 1;             // 启用中 - 可用于用户登录认证
+    DISABLED = 2;           // 已禁用 - 暂停认证服务，可重新启用
+    PENDING = 3;            // 待配置/待验证 - 配置未完成或等待连通性验证
+  }
+  Status status = 4;
+
+  // ======== 展示区（5-8） ========
+
+  // DisplayName 身份提供商展示名称，用于登录界面等用户可见场景
+  // 示例："使用 GitHub 登录"、"企业 LDAP 认证"
+  string display_name = 5;
+  // Description 身份提供商描述信息，详细说明该提供商的用途和适用范围
+  string description = 6;
+  // SortOrder 排序权重，控制提供商在登录页面的展示顺序
+  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
+  // 默认值：100，范围：1-9999
+  int32 sort_order = 7;
+  // IconURL 提供商图标地址，用于登录页面展示
+  string icon_url = 8;
+
+  // ======== 类型特有配置区（10-19） ========
+  // LOCAL 类型无需额外配置，不设置 config 即可
+
+  oneof config {
+    // LDAP 身份提供商配置，仅 type=LDAP 时使用
+    LdapConfig  ldap_config  = 10;
+    // OAuth2 系身份提供商通用配置
+    // 适用于 type=OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT
+    OAuthConfig oauth_config = 11;
+  }
+
+  // ======== 审计区（20-24） ========
+
+  // CreatedBy 创建者用户ID，记录该提供商的创建人
+  int64 created_by = 20;
+  // UpdatedBy 最后更新者用户ID，记录最近修改人
+  int64 updated_by = 21;
+  // CreatedAt 创建时间戳
+  google.protobuf.Timestamp created_at = 22;
+  // UpdatedAt 最后更新时间戳
+  google.protobuf.Timestamp updated_at = 23;
+  // DeletedAt 软删除时间戳，非空表示已删除
+  google.protobuf.Timestamp deleted_at = 24;
+}
+
+// LdapConfig LDAP 身份提供商配置
+message LdapConfig {
+  // Host LDAP 服务器地址，如 "ldap.corp.com"
+  string host = 1;
+  // Port LDAP 服务端口，默认 389，TLS 模式为 636
+  int32 port = 2;
+  // UseTLS 是否启用 TLS（LDAPS）
+  bool use_tls = 3;
+  // StartTLS 是否使用 StartTLS 升级连接
+  bool start_tls = 4;
+  // InsecureSkipVerify 是否跳过 TLS 证书验证（仅测试环境）
+  bool insecure_skip_verify = 5;
+  // BindDN 绑定 DN，用于搜索用户的服务账号
+  // 示例: "cn=admin,dc=corp,dc=com"
+  string bind_dn = 6;
+  // BindPassword 绑定密码（敏感字段，List/Get 默认不返回，需 VIEW_FULL 权限）
+  string bind_password = 7;
+  // UserSearchBase 用户搜索基准 DN
+  // 示例: "ou=people,dc=corp,dc=com"
+  string user_search_base = 8;
+  // UserSearchFilter 用户搜索过滤器
+  // 示例: "(uid={{.Username}})" 或 "(sAMAccountName={{.Username}})"
+  string user_search_filter = 9;
+  // UsernameAttribute 用户名映射属性，如 "uid"、"sAMAccountName"
+  string username_attribute = 10;
+  // EmailAttribute 邮箱映射属性，如 "mail"
+  string email_attribute = 11;
+  // DisplayNameAttribute 显示名映射属性，如 "cn"、"displayName"
+  string display_name_attribute = 12;
+  // GroupSearchBase 群组搜索基准 DN（可选）
+  string group_search_base = 13;
+  // GroupSearchFilter 群组搜索过滤器（可选）
+  // 示例: "(member={{.UserDN}})"
+  string group_search_filter = 14;
+}
+
+// OAuthConfig OAuth2 系身份提供商通用配置
+// 适用于 OIDC、OAUTH2、GITHUB、GOOGLE、WECHAT 等类型
+// 服务端根据 AuthProvider.type 决定具体认证流程和默认值
+message OAuthConfig {
+  // === 核心字段（所有 OAuth2 类型通用）===
+
+  // ClientID 客户端标识
+  // 微信场景对应 AppID，其他场景对应 OAuth2 Client ID
+  string client_id = 1;
+  // ClientSecret 客户端密钥（敏感字段，List/Get 默认不返回，需 VIEW_FULL 权限）
+  // 微信场景对应 AppSecret
+  string client_secret = 2;
+  // RedirectURI 授权回调地址
+  string redirect_uri = 3;
+  // Scopes 授权范围
+  // OIDC 默认 ["openid", "profile", "email"]
+  // GitHub 默认 ["user:email"]
+  // 微信默认 ["snsapi_login"]
+  repeated string scopes = 4;
+
+  // === 端点配置 ===
+  // OIDC 模式下可通过 issuer 自动发现，以下端点为可选覆盖
+  // OAUTH2 模式下以下端点为必填
+  // GITHUB/GOOGLE/WECHAT 模式下服务端内置默认值，通常无需填写
+
+  // AuthorizationEndpoint 授权端点
+  string authorization_endpoint = 5;
+  // TokenEndpoint 令牌端点
+  string token_endpoint = 6;
+  // UserinfoEndpoint 用户信息端点
+  string userinfo_endpoint = 7;
+
+  // === OIDC 特有 ===
+
+  // Issuer OIDC 签发方标识，用于 .well-known/openid-configuration 自动发现
+  // 仅 OIDC 类型必填，其他类型忽略
+  // 示例: "https://accounts.google.com"
+  string issuer = 10;
+  // JwksURI JWKS 端点，用于验证 ID Token 签名（可选，覆盖自动发现）
+  string jwks_uri = 11;
+
+  // === 通用 OAuth2 特有（字段映射）===
+
+  // UserinfoIdField 用户信息响应中用户唯一标识字段名，默认 "sub"
+  // 仅 OAUTH2 类型需要显式指定，OIDC/GITHUB/GOOGLE/WECHAT 服务端已内置
+  string userinfo_id_field = 15;
+  // UserinfoNameField 用户信息响应中用户名字段名，默认 "name"
+  string userinfo_name_field = 16;
+  // UserinfoEmailField 用户信息响应中邮箱字段名，默认 "email"
+  string userinfo_email_field = 17;
+
+  // === GitHub 特有 ===
+
+  // AllowedOrganizations 限制允许登录的 GitHub 组织（可选）
+  // 仅 GITHUB 类型生效，为空表示不限制
+  repeated string allowed_organizations = 20;
+  // ApiURL GitHub API 地址，默认 "https://api.github.com"
+  // GitHub Enterprise 可自定义，如 "https://github.corp.com/api/v3"
+  string api_url = 21;
+
+  // === Google 特有 ===
+
+  // HostedDomain 限制为特定 Google Workspace 域名（可选）
+  // 仅 GOOGLE 类型生效，如 "example.com"
+  string hosted_domain = 25;
+
+  // === 微信特有 ===
+
+  // AgentID 企业微信 AgentId（企业微信场景必填）
+  // 仅 WECHAT 类型生效
+  string agent_id = 30;
+  // IsEnterprise 是否为企业微信模式（端点和认证流程不同）
+  // 仅 WECHAT 类型生效
+  bool is_enterprise = 31;
+
+  // === 通用安全选项 ===
+
+  // InsecureSkipVerify 是否跳过 TLS 证书验证（仅测试环境使用）
+  bool insecure_skip_verify = 40;
 }
 
 // 企业级通用凭证定义

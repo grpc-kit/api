@@ -127,7 +127,60 @@
               "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "page_size",
+            "description": "每页返回的最大提供商数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "description": "Cursor-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "description": "Offset-based 分页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "view",
+            "description": "View 控制返回字段的详细程度\n\n - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "filter",
+            "description": "过滤条件，采用 AIP-160 定义的标准 filter 语法。\n示例: `type=OIDC AND status=ACTIVE`",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "description": "排序规则，指定结果返回顺序。\n格式: \"field_name [asc|desc], ...\"。\n示例: \"sort_order asc, created_at desc\"\nAIP-132: order_by 是可选字段。",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
       },
       "post": {
         "operationId": "KnownAdmin_CreateAuthProvider",
@@ -228,9 +281,7 @@
             "format": "int64"
           }
         ]
-      }
-    },
-    "/builtin/admin/api/v1/auth/providers/{provider.id}": {
+      },
       "patch": {
         "operationId": "KnownAdmin_UpdateAuthProvider",
         "responses": {
@@ -255,106 +306,19 @@
         },
         "parameters": [
           {
-            "name": "provider.id",
-            "description": "ID 全局唯一标识",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "provider.code",
-            "description": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"github\"、\"corp-ldap\"；自动 \"a7k2m3x9b5f1\"",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.type",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "enum": [
-              "TYPE_UNSPECIFIED",
-              "LOCAL",
-              "LDAP",
-              "OIDC",
-              "OAUTH2",
-              "GITHUB",
-              "GOOGLE",
-              "WECHAT"
-            ],
-            "default": "TYPE_UNSPECIFIED"
-          },
-          {
-            "name": "provider.client_id",
-            "description": "ClientID 身份提供商客户端 ID",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.client_secret",
-            "description": "ClientSecret 身份提供商客户端密钥",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.enabled",
-            "description": "Enabled 身份提供商是否启用",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "provider.redirect_uri",
-            "description": "RedirectURI 身份提供商回调地址",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.scopes",
-            "description": "Scopes 身份提供商授权范围",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.issuer",
-            "description": "Issuer 身份提供商标识",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.authorization_endpoint",
-            "description": "身份提供商授权端点",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.token_endpoint",
-            "description": "身份提供商令牌端点",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "provider.userinfo_endpoint",
-            "description": "身份提供商用户信息端点",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "provider",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AuthProvider"
+            }
           }
         ]
       }
@@ -1331,7 +1295,7 @@
                 },
                 "ref_expr": {
                   "type": "string",
-                  "title": "RefExpr 类型关联表达式，根据 type 赋予不同语义：\n  DYNAMIC  → 成员过滤规则，如 \"user_type = 10 AND user_status = 3\"\n  EXTERNAL → 外部源描述(JSON)，如 {\"external_id\":\"ldap-001\",\"external_source\":\"ldap\"}\n  其他类型 → 空字符串"
+                  "title": "RefExpr 类型关联表达式，根据 type 赋予不同语义：\n  DYNAMIC  → 成员过滤规则，如 \"user_type = 10 AND user_status = 3\"\n  SYSTEM   → 同 DYNAMIC，成员过滤规则（系统内置，创建后不可修改）\n  EXTERNAL → 外部源描述(JSON)，如 {\"external_id\":\"ldap-001\",\"external_source\":\"ldap\"}\n  其他类型 → 空字符串"
                 }
               },
               "title": "Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形\n该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理"
@@ -4431,44 +4395,74 @@
         "type": {
           "$ref": "#/definitions/v1AuthProviderType"
         },
-        "client_id": {
-          "type": "string",
-          "title": "ClientID 身份提供商客户端 ID"
+        "status": {
+          "$ref": "#/definitions/v1AuthProviderStatus"
         },
-        "client_secret": {
+        "display_name": {
           "type": "string",
-          "title": "ClientSecret 身份提供商客户端密钥"
+          "title": "DisplayName 身份提供商展示名称，用于登录界面等用户可见场景\n示例：\"使用 GitHub 登录\"、\"企业 LDAP 认证\""
         },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enabled 身份提供商是否启用"
-        },
-        "redirect_uri": {
+        "description": {
           "type": "string",
-          "title": "RedirectURI 身份提供商回调地址"
+          "title": "Description 身份提供商描述信息，详细说明该提供商的用途和适用范围"
         },
-        "scopes": {
-          "type": "string",
-          "title": "Scopes 身份提供商授权范围"
+        "sort_order": {
+          "type": "integer",
+          "format": "int32",
+          "title": "SortOrder 排序权重，控制提供商在登录页面的展示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
-        "issuer": {
+        "icon_url": {
           "type": "string",
-          "title": "Issuer 身份提供商标识"
+          "title": "IconURL 提供商图标地址，用于登录页面展示"
         },
-        "authorization_endpoint": {
-          "type": "string",
-          "title": "身份提供商授权端点"
+        "ldap_config": {
+          "$ref": "#/definitions/v1LdapConfig",
+          "title": "LDAP 身份提供商配置，仅 type=LDAP 时使用"
         },
-        "token_endpoint": {
-          "type": "string",
-          "title": "身份提供商令牌端点"
+        "oauth_config": {
+          "$ref": "#/definitions/v1OAuthConfig",
+          "title": "OAuth2 系身份提供商通用配置\n适用于 type=OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT"
         },
-        "userinfo_endpoint": {
+        "created_by": {
           "type": "string",
-          "title": "身份提供商用户信息端点"
+          "format": "int64",
+          "title": "CreatedBy 创建者用户ID，记录该提供商的创建人"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64",
+          "title": "UpdatedBy 最后更新者用户ID，记录最近修改人"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "CreatedAt 创建时间戳"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "UpdatedAt 最后更新时间戳"
+        },
+        "deleted_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "DeletedAt 软删除时间戳，非空表示已删除"
         }
       },
+      "description": "======== 标识区（1-4） ========",
       "title": "AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务"
+    },
+    "v1AuthProviderStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "ACTIVE",
+        "DISABLED",
+        "PENDING"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "- STATUS_UNSPECIFIED: 未指定状态\n - ACTIVE: 启用中 - 可用于用户登录认证\n - DISABLED: 已禁用 - 暂停认证服务，可重新启用\n - PENDING: 待配置/待验证 - 配置未完成或等待连通性验证",
+      "title": "Status 身份提供商状态，控制提供商的可用性和生命周期"
     },
     "v1AuthProviderType": {
       "type": "string",
@@ -5112,7 +5106,7 @@
         },
         "ref_expr": {
           "type": "string",
-          "title": "RefExpr 类型关联表达式，根据 type 赋予不同语义：\n  DYNAMIC  → 成员过滤规则，如 \"user_type = 10 AND user_status = 3\"\n  EXTERNAL → 外部源描述(JSON)，如 {\"external_id\":\"ldap-001\",\"external_source\":\"ldap\"}\n  其他类型 → 空字符串"
+          "title": "RefExpr 类型关联表达式，根据 type 赋予不同语义：\n  DYNAMIC  → 成员过滤规则，如 \"user_type = 10 AND user_status = 3\"\n  SYSTEM   → 同 DYNAMIC，成员过滤规则（系统内置，创建后不可修改）\n  EXTERNAL → 外部源描述(JSON)，如 {\"external_id\":\"ldap-001\",\"external_source\":\"ldap\"}\n  其他类型 → 空字符串"
         }
       },
       "title": "Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形\n该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理"
@@ -5146,6 +5140,69 @@
       "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - DEPARTMENT: 1. 组织架构型 (Administrative/Organizational)\n逻辑：反映公司真实的行政隶属关系。通常与组织架构同步。\n - ROLE: 2. 角色/权限型 (Role/Permission)\n逻辑：纯粹为了授权而存在。例如 \"财务审批组\"、\"代码库管理员组\"。\n这种组不一定对应行政部门，而是跨部门的权限集合。\n - DYNAMIC: 3. 自动化/动态规则型 (Dynamic/Attribute-based)\n逻辑：成员不是手动添加的，而是根据 user 的属性（如 \"JobTitle == 'Manager' AND City == 'Shanghai'\"）自动维护。\n - SYSTEM: 4. 系统内置型 (System/Built-in)\n逻辑：系统预设，不可删除。例如 \"Everyone\" (全员组)、\"Authenticated Users\"。\n - PROJECT: 5. 项目/任务型 (Project/Workstream)\n逻辑：为了完成特定目标而临时或长期建立的协同组织。有明确的生命周期（结束后归档）。\n - EXTERNAL: 6. 外部协作型 (External/Guest)\n逻辑：用于管理外部供应商、合作伙伴、客户。在权限审计时通常需要特殊标记。\n - COMMUNITY: 7. 虚拟/兴趣小组 (Virtual/Community)\n逻辑：非正式组织，如“技术委员会”、“羽毛球协会”，通常用于非核心业务的通知和交流。",
       "title": "Type 群组类型，标识群组的业务用途\n群组类型，用于区分不同用途的群组"
     },
+    "v1LdapConfig": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string",
+          "title": "Host LDAP 服务器地址，如 \"ldap.corp.com\""
+        },
+        "port": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Port LDAP 服务端口，默认 389，TLS 模式为 636"
+        },
+        "use_tls": {
+          "type": "boolean",
+          "title": "UseTLS 是否启用 TLS（LDAPS）"
+        },
+        "start_tls": {
+          "type": "boolean",
+          "title": "StartTLS 是否使用 StartTLS 升级连接"
+        },
+        "insecure_skip_verify": {
+          "type": "boolean",
+          "title": "InsecureSkipVerify 是否跳过 TLS 证书验证（仅测试环境）"
+        },
+        "bind_dn": {
+          "type": "string",
+          "title": "BindDN 绑定 DN，用于搜索用户的服务账号\n示例: \"cn=admin,dc=corp,dc=com\""
+        },
+        "bind_password": {
+          "type": "string",
+          "title": "BindPassword 绑定密码（敏感字段，List/Get 默认不返回，需 VIEW_FULL 权限）"
+        },
+        "user_search_base": {
+          "type": "string",
+          "title": "UserSearchBase 用户搜索基准 DN\n示例: \"ou=people,dc=corp,dc=com\""
+        },
+        "user_search_filter": {
+          "type": "string",
+          "title": "UserSearchFilter 用户搜索过滤器\n示例: \"(uid={{.Username}})\" 或 \"(sAMAccountName={{.Username}})\""
+        },
+        "username_attribute": {
+          "type": "string",
+          "title": "UsernameAttribute 用户名映射属性，如 \"uid\"、\"sAMAccountName\""
+        },
+        "email_attribute": {
+          "type": "string",
+          "title": "EmailAttribute 邮箱映射属性，如 \"mail\""
+        },
+        "display_name_attribute": {
+          "type": "string",
+          "title": "DisplayNameAttribute 显示名映射属性，如 \"cn\"、\"displayName\""
+        },
+        "group_search_base": {
+          "type": "string",
+          "title": "GroupSearchBase 群组搜索基准 DN（可选）"
+        },
+        "group_search_filter": {
+          "type": "string",
+          "title": "GroupSearchFilter 群组搜索过滤器（可选）\n示例: \"(member={{.UserDN}})\""
+        }
+      },
+      "title": "LdapConfig LDAP 身份提供商配置"
+    },
     "v1ListAuthProvidersResponse": {
       "type": "object",
       "properties": {
@@ -5155,6 +5212,15 @@
             "type": "object",
             "$ref": "#/definitions/v1AuthProvider"
           }
+        },
+        "next_page_token": {
+          "type": "string",
+          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "符合条件的提供商总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
     },
@@ -5691,6 +5757,91 @@
           "title": "用户偏好的语言与地区（例如 \"zh-CN\"、\"en-US\"）"
         }
       }
+    },
+    "v1OAuthConfig": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "type": "string",
+          "title": "ClientID 客户端标识\n微信场景对应 AppID，其他场景对应 OAuth2 Client ID"
+        },
+        "client_secret": {
+          "type": "string",
+          "title": "ClientSecret 客户端密钥（敏感字段，List/Get 默认不返回，需 VIEW_FULL 权限）\n微信场景对应 AppSecret"
+        },
+        "redirect_uri": {
+          "type": "string",
+          "title": "RedirectURI 授权回调地址"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Scopes 授权范围\nOIDC 默认 [\"openid\", \"profile\", \"email\"]\nGitHub 默认 [\"user:email\"]\n微信默认 [\"snsapi_login\"]"
+        },
+        "authorization_endpoint": {
+          "type": "string",
+          "title": "AuthorizationEndpoint 授权端点"
+        },
+        "token_endpoint": {
+          "type": "string",
+          "title": "TokenEndpoint 令牌端点"
+        },
+        "userinfo_endpoint": {
+          "type": "string",
+          "title": "UserinfoEndpoint 用户信息端点"
+        },
+        "issuer": {
+          "type": "string",
+          "title": "Issuer OIDC 签发方标识，用于 .well-known/openid-configuration 自动发现\n仅 OIDC 类型必填，其他类型忽略\n示例: \"https://accounts.google.com\""
+        },
+        "jwks_uri": {
+          "type": "string",
+          "title": "JwksURI JWKS 端点，用于验证 ID Token 签名（可选，覆盖自动发现）"
+        },
+        "userinfo_id_field": {
+          "type": "string",
+          "title": "UserinfoIdField 用户信息响应中用户唯一标识字段名，默认 \"sub\"\n仅 OAUTH2 类型需要显式指定，OIDC/GITHUB/GOOGLE/WECHAT 服务端已内置"
+        },
+        "userinfo_name_field": {
+          "type": "string",
+          "title": "UserinfoNameField 用户信息响应中用户名字段名，默认 \"name\""
+        },
+        "userinfo_email_field": {
+          "type": "string",
+          "title": "UserinfoEmailField 用户信息响应中邮箱字段名，默认 \"email\""
+        },
+        "allowed_organizations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "AllowedOrganizations 限制允许登录的 GitHub 组织（可选）\n仅 GITHUB 类型生效，为空表示不限制"
+        },
+        "api_url": {
+          "type": "string",
+          "title": "ApiURL GitHub API 地址，默认 \"https://api.github.com\"\nGitHub Enterprise 可自定义，如 \"https://github.corp.com/api/v3\""
+        },
+        "hosted_domain": {
+          "type": "string",
+          "title": "HostedDomain 限制为特定 Google Workspace 域名（可选）\n仅 GOOGLE 类型生效，如 \"example.com\""
+        },
+        "agent_id": {
+          "type": "string",
+          "title": "AgentID 企业微信 AgentId（企业微信场景必填）\n仅 WECHAT 类型生效"
+        },
+        "is_enterprise": {
+          "type": "boolean",
+          "title": "IsEnterprise 是否为企业微信模式（端点和认证流程不同）\n仅 WECHAT 类型生效"
+        },
+        "insecure_skip_verify": {
+          "type": "boolean",
+          "title": "InsecureSkipVerify 是否跳过 TLS 证书验证（仅测试环境使用）"
+        }
+      },
+      "description": "=== 核心字段（所有 OAuth2 类型通用）===",
+      "title": "OAuthConfig OAuth2 系身份提供商通用配置\n适用于 OIDC、OAUTH2、GITHUB、GOOGLE、WECHAT 等类型\n服务端根据 AuthProvider.type 决定具体认证流程和默认值"
     },
     "v1OIDCProvider": {
       "type": "object"

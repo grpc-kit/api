@@ -33,7 +33,8 @@ http:
     delete: "/builtin/admin/api/v1/auth/providers/{id}"
     ## 更新认证提供方
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateAuthProvider
-    patch: "/builtin/admin/api/v1/auth/providers/{provider.id}"
+    patch: "/builtin/admin/api/v1/auth/providers/{id}"
+    body: "provider"
   #- selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpsertAuthProviders
   #  post: "/builtin/admin/api/v1/auth/providers"
   #  body: "*"

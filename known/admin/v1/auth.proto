@@ -5,6 +5,8 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+import "google/protobuf/field_mask.proto";
+
 import "known/admin/v1/admin.common.proto";
 
 // CreateAuthLoginRequest 用于登录请求，所有用户均可
@@ -38,11 +40,47 @@ message CreateAuthTokenRequest {
 }
 
 message ListAuthProvidersRequest {
+  // 每页返回的最大提供商数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
 
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 4;
+  }
+
+  // View 控制返回字段的详细程度
+  View view = 5;
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `type=OIDC AND status=ACTIVE`
+  string filter = 7;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "sort_order asc, created_at desc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 8;
 }
 
 message ListAuthProvidersResponse {
   repeated AuthProvider providers = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的提供商总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
 }
 
 message UpsertAuthProvidersRequest {
@@ -79,4 +117,10 @@ message DeleteAuthProviderRequest {
 message UpdateAuthProviderRequest {
   int64 id = 1;
   AuthProvider provider = 2;
+
+  // 指定需要更新的字段列表，未列出的字段不会被修改。
+  // 如果未提供 update_mask，则更新所有非空字段（不推荐）。
+  // AIP-134: 强烈建议客户端始终提供 update_mask。
+  // 示例: paths: ["display_name", "enabled", "scopes"]
+  google.protobuf.FieldMask update_mask = 3;
 }
