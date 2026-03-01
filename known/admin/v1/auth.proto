@@ -19,8 +19,13 @@ message CreateAuthLoginRequest {
   string phone_number = 3;
   // ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒
   int32 expires_in = 7;
-  // PasswordHash 用户密码在本地使用 sha256 哈希结果
+  // PasswordHash 登录口令载荷：
+  // - LOCAL: 传 sha256(password) 字符串
+  // - LDAP: 传 base64(password) 字符串（兼容方案）
   string password_hash = 9;
+  // ProviderCode 指定认证提供商 code，取值来源于 AuthProvider.code（如 local、corp_ldap）
+  // 为空时默认按 local 处理，以兼容旧客户端。
+  string provider_code = 10;
 }
 
 // CreateAuthTokenRequest 用于创建 token，仅管理员或特定用户可建
@@ -65,6 +70,11 @@ message ListAuthProvidersRequest {
   // 示例: "sort_order asc, created_at desc"
   // AIP-132: order_by 是可选字段。
   string order_by = 8;
+
+  // ProviderStatus 提供商状态快捷过滤参数。
+  // 示例: 1(ACTIVE)，仅返回可用于登录的认证提供方。
+  // 复杂组合过滤请继续使用 filter。
+  int32 provider_status = 9;
 }
 
 message ListAuthProvidersResponse {

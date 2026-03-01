@@ -26,12 +26,20 @@
   "paths": {
     "/builtin/admin/api/v1/auth/callback/{provider_name}": {
       "get": {
+        "summary": "第三方认证回调",
+        "description": "接口格式：/builtin/admin/api/v1/auth/callback/{provider_name}。用于 OIDC/OAUTH2 等外部认证回调换取 token。",
         "operationId": "KnownAdmin_GetAuthCallback",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1GetAuthCallbackResponse"
+            },
+            "examples": {
+              "application/json": {
+                "access_token": "\u003cjwt\u003e",
+                "token_type": "Bearer"
+              }
             }
           },
           "4xx": {
@@ -66,18 +74,29 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       }
     },
     "/builtin/admin/api/v1/auth/login": {
       "post": {
         "summary": "登录认证",
+        "description": "接口格式：/builtin/admin/api/v1/auth/login。LOCAL: password_hash=sha256(password)；LDAP: password_hash=base64(password)（兼容约定）。",
         "operationId": "KnownAdmin_CreateAuthLogin",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AuthToken"
+            },
+            "examples": {
+              "application/json": {
+                "access_token": "\u003cjwt\u003e",
+                "token_type": "Bearer",
+                "expires_in": 86400
+              }
             }
           },
           "4xx": {
@@ -102,17 +121,37 @@
               "$ref": "#/definitions/v1CreateAuthLoginRequest"
             }
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       }
     },
     "/builtin/admin/api/v1/auth/providers": {
       "get": {
+        "summary": "认证提供商列表",
+        "description": "接口格式：/builtin/admin/api/v1/auth/providers。返回可用的认证方式（LOCAL/LDAP/OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT）。",
         "operationId": "KnownAdmin_ListAuthProviders",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListAuthProvidersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "providers": [
+                  {
+                    "id": 1,
+                    "code": "local",
+                    "type": "LOCAL",
+                    "status": "ACTIVE",
+                    "display_name": "本地登录"
+                  }
+                ],
+                "next_page_token": "",
+                "total_size": 1
+              }
             }
           },
           "4xx": {
@@ -179,16 +218,38 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "provider_status",
+            "description": "ProviderStatus 提供商状态快捷过滤参数。\n示例: 1(ACTIVE)，仅返回可用于登录的认证提供方。\n复杂组合过滤请继续使用 filter。",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       },
       "post": {
+        "summary": "创建认证提供商",
+        "description": "接口格式：/builtin/admin/api/v1/auth/providers。用于创建 LDAP/OIDC/OAUTH2 等认证提供商配置。",
         "operationId": "KnownAdmin_CreateAuthProvider",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AuthProvider"
+            },
+            "examples": {
+              "application/json": {
+                "id": 2,
+                "code": "corp_ldap",
+                "type": "LDAP",
+                "status": "ACTIVE",
+                "display_name": "企业LDAP"
+              }
             }
           },
           "4xx": {
@@ -213,17 +274,31 @@
               "$ref": "#/definitions/v1AuthProvider"
             }
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       }
     },
     "/builtin/admin/api/v1/auth/providers/{id}": {
       "get": {
+        "summary": "获取认证提供商详情",
+        "description": "接口格式：/builtin/admin/api/v1/auth/providers/{id}。",
         "operationId": "KnownAdmin_GetAuthProvider",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AuthProvider"
+            },
+            "examples": {
+              "application/json": {
+                "id": 2,
+                "code": "corp_ldap",
+                "type": "LDAP",
+                "status": "ACTIVE",
+                "display_name": "企业LDAP"
+              }
             }
           },
           "4xx": {
@@ -247,9 +322,14 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       },
       "delete": {
+        "summary": "删除认证提供商",
+        "description": "接口格式：/builtin/admin/api/v1/auth/providers/{id}。删除指定认证提供商。",
         "operationId": "KnownAdmin_DeleteAuthProvider",
         "responses": {
           "200": {
@@ -257,6 +337,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -280,15 +363,29 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       },
       "patch": {
+        "summary": "更新认证提供商",
+        "description": "接口格式：/builtin/admin/api/v1/auth/providers/{id}。按请求字段更新 provider 配置。",
         "operationId": "KnownAdmin_UpdateAuthProvider",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AuthProvider"
+            },
+            "examples": {
+              "application/json": {
+                "id": 2,
+                "code": "corp_ldap",
+                "type": "LDAP",
+                "status": "ACTIVE",
+                "display_name": "企业LDAP（更新）"
+              }
             }
           },
           "4xx": {
@@ -320,17 +417,29 @@
               "$ref": "#/definitions/v1AuthProvider"
             }
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       }
     },
     "/builtin/admin/api/v1/auth/token": {
       "post": {
+        "summary": "创建访问令牌",
+        "description": "接口格式：/builtin/admin/api/v1/auth/token。用于受控场景下签发 access_token。",
         "operationId": "KnownAdmin_CreateAuthToken",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AuthToken"
+            },
+            "examples": {
+              "application/json": {
+                "access_token": "\u003cjwt\u003e",
+                "token_type": "Bearer",
+                "expires_in": 86400
+              }
             }
           },
           "4xx": {
@@ -355,6 +464,9 @@
               "$ref": "#/definitions/v1CreateAuthTokenRequest"
             }
           }
+        ],
+        "tags": [
+          "认证鉴权"
         ]
       }
     },
@@ -4601,7 +4713,11 @@
         },
         "password_hash": {
           "type": "string",
-          "title": "PasswordHash 用户密码在本地使用 sha256 哈希结果"
+          "title": "PasswordHash 登录口令载荷：\n- LOCAL: 传 sha256(password) 字符串\n- LDAP: 传 base64(password) 字符串（兼容方案）"
+        },
+        "provider_code": {
+          "type": "string",
+          "title": "ProviderCode 指定认证提供商 code，取值来源于 AuthProvider.code（如 local、corp_ldap）\n为空时默认按 local 处理，以兼容旧客户端。"
         }
       },
       "title": "CreateAuthLoginRequest 用于登录请求，所有用户均可"

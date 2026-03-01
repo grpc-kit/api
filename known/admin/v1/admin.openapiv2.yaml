@@ -53,6 +53,86 @@ openapiOptions:
   # grpc.gateway.protoc_gen_openapiv2.options.Operation
   # 对应 proto 中 service 的 rpc
   method:
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthLogin
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "登录认证"
+        description: "接口格式：/builtin/admin/api/v1/auth/login。LOCAL: password_hash=sha256(password)；LDAP: password_hash=base64(password)（兼容约定）。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"access_token":"<jwt>","token_type":"Bearer","expires_in":86400}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthToken
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "创建访问令牌"
+        description: "接口格式：/builtin/admin/api/v1/auth/token。用于受控场景下签发 access_token。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"access_token":"<jwt>","token_type":"Bearer","expires_in":86400}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.ListAuthProviders
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "认证提供商列表"
+        description: "接口格式：/builtin/admin/api/v1/auth/providers。返回可用的认证方式（LOCAL/LDAP/OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT）。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"providers":[{"id":1,"code":"local","type":"LOCAL","status":"ACTIVE","display_name":"本地登录"}],"next_page_token":"","total_size":1}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAuthProvider
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "创建认证提供商"
+        description: "接口格式：/builtin/admin/api/v1/auth/providers。用于创建 LDAP/OIDC/OAUTH2 等认证提供商配置。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"id":2,"code":"corp_ldap","type":"LDAP","status":"ACTIVE","display_name":"企业LDAP"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthProvider
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "获取认证提供商详情"
+        description: "接口格式：/builtin/admin/api/v1/auth/providers/{id}。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"id":2,"code":"corp_ldap","type":"LDAP","status":"ACTIVE","display_name":"企业LDAP"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateAuthProvider
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "更新认证提供商"
+        description: "接口格式：/builtin/admin/api/v1/auth/providers/{id}。按请求字段更新 provider 配置。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"id":2,"code":"corp_ldap","type":"LDAP","status":"ACTIVE","display_name":"企业LDAP（更新）"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteAuthProvider
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "删除认证提供商"
+        description: "接口格式：/builtin/admin/api/v1/auth/providers/{id}。删除指定认证提供商。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.GetAuthCallback
+      option:
+        tags:
+          - "认证鉴权"
+        summary: "第三方认证回调"
+        description: "接口格式：/builtin/admin/api/v1/auth/callback/{provider_name}。用于 OIDC/OAUTH2 等外部认证回调换取 token。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"access_token":"<jwt>","token_type":"Bearer"}'
     - method: grpc_kit.api.known.admin.v1.KnownAdmin.ListResources
       option:
         tags:
