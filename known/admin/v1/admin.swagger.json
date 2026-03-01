@@ -3802,12 +3802,28 @@
     },
     "/builtin/admin/api/v1/users": {
       "get": {
+        "summary": "用户列表",
+        "description": "接口格式：/builtin/admin/api/v1/users。支持分页、过滤与排序，返回用户集合。",
         "operationId": "KnownAdmin_ListUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListUsersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "users": [
+                  {
+                    "id": "1",
+                    "username": "admin",
+                    "nickname": "系统管理员",
+                    "status": "ACTIVE"
+                  }
+                ],
+                "next_page_token": "",
+                "total_size": 1
+              }
             }
           },
           "4xx": {
@@ -3913,15 +3929,28 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "用户管理"
         ]
       },
       "post": {
+        "summary": "创建用户",
+        "description": "接口格式：/builtin/admin/api/v1/users。根据 user 字段创建新用户。",
         "operationId": "KnownAdmin_CreateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1User"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "username": "alice",
+                "nickname": "Alice",
+                "status": "ACTIVE"
+              }
             }
           },
           "4xx": {
@@ -3946,18 +3975,31 @@
               "$ref": "#/definitions/v1User"
             }
           }
+        ],
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/builtin/admin/api/v1/users/{id}": {
       "get": {
-        "summary": "用户相关",
+        "summary": "获取用户详情",
+        "description": "接口格式：/builtin/admin/api/v1/users/{id}。根据用户 ID 获取用户详情。",
         "operationId": "KnownAdmin_GetUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1User"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "username": "alice",
+                "nickname": "Alice",
+                "status": "ACTIVE",
+                "email": "alice@example.com"
+              }
             }
           },
           "4xx": {
@@ -3989,17 +4031,30 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/builtin/admin/api/v1/users/{user.id}": {
       "patch": {
+        "summary": "更新用户",
+        "description": "接口格式：/builtin/admin/api/v1/users/{user.id}。按请求中的 user/update_mask 更新指定用户。",
         "operationId": "KnownAdmin_UpdateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1User"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "username": "alice",
+                "nickname": "Alice Chen",
+                "status": "ACTIVE"
+              }
             }
           },
           "4xx": {
@@ -4139,17 +4194,25 @@
               "title": "User 用户实体，表示系统中的账号信息"
             }
           }
+        ],
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/builtin/admin/api/v1/users/{user_id}/password": {
       "put": {
+        "summary": "更新用户密码",
+        "description": "接口格式：/builtin/admin/api/v1/users/{user_id}/password。更新指定用户密码（传递哈希值）。",
         "operationId": "KnownAdmin_UpdateUserPassword",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1UpdateUserPasswordResponse"
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -4195,6 +4258,9 @@
               }
             }
           }
+        ],
+        "tags": [
+          "用户管理"
         ]
       }
     }

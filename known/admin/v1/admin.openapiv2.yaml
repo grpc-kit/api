@@ -143,3 +143,53 @@ openapiOptions:
           "200":
             examples:
               "application/json": '{"resources": [{"id": 1, "name": "resource1", "display_name": "Resource 1", "sort_order": 100, "type": "MENU", "status": "ENABLED", "visibility": "VISIBLE"}]}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.ListUsers
+      option:
+        tags:
+          - "用户管理"
+        summary: "用户列表"
+        description: "接口格式：/builtin/admin/api/v1/users。支持分页、过滤与排序，返回用户集合。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"users":[{"id":"1","username":"admin","nickname":"系统管理员","status":"ACTIVE"}],"next_page_token":"","total_size":1}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUser
+      option:
+        tags:
+          - "用户管理"
+        summary: "创建用户"
+        description: "接口格式：/builtin/admin/api/v1/users。根据 user 字段创建新用户。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"id":"2","username":"alice","nickname":"Alice","status":"ACTIVE"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUser
+      option:
+        tags:
+          - "用户管理"
+        summary: "更新用户"
+        description: "接口格式：/builtin/admin/api/v1/users/{user.id}。按请求中的 user/update_mask 更新指定用户。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"id":"2","username":"alice","nickname":"Alice Chen","status":"ACTIVE"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.GetUser
+      option:
+        tags:
+          - "用户管理"
+        summary: "获取用户详情"
+        description: "接口格式：/builtin/admin/api/v1/users/{id}。根据用户 ID 获取用户详情。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{"id":"2","username":"alice","nickname":"Alice","status":"ACTIVE","email":"alice@example.com"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUserPassword
+      option:
+        tags:
+          - "用户管理"
+        summary: "更新用户密码"
+        description: "接口格式：/builtin/admin/api/v1/users/{user_id}/password。更新指定用户密码（传递哈希值）。"
+        responses:
+          "200":
+            examples:
+              "application/json": '{}'
