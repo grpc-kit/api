@@ -83,7 +83,7 @@
     "/builtin/admin/api/v1/auth/login": {
       "post": {
         "summary": "登录认证",
-        "description": "接口格式：/builtin/admin/api/v1/auth/login。LOCAL: password_hash=sha256(password)；LDAP: password_hash=base64(password)（兼容约定）。",
+        "description": "接口格式：/builtin/admin/api/v1/auth/login。LOCAL: password_hash=sha256(password)；LDAP: password_hash=base64(password)（兼容约定）。请求体示例：{\"username\":\"alice\",\"password_hash\":\"3f786850e387550fdab836ed7e6dc881de23001b\",\"provider_code\":\"local\",\"expires_in\":86400}。",
         "operationId": "KnownAdmin_CreateAuthLogin",
         "responses": {
           "200": {
@@ -93,7 +93,7 @@
             },
             "examples": {
               "application/json": {
-                "access_token": "\u003cjwt\u003e",
+                "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtpZC1hZG1pbi0yMDI2In0.eyJzdWIiOiIxMDAxIiwidXNlcm5hbWUiOiJhbGljZSIsInJvbGVzIjpbImF1ZGl0b3IiXSwic2NvcGUiOiJhZG1pbiByZWFkb25seSIsImV4cCI6MTc5OTk5OTk5OX0.signature",
                 "token_type": "Bearer",
                 "expires_in": 86400
               }
@@ -142,15 +142,18 @@
               "application/json": {
                 "providers": [
                   {
-                    "id": 1,
-                    "code": "local",
-                    "type": "LOCAL",
+                    "id": "1",
+                    "code": "corp-ldap",
+                    "type": "LDAP",
                     "status": "ACTIVE",
-                    "display_name": "本地登录"
+                    "display_name": "企业LDAP",
+                    "description": "企业统一身份源",
+                    "sort_order": 20,
+                    "icon_url": "https://cdn.example.com/icons/ldap.svg"
                   }
                 ],
-                "next_page_token": "",
-                "total_size": 1
+                "next_page_token": "providers:2",
+                "total_size": 12
               }
             }
           },
@@ -234,7 +237,7 @@
       },
       "post": {
         "summary": "创建认证提供商",
-        "description": "接口格式：/builtin/admin/api/v1/auth/providers。用于创建 LDAP/OIDC/OAUTH2 等认证提供商配置。",
+        "description": "接口格式：/builtin/admin/api/v1/auth/providers。用于创建 LDAP/OIDC/OAUTH2 等认证提供商配置。请求体示例：{\"provider\":{\"code\":\"corp-ldap\",\"type\":\"LDAP\",\"status\":\"ACTIVE\",\"display_name\":\"企业LDAP\",\"description\":\"企业统一身份源\"}}。",
         "operationId": "KnownAdmin_CreateAuthProvider",
         "responses": {
           "200": {
@@ -244,11 +247,14 @@
             },
             "examples": {
               "application/json": {
-                "id": 2,
-                "code": "corp_ldap",
+                "id": "2",
+                "code": "corp-ldap",
                 "type": "LDAP",
                 "status": "ACTIVE",
-                "display_name": "企业LDAP"
+                "display_name": "企业LDAP",
+                "description": "仅企业员工可登录",
+                "sort_order": 20,
+                "icon_url": "https://cdn.example.com/icons/ldap.svg"
               }
             }
           },
@@ -293,11 +299,14 @@
             },
             "examples": {
               "application/json": {
-                "id": 2,
-                "code": "corp_ldap",
+                "id": "2",
+                "code": "corp-ldap",
                 "type": "LDAP",
                 "status": "ACTIVE",
-                "display_name": "企业LDAP"
+                "display_name": "企业LDAP",
+                "description": "仅企业员工可登录",
+                "sort_order": 20,
+                "icon_url": "https://cdn.example.com/icons/ldap.svg"
               }
             }
           },
@@ -370,7 +379,7 @@
       },
       "patch": {
         "summary": "更新认证提供商",
-        "description": "接口格式：/builtin/admin/api/v1/auth/providers/{id}。按请求字段更新 provider 配置。",
+        "description": "接口格式：/builtin/admin/api/v1/auth/providers/{id}。按请求字段更新 provider 配置。请求体示例：{\"id\":\"2\",\"provider\":{\"display_name\":\"企业LDAP（更新）\",\"status\":\"ACTIVE\"},\"update_mask\":{\"paths\":[\"display_name\",\"status\"]}}。",
         "operationId": "KnownAdmin_UpdateAuthProvider",
         "responses": {
           "200": {
@@ -380,11 +389,14 @@
             },
             "examples": {
               "application/json": {
-                "id": 2,
-                "code": "corp_ldap",
+                "id": "2",
+                "code": "corp-ldap",
                 "type": "LDAP",
                 "status": "ACTIVE",
-                "display_name": "企业LDAP（更新）"
+                "display_name": "企业LDAP（更新）",
+                "description": "新增安全基线策略",
+                "sort_order": 10,
+                "icon_url": "https://cdn.example.com/icons/ldap.svg"
               }
             }
           },
@@ -426,7 +438,7 @@
     "/builtin/admin/api/v1/auth/token": {
       "post": {
         "summary": "创建访问令牌",
-        "description": "接口格式：/builtin/admin/api/v1/auth/token。用于受控场景下签发 access_token。",
+        "description": "接口格式：/builtin/admin/api/v1/auth/token。用于受控场景下签发 access_token。请求体示例：{\"appid\":\"admin-web\",\"username\":\"admin\",\"password_hash\":\"8c6976e5b5410415bde908bd4dee15dfb16b0f5f\",\"expires_in\":7200}。",
         "operationId": "KnownAdmin_CreateAuthToken",
         "responses": {
           "200": {
@@ -436,9 +448,9 @@
             },
             "examples": {
               "application/json": {
-                "access_token": "\u003cjwt\u003e",
+                "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtpZC1zZXJ2aWNlLTIwMjYifQ.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJhZG1pbiIsInNjb3BlIjoiYWRtaW4iLCJleHAiOjE3OTk5OTk5OTl9.signature",
                 "token_type": "Bearer",
-                "expires_in": 86400
+                "expires_in": 7200
               }
             }
           },
@@ -472,13 +484,266 @@
     },
     "/builtin/admin/api/v1/config": {
       "get": {
-        "summary": "本地配置",
+        "summary": "获取本地配置",
+        "description": "接口格式：/builtin/admin/api/v1/config。返回本地运行配置快照。",
         "operationId": "KnownAdmin_GetConfig",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1LocalConfig"
+            },
+            "examples": {
+              "application/json": {
+                "services": {
+                  "name": "known-admin",
+                  "enabled": true
+                },
+                "discover": {
+                  "name": "nacos",
+                  "enabled": true
+                },
+                "security": {
+                  "name": "security",
+                  "enabled": true
+                },
+                "database": {
+                  "name": "postgres",
+                  "enabled": true
+                },
+                "frontend": {
+                  "name": "builtin-admin",
+                  "enabled": true
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "tags": [
+          "本地配置"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/config/automations": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigAutomations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AutomationsConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/cachebox": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigCachebox",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CacheboxConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/cloudevents": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigCloudEvents",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CloudEventsConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/database": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigDatabase",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DatabaseConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/debugger": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigDebugger",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DebuggerConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/discover": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigDiscover",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DiscoverConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/frontend": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigFrontend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1FrontendConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/objstore": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigObjstore",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ObjstoreConfig"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/config/observables": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigObservables",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ObservablesConfig"
             }
           },
           "4xx": {
@@ -498,12 +763,63 @@
     },
     "/builtin/admin/api/v1/config/security": {
       "get": {
+        "summary": "获取安全配置",
+        "description": "接口格式：/builtin/admin/api/v1/config/security。返回安全配置快照，敏感字段可能被脱敏。",
         "operationId": "KnownAdmin_GetConfigSecurity",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1SecurityConfig"
+            },
+            "examples": {
+              "application/json": {
+                "name": "security",
+                "enabled": true,
+                "authentication": {
+                  "insecure_rpcs": [
+                    "grpc.health.v1.Health/Check"
+                  ],
+                  "http_users": [
+                    {
+                      "user_id": "1",
+                      "username": "admin",
+                      "groups": [
+                        "root"
+                      ],
+                      "tenant": "default"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "tags": [
+          "本地配置"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/config/services": {
+      "get": {
+        "operationId": "KnownAdmin_GetConfigServices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ServicesConfig"
             }
           },
           "4xx": {
@@ -523,13 +839,32 @@
     },
     "/builtin/admin/api/v1/credentials": {
       "post": {
-        "summary": "安全相关",
+        "summary": "创建凭证",
+        "description": "接口格式：/builtin/admin/api/v1/credentials。根据 credential 字段创建密钥或证书凭证。请求体示例：{\"credential\":{\"code\":\"admin-jwks\",\"type\":\"JWKS\",\"algorithm\":\"RSA\",\"usage\":\"AUTH\",\"status\":\"ACTIVE\",\"source\":\"SYSTEM\",\"jwks_uri\":\"https://admin.v1.known.api.grpc-kit.com/builtin/admin/api/v1/oatuh2/jwks\"}}。",
         "operationId": "KnownAdmin_CreateCredential",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Credential"
+            },
+            "examples": {
+              "application/json": {
+                "id": "301",
+                "code": "admin-jwks",
+                "type": "JWKS",
+                "algorithm": "RSA",
+                "usage": "AUTH",
+                "visibility": "PRIVATE",
+                "status": "ACTIVE",
+                "source": "SYSTEM",
+                "key_id": "kid-admin-2026",
+                "jwks_uri": "https://admin.v1.known.api.grpc-kit.com/builtin/admin/api/v1/oatuh2/jwks",
+                "metadata": {
+                  "rotation": "30d"
+                },
+                "description": "OIDC 签名公钥集合"
+              }
             }
           },
           "4xx": {
@@ -554,12 +889,16 @@
               "$ref": "#/definitions/v1Credential"
             }
           }
+        ],
+        "tags": [
+          "安全相关"
         ]
       }
     },
     "/builtin/admin/api/v1/database/initialize": {
       "post": {
-        "summary": "数据库相关",
+        "summary": "初始化数据库",
+        "description": "接口格式：/builtin/admin/api/v1/database/initialize。执行数据库初始化，空响应表示成功。请求体示例：{\"force\":false,\"tenant\":\"default\"}。",
         "operationId": "KnownAdmin_CreateDatabaseInitialize",
         "responses": {
           "200": {
@@ -567,6 +906,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -591,17 +933,56 @@
               "$ref": "#/definitions/v1CreateDatabaseInitializeRequest"
             }
           }
+        ],
+        "tags": [
+          "数据库相关"
         ]
       }
     },
     "/builtin/admin/api/v1/departments": {
       "get": {
+        "summary": "部门列表",
+        "description": "接口格式：/builtin/admin/api/v1/departments。支持分页、过滤与排序。",
         "operationId": "KnownAdmin_ListDepartments",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListDepartmentsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "departments": [
+                  {
+                    "id": "5001",
+                    "parent_id": "1",
+                    "code": "risk-center",
+                    "display_name": "风控中心",
+                    "type": "BUSINESS",
+                    "status": "ACTIVE",
+                    "sort_order": 20,
+                    "email": "risk@example.com",
+                    "cost_center_code": "CC-RISK-001",
+                    "budget_item_code": "BG-2026-RISK",
+                    "visibility": "VISIBLE"
+                  },
+                  {
+                    "id": "5002",
+                    "parent_id": "5001",
+                    "code": "risk-audit",
+                    "display_name": "审计组",
+                    "type": "SUPPORT",
+                    "status": "ACTIVE",
+                    "sort_order": 30,
+                    "email": "audit@example.com",
+                    "cost_center_code": "CC-RISK-002",
+                    "budget_item_code": "BG-2026-AUDIT",
+                    "visibility": "VISIBLE"
+                  }
+                ],
+                "next_page_token": "departments:cursor:2",
+                "total_size": 2
+              }
             }
           },
           "4xx": {
@@ -705,16 +1086,37 @@
             "type": "integer",
             "format": "int32"
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       },
       "post": {
-        "summary": "部门管理",
+        "summary": "创建部门",
+        "description": "接口格式：/builtin/admin/api/v1/departments。根据 department 字段创建部门。请求体示例：{\"department\":{\"parent_id\":\"1\",\"code\":\"risk-center\",\"display_name\":\"风控中心\",\"type\":\"BUSINESS\",\"status\":\"ACTIVE\",\"cost_center_code\":\"CC-RISK-001\"}}。",
         "operationId": "KnownAdmin_CreateDepartment",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Department"
+            },
+            "examples": {
+              "application/json": {
+                "id": "10",
+                "parent_id": "1",
+                "code": "rd-center",
+                "display_name": "研发中心",
+                "type": "BUSINESS",
+                "status": "ACTIVE",
+                "sort_order": 20,
+                "email": "rd@example.com",
+                "cost_center_code": "CC-RD-001",
+                "budget_item_code": "BG-2026-RD",
+                "max_members": 200,
+                "description": "负责核心产品研发",
+                "visibility": "VISIBLE"
+              }
             }
           },
           "4xx": {
@@ -739,17 +1141,38 @@
               "$ref": "#/definitions/v1Department"
             }
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       }
     },
     "/builtin/admin/api/v1/departments/{department.id}": {
       "patch": {
+        "summary": "更新部门",
+        "description": "接口格式：/builtin/admin/api/v1/departments/{department.id}。路径中的 department.id 应与请求体一致，支持 update_mask。请求体示例：{\"department\":{\"id\":\"5001\",\"display_name\":\"风控中心（更新）\",\"sort_order\":15},\"update_mask\":{\"paths\":[\"display_name\",\"sort_order\"]}}。",
         "operationId": "KnownAdmin_UpdateDepartment",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Department"
+            },
+            "examples": {
+              "application/json": {
+                "id": "10",
+                "parent_id": "1",
+                "code": "rd-center",
+                "display_name": "研发中心（更新）",
+                "type": "BUSINESS",
+                "status": "ACTIVE",
+                "sort_order": 15,
+                "email": "rd-platform@example.com",
+                "cost_center_code": "CC-RD-001",
+                "budget_item_code": "BG-2026-RD",
+                "description": "新增平台研发职责",
+                "visibility": "VISIBLE"
+              }
             }
           },
           "4xx": {
@@ -895,17 +1318,25 @@
               "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
             }
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       }
     },
     "/builtin/admin/api/v1/departments/{department_id}/members": {
       "post": {
+        "summary": "添加部门成员",
+        "description": "接口格式：/builtin/admin/api/v1/departments/{department_id}/members。支持将用户加入多个部门。请求体示例：{\"department_id\":\"5001\",\"members\":[{\"user_id\":\"1001\",\"member_role\":\"MANAGER\",\"member_type\":\"PRIMARY\"},{\"user_id\":\"1002\",\"member_role\":\"MEMBER\",\"member_type\":\"DUAL\"}]}。",
         "operationId": "KnownAdmin_CreateDepartmentMembers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1CreateDepartmentMembersResponse"
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -941,15 +1372,23 @@
               }
             }
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       },
       "patch": {
+        "summary": "更新部门成员",
+        "description": "接口格式：/builtin/admin/api/v1/departments/{department_id}/members。按 members/update_mask 更新成员关系。请求体示例：{\"department_id\":\"5001\",\"members\":[{\"user_id\":\"1002\",\"member_role\":\"LEAD\",\"member_status\":\"ACTIVE\"}]}。",
         "operationId": "KnownAdmin_UpdateDepartmentMembers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1UpdateDepartmentMembersResponse"
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -985,11 +1424,16 @@
               }
             }
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       }
     },
     "/builtin/admin/api/v1/departments/{department_id}/members/{user_id}": {
       "delete": {
+        "summary": "移除部门成员",
+        "description": "接口格式：/builtin/admin/api/v1/departments/{department_id}/members/{user_id}。移除指定成员关系。",
         "operationId": "KnownAdmin_DeleteDepartmentMember",
         "responses": {
           "200": {
@@ -997,6 +1441,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -1027,11 +1474,16 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       }
     },
     "/builtin/admin/api/v1/departments/{id}": {
       "delete": {
+        "summary": "删除部门",
+        "description": "接口格式：/builtin/admin/api/v1/departments/{id}。删除指定部门。",
         "operationId": "KnownAdmin_DeleteDepartment",
         "responses": {
           "200": {
@@ -1039,6 +1491,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -1062,17 +1517,62 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       }
     },
     "/builtin/admin/api/v1/departments/{parent}/members": {
       "get": {
+        "summary": "部门成员列表",
+        "description": "接口格式：/builtin/admin/api/v1/departments/{parent}/members。parent 表示部门 ID。",
         "operationId": "KnownAdmin_ListDepartmentMembers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListDepartmentMembersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "members": [
+                  {
+                    "id": "7001",
+                    "user_id": "1001",
+                    "username": "alice",
+                    "nickname": "Alice Chen",
+                    "target_type": "DEPARTMENT",
+                    "target_id": "5001",
+                    "member_role": "MANAGER",
+                    "member_status": "ACTIVE",
+                    "member_type": "PRIMARY",
+                    "joined_at": "2026-01-03T09:00:00Z",
+                    "metadata": {
+                      "job_title": "Risk Manager"
+                    },
+                    "description": "风控中心负责人"
+                  },
+                  {
+                    "id": "7002",
+                    "user_id": "1002",
+                    "username": "bob",
+                    "nickname": "Bob Li",
+                    "target_type": "DEPARTMENT",
+                    "target_id": "5002",
+                    "member_role": "MEMBER",
+                    "member_status": "ACTIVE",
+                    "member_type": "DUAL",
+                    "joined_at": "2026-01-12T09:00:00Z",
+                    "metadata": {
+                      "job_title": "Backend Engineer"
+                    },
+                    "description": "审计平台联络人"
+                  }
+                ],
+                "next_page_token": "dept-members:cursor:2",
+                "total_size": 2
+              }
             }
           },
           "4xx": {
@@ -1133,17 +1633,43 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "部门管理"
         ]
       }
     },
     "/builtin/admin/api/v1/groups": {
       "get": {
+        "summary": "群组列表",
+        "description": "接口格式：/builtin/admin/api/v1/groups。支持分页、过滤与排序。",
         "operationId": "KnownAdmin_ListGroups",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListGroupsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "groups": [
+                  {
+                    "id": "20",
+                    "code": "ops-team",
+                    "type": "PROJECT",
+                    "status": "ACTIVE",
+                    "display_name": "运维团队",
+                    "sort_order": 30,
+                    "max_members": 80,
+                    "description": "负责线上运行保障",
+                    "visibility": "VISIBLE",
+                    "ref_id": "0",
+                    "ref_expr": ""
+                  }
+                ],
+                "next_page_token": "groups:21",
+                "total_size": 14
+              }
             }
           },
           "4xx": {
@@ -1259,16 +1785,38 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       },
       "post": {
-        "summary": "rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);\n群组相关",
+        "summary": "创建群组",
+        "description": "接口格式：/builtin/admin/api/v1/groups。根据 group 字段创建群组。请求体示例：{\"group\":{\"code\":\"ops-team\",\"display_name\":\"运维团队\",\"type\":\"PROJECT\",\"status\":\"ACTIVE\",\"max_members\":80}}。",
         "operationId": "KnownAdmin_CreateGroup",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Group"
+            },
+            "examples": {
+              "application/json": {
+                "id": "20",
+                "code": "ops-team",
+                "type": "PROJECT",
+                "status": "ACTIVE",
+                "display_name": "运维团队",
+                "sort_order": 30,
+                "max_members": 80,
+                "metadata": {
+                  "slack_channel": "#ops-alert"
+                },
+                "description": "负责线上运行保障",
+                "visibility": "VISIBLE",
+                "ref_id": "0",
+                "ref_expr": ""
+              }
             }
           },
           "4xx": {
@@ -1293,17 +1841,40 @@
               "$ref": "#/definitions/v1Group"
             }
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       }
     },
     "/builtin/admin/api/v1/groups/{group.id}": {
       "patch": {
+        "summary": "更新群组",
+        "description": "接口格式：/builtin/admin/api/v1/groups/{group.id}。路径中的 group.id 应与请求体一致，支持 update_mask。请求体示例：{\"group\":{\"id\":\"20\",\"display_name\":\"运维团队（更新）\",\"max_members\":100},\"update_mask\":{\"paths\":[\"display_name\",\"max_members\"]}}。",
         "operationId": "KnownAdmin_UpdateGroup",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Group"
+            },
+            "examples": {
+              "application/json": {
+                "id": "20",
+                "code": "ops-team",
+                "type": "PROJECT",
+                "status": "ACTIVE",
+                "display_name": "运维团队（更新）",
+                "sort_order": 25,
+                "max_members": 100,
+                "metadata": {
+                  "slack_channel": "#ops-warroom"
+                },
+                "description": "增加应急值班职能",
+                "visibility": "VISIBLE",
+                "ref_id": "0",
+                "ref_expr": ""
+              }
             }
           },
           "4xx": {
@@ -1413,17 +1984,40 @@
               "title": "Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形\n该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理"
             }
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       }
     },
     "/builtin/admin/api/v1/groups/{id}": {
       "get": {
+        "summary": "获取群组详情",
+        "description": "接口格式：/builtin/admin/api/v1/groups/{id}。根据群组 ID 获取详情。",
         "operationId": "KnownAdmin_GetGroup",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Group"
+            },
+            "examples": {
+              "application/json": {
+                "id": "20",
+                "code": "ops-team",
+                "type": "PROJECT",
+                "status": "ACTIVE",
+                "display_name": "运维团队",
+                "sort_order": 30,
+                "max_members": 80,
+                "metadata": {
+                  "slack_channel": "#ops-alert"
+                },
+                "description": "负责线上运行保障",
+                "visibility": "VISIBLE",
+                "ref_id": "0",
+                "ref_expr": ""
+              }
             }
           },
           "4xx": {
@@ -1475,9 +2069,14 @@
             ],
             "default": "STRUCTURE_UNSPECIFIED"
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       },
       "delete": {
+        "summary": "删除群组",
+        "description": "接口格式：/builtin/admin/api/v1/groups/{id}。删除指定群组。",
         "operationId": "KnownAdmin_DeleteGroup",
         "responses": {
           "200": {
@@ -1485,6 +2084,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -1508,17 +2110,42 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       }
     },
     "/builtin/admin/api/v1/groups/{parent}/members": {
       "get": {
+        "summary": "群组成员列表",
+        "description": "接口格式：/builtin/admin/api/v1/groups/{parent}/members。parent 表示群组 ID。",
         "operationId": "KnownAdmin_ListGroupMembers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListGroupMembersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "members": [
+                  {
+                    "id": "801",
+                    "user_id": "1",
+                    "username": "admin",
+                    "nickname": "系统管理员",
+                    "target_type": "GROUP",
+                    "target_id": "20",
+                    "member_role": "OWNER",
+                    "member_status": "ACTIVE",
+                    "member_type": "PRIMARY",
+                    "description": "群组负责人"
+                  }
+                ],
+                "next_page_token": "group-members:2",
+                "total_size": 1
+              }
             }
           },
           "4xx": {
@@ -1579,15 +2206,23 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       },
       "post": {
+        "summary": "创建群组成员",
+        "description": "接口格式：/builtin/admin/api/v1/groups/{parent}/members。parent 表示群组 ID。请求体示例：{\"parent\":\"20\",\"members\":[{\"user_id\":\"1001\",\"member_role\":\"OWNER\"},{\"user_id\":\"1002\",\"member_role\":\"MEMBER\"}]}。",
         "operationId": "KnownAdmin_CreateGroupMembers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1CreateGroupMembersResponse"
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -1623,11 +2258,16 @@
               }
             }
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       }
     },
     "/builtin/admin/api/v1/groups/{parent}/members/{user_id}": {
       "delete": {
+        "summary": "删除群组成员",
+        "description": "接口格式：/builtin/admin/api/v1/groups/{parent}/members/{user_id}。parent 表示群组 ID。",
         "operationId": "KnownAdmin_DeleteGroupMember",
         "responses": {
           "200": {
@@ -1635,6 +2275,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -1665,15 +2308,34 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       },
       "patch": {
+        "summary": "更新群组成员",
+        "description": "接口格式：/builtin/admin/api/v1/groups/{parent}/members/{user_id}。parent 表示群组 ID。请求体示例：{\"parent\":\"20\",\"user_id\":\"1002\",\"member\":{\"member_role\":\"LEAD\",\"member_status\":\"ACTIVE\"},\"update_mask\":{\"paths\":[\"member_role\",\"member_status\"]}}。",
         "operationId": "KnownAdmin_UpdateGroupMember",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Membership"
+            },
+            "examples": {
+              "application/json": {
+                "id": "802",
+                "user_id": "2",
+                "username": "alice",
+                "nickname": "Alice",
+                "target_type": "GROUP",
+                "target_id": "20",
+                "member_role": "MEMBER",
+                "member_status": "ACTIVE",
+                "member_type": "PRIMARY",
+                "description": "值班成员"
+              }
             }
           },
           "4xx": {
@@ -1712,17 +2374,40 @@
               "$ref": "#/definitions/v1Membership"
             }
           }
+        ],
+        "tags": [
+          "群组管理"
         ]
       }
     },
     "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration": {
       "get": {
+        "summary": "获取 OAuth2 Discovery",
+        "description": "接口格式：/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration。注意当前路径使用 oatuh2（历史拼写）。",
         "operationId": "KnownAdmin_GetOAuth2Discovery",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OAuth2Discovery"
+            },
+            "examples": {
+              "application/json": {
+                "issuer": "https://admin.v1.known.api.grpc-kit.com",
+                "authorization_endpoint": "https://admin.v1.known.api.grpc-kit.com/builtin/admin/api/v1/auth/login",
+                "token_endpoint": "https://admin.v1.known.api.grpc-kit.com/builtin/admin/api/v1/auth/token",
+                "jwks_uri": "https://admin.v1.known.api.grpc-kit.com/builtin/admin/api/v1/oatuh2/jwks",
+                "response_types_supported": [
+                  "code",
+                  "token"
+                ],
+                "subject_types_supported": [
+                  "public"
+                ],
+                "id_token_signing_alg_values_supported": [
+                  "RS256"
+                ]
+              }
             }
           },
           "4xx": {
@@ -1737,17 +2422,34 @@
               "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
             }
           }
-        }
+        },
+        "tags": [
+          "安全相关"
+        ]
       }
     },
     "/builtin/admin/api/v1/oatuh2/jwks": {
       "get": {
+        "summary": "获取 OAuth2 JSON Web Keys",
+        "description": "接口格式：/builtin/admin/api/v1/oatuh2/jwks。注意当前路径使用 oatuh2（历史拼写）。",
         "operationId": "KnownAdmin_GetOAuth2JSONWebKeys",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OAuth2JSONWebKeys"
+            },
+            "examples": {
+              "application/json": {
+                "keys": [
+                  {
+                    "kty": "RSA",
+                    "kid": "key-1",
+                    "alg": "RS256",
+                    "use": "sig"
+                  }
+                ]
+              }
             }
           },
           "4xx": {
@@ -1762,17 +2464,34 @@
               "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
             }
           }
-        }
+        },
+        "tags": [
+          "安全相关"
+        ]
       }
     },
     "/builtin/admin/api/v1/oatuh2/userinfo": {
       "get": {
+        "summary": "获取 OAuth2 Userinfo",
+        "description": "接口格式：/builtin/admin/api/v1/oatuh2/userinfo。注意当前路径使用 oatuh2（历史拼写）。",
         "operationId": "KnownAdmin_GetOAuth2Userinfo",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OAuth2Userinfo"
+            },
+            "examples": {
+              "application/json": {
+                "user_id": "1",
+                "username": "admin",
+                "nickname": "系统管理员",
+                "profile": "系统初始账号",
+                "picture": "https://cdn.example.com/avatars/admin.png",
+                "website": "https://admin.example.com",
+                "timezone": "Asia/Shanghai",
+                "locale": "zh-CN"
+              }
             }
           },
           "4xx": {
@@ -1787,18 +2506,47 @@
               "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
             }
           }
-        }
+        },
+        "tags": [
+          "安全相关"
+        ]
       }
     },
     "/builtin/admin/api/v1/permissions": {
       "get": {
-        "summary": "权限管理",
+        "summary": "权限列表",
+        "description": "接口格式：/builtin/admin/api/v1/permissions。支持分页、过滤与排序。",
         "operationId": "KnownAdmin_ListPermissions",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListPermissionsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "permissions": [
+                  {
+                    "id": "11",
+                    "code": "user-read",
+                    "display_name": "查看用户",
+                    "policy": {
+                      "id": "1",
+                      "code": "admin-policy"
+                    },
+                    "bindings": [
+                      {
+                        "id": "501",
+                        "resource_scope_id": "1001",
+                        "is_recursive": true
+                      }
+                    ],
+                    "description": "允许查询用户列表与详情"
+                  }
+                ],
+                "next_page_token": "permissions:2",
+                "total_size": 26
+              }
             }
           },
           "4xx": {
@@ -1895,15 +2643,39 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "权限管理"
         ]
       },
       "post": {
+        "summary": "创建权限",
+        "description": "接口格式：/builtin/admin/api/v1/permissions。根据 permission 字段创建权限。请求体示例：{\"permission\":{\"code\":\"user-manage\",\"display_name\":\"管理用户\",\"policy\":{\"id\":\"1\"},\"bindings\":[{\"resource_scope_id\":\"1002\",\"is_recursive\":false}]}}。",
         "operationId": "KnownAdmin_CreatePermission",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Permission"
+            },
+            "examples": {
+              "application/json": {
+                "id": "12",
+                "code": "user-manage",
+                "display_name": "管理用户",
+                "policy": {
+                  "id": "1",
+                  "code": "admin-policy"
+                },
+                "bindings": [
+                  {
+                    "id": "502",
+                    "resource_scope_id": "1002",
+                    "is_recursive": false
+                  }
+                ],
+                "description": "允许创建、更新、禁用用户"
+              }
             }
           },
           "4xx": {
@@ -1929,17 +2701,51 @@
               "$ref": "#/definitions/v1Permission"
             }
           }
+        ],
+        "tags": [
+          "权限管理"
         ]
       }
     },
     "/builtin/admin/api/v1/permissions/{id}": {
       "get": {
+        "summary": "获取权限详情",
+        "description": "接口格式：/builtin/admin/api/v1/permissions/{id}。根据权限 ID 获取详情。",
         "operationId": "KnownAdmin_GetPermission",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Permission"
+            },
+            "examples": {
+              "application/json": {
+                "id": "11",
+                "code": "user-read",
+                "display_name": "查看用户",
+                "policy": {
+                  "id": "1",
+                  "code": "admin-policy",
+                  "display_name": "管理员策略",
+                  "type": "ROLE",
+                  "status": "ENABLED"
+                },
+                "bindings": [
+                  {
+                    "id": "501",
+                    "resource_scope_id": "1001",
+                    "is_recursive": true,
+                    "resource": {
+                      "id": "1",
+                      "code": "sys-dashboard",
+                      "display_name": "控制台",
+                      "type": "MENU",
+                      "status": "ENABLED"
+                    }
+                  }
+                ],
+                "description": "允许查询用户列表与详情"
+              }
             }
           },
           "4xx": {
@@ -1963,9 +2769,14 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "权限管理"
         ]
       },
       "delete": {
+        "summary": "删除权限",
+        "description": "接口格式：/builtin/admin/api/v1/permissions/{id}。删除指定权限。",
         "operationId": "KnownAdmin_DeletePermission",
         "responses": {
           "200": {
@@ -1973,6 +2784,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -1996,17 +2810,41 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "权限管理"
         ]
       }
     },
     "/builtin/admin/api/v1/permissions/{permission.id}": {
       "patch": {
+        "summary": "更新权限",
+        "description": "接口格式：/builtin/admin/api/v1/permissions/{permission.id}。路径中的 permission.id 应与请求体一致，支持 update_mask。请求体示例：{\"permission\":{\"id\":\"12\",\"display_name\":\"管理用户（更新）\",\"bindings\":[{\"resource_scope_id\":\"1003\",\"is_recursive\":true}]},\"update_mask\":{\"paths\":[\"display_name\",\"bindings\"]}}。",
         "operationId": "KnownAdmin_UpdatePermission",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Permission"
+            },
+            "examples": {
+              "application/json": {
+                "id": "12",
+                "code": "user-manage",
+                "display_name": "管理用户（更新）",
+                "policy": {
+                  "id": "1",
+                  "code": "admin-policy"
+                },
+                "bindings": [
+                  {
+                    "id": "503",
+                    "resource_scope_id": "1003",
+                    "is_recursive": true
+                  }
+                ],
+                "description": "增加用户密码重置权限"
+              }
             }
           },
           "4xx": {
@@ -2062,18 +2900,39 @@
               }
             }
           }
+        ],
+        "tags": [
+          "权限管理"
         ]
       }
     },
     "/builtin/admin/api/v1/policies": {
       "get": {
-        "summary": "策略管理",
+        "summary": "策略列表",
+        "description": "接口格式：/builtin/admin/api/v1/policies。支持分页、过滤与排序。",
         "operationId": "KnownAdmin_ListPolicies",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListPoliciesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "policies": [
+                  {
+                    "id": "1",
+                    "code": "admin-policy",
+                    "display_name": "管理员策略",
+                    "type": "ROLE",
+                    "status": "ENABLED",
+                    "value": "role:admin",
+                    "description": "管理员默认授权策略"
+                  }
+                ],
+                "next_page_token": "policies:2",
+                "total_size": 9
+              }
             }
           },
           "4xx": {
@@ -2177,15 +3036,31 @@
             "type": "integer",
             "format": "int32"
           }
+        ],
+        "tags": [
+          "策略管理"
         ]
       },
       "post": {
+        "summary": "创建策略",
+        "description": "接口格式：/builtin/admin/api/v1/policies。根据 policy 字段创建策略。请求体示例：{\"policy\":{\"code\":\"auditor-policy\",\"display_name\":\"审计策略\",\"type\":\"ROLE\",\"status\":\"DRAFT\",\"value\":\"role:auditor\"}}。",
         "operationId": "KnownAdmin_CreatePolicy",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Policy"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "code": "auditor-policy",
+                "display_name": "审计策略",
+                "type": "ROLE",
+                "status": "DRAFT",
+                "value": "role:auditor",
+                "description": "审计角色的读权限策略"
+              }
             }
           },
           "4xx": {
@@ -2211,11 +3086,16 @@
               "$ref": "#/definitions/v1Policy"
             }
           }
+        ],
+        "tags": [
+          "策略管理"
         ]
       }
     },
     "/builtin/admin/api/v1/policies/{id}": {
       "delete": {
+        "summary": "删除策略",
+        "description": "接口格式：/builtin/admin/api/v1/policies/{id}。删除指定策略。",
         "operationId": "KnownAdmin_DeletePolicy",
         "responses": {
           "200": {
@@ -2223,6 +3103,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -2246,17 +3129,33 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "策略管理"
         ]
       }
     },
     "/builtin/admin/api/v1/policies/{policy.id}": {
       "patch": {
+        "summary": "更新策略",
+        "description": "接口格式：/builtin/admin/api/v1/policies/{policy.id}。路径中的 policy.id 应与请求体一致，支持 update_mask。请求体示例：{\"policy\":{\"id\":\"2\",\"status\":\"ENABLED\",\"value\":\"role:auditor-v2\"},\"update_mask\":{\"paths\":[\"status\",\"value\"]}}。",
         "operationId": "KnownAdmin_UpdatePolicy",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Policy"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "code": "auditor-policy",
+                "display_name": "审计策略（更新）",
+                "type": "ROLE",
+                "status": "ENABLED",
+                "value": "role:auditor-v2",
+                "description": "新增审计日志查询授权"
+              }
             }
           },
           "4xx": {
@@ -2315,6 +3214,9 @@
               "title": "Policy 策略定义"
             }
           }
+        ],
+        "tags": [
+          "策略管理"
         ]
       }
     },
@@ -2333,15 +3235,25 @@
               "application/json": {
                 "resources": [
                   {
-                    "id": 1,
-                    "name": "resource1",
-                    "display_name": "Resource 1",
-                    "sort_order": 100,
+                    "id": "1",
+                    "parent_id": "0",
+                    "code": "sys-dashboard",
+                    "display_name": "控制台",
+                    "sort_order": 10,
                     "type": "MENU",
                     "status": "ENABLED",
-                    "visibility": "VISIBLE"
+                    "visibility": "VISIBLE",
+                    "locator": "/console/dashboard",
+                    "visual": "dashboard",
+                    "manifest": "builtin://dashboard",
+                    "metadata": {
+                      "module": "system"
+                    },
+                    "description": "后台首页入口"
                   }
-                ]
+                ],
+                "next_page_token": "resources:2",
+                "total_size": 35
               }
             }
           },
@@ -2479,12 +3391,33 @@
         ]
       },
       "post": {
+        "summary": "创建资源",
+        "description": "接口格式：/builtin/admin/api/v1/resources。根据 resource 字段创建资源。请求体示例：{\"resource\":{\"parent_id\":\"1\",\"code\":\"report-center\",\"display_name\":\"报表中心\",\"type\":\"MENU\",\"status\":\"ENABLED\",\"visibility\":\"VISIBLE\",\"locator\":\"/console/report\"}}。",
         "operationId": "KnownAdmin_CreateResource",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Resource"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "parent_id": "1",
+                "code": "report-center",
+                "display_name": "报表中心",
+                "sort_order": 20,
+                "type": "MENU",
+                "status": "ENABLED",
+                "visibility": "VISIBLE",
+                "locator": "/console/report",
+                "visual": "bar-chart",
+                "manifest": "builtin://report-center",
+                "metadata": {
+                  "module": "report"
+                },
+                "description": "经营分析报表入口"
+              }
             }
           },
           "4xx": {
@@ -2510,18 +3443,41 @@
               "$ref": "#/definitions/v1Resource"
             }
           }
+        ],
+        "tags": [
+          "资源管理"
         ]
       }
     },
     "/builtin/admin/api/v1/resources/{id}": {
       "get": {
-        "summary": "资源管理",
+        "summary": "获取资源详情",
+        "description": "接口格式：/builtin/admin/api/v1/resources/{id}。根据资源 ID 获取资源详情。",
         "operationId": "KnownAdmin_GetResource",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Resource"
+            },
+            "examples": {
+              "application/json": {
+                "id": "1",
+                "parent_id": "0",
+                "code": "sys-dashboard",
+                "display_name": "控制台",
+                "sort_order": 10,
+                "type": "MENU",
+                "status": "ENABLED",
+                "visibility": "VISIBLE",
+                "locator": "/console/dashboard",
+                "visual": "dashboard",
+                "manifest": "builtin://dashboard",
+                "metadata": {
+                  "module": "system"
+                },
+                "description": "后台首页入口"
+              }
             }
           },
           "4xx": {
@@ -2545,9 +3501,14 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "资源管理"
         ]
       },
       "delete": {
+        "summary": "删除资源",
+        "description": "接口格式：/builtin/admin/api/v1/resources/{id}。删除指定资源。",
         "operationId": "KnownAdmin_DeleteResource",
         "responses": {
           "200": {
@@ -2555,6 +3516,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -2578,17 +3542,42 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "资源管理"
         ]
       }
     },
     "/builtin/admin/api/v1/resources/{resource.id}": {
       "patch": {
+        "summary": "更新资源",
+        "description": "接口格式：/builtin/admin/api/v1/resources/{resource.id}。路径中的 resource.id 应与请求体一致，支持 update_mask 局部更新。请求体示例：{\"resource\":{\"id\":\"2\",\"display_name\":\"报表中心（更新）\",\"sort_order\":15},\"update_mask\":{\"paths\":[\"display_name\",\"sort_order\"]}}。",
         "operationId": "KnownAdmin_UpdateResource",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Resource"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "parent_id": "1",
+                "code": "report-center",
+                "display_name": "报表中心（更新）",
+                "sort_order": 15,
+                "type": "MENU",
+                "status": "ENABLED",
+                "visibility": "VISIBLE",
+                "locator": "/console/report",
+                "visual": "bar-chart",
+                "manifest": "builtin://report-center",
+                "metadata": {
+                  "module": "report",
+                  "owner": "bi-team"
+                },
+                "description": "经营分析报表入口（更新）"
+              }
             }
           },
           "4xx": {
@@ -2708,17 +3697,42 @@
               "title": "Resource 资源定义，如：菜单等"
             }
           }
+        ],
+        "tags": [
+          "资源管理"
         ]
       }
     },
     "/builtin/admin/api/v1/resources/{resource_id}/scopes": {
       "post": {
+        "summary": "资源绑定作用域",
+        "description": "接口格式：/builtin/admin/api/v1/resources/{resource_id}/scopes。一个资源可关联多个作用域。请求体示例：{\"resource_id\":\"2\",\"scopes\":[{\"id\":\"1\",\"code\":\"admin\"},{\"id\":\"2\",\"code\":\"readonly\"}]}。",
         "operationId": "KnownAdmin_CreateResourceScopes",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1CreateResourceScopesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "scopes": [
+                  {
+                    "id": "1",
+                    "code": "admin",
+                    "display_name": "后台管理端",
+                    "type": "PLATFORM",
+                    "description": "后台菜单与接口权限域"
+                  },
+                  {
+                    "id": "2",
+                    "code": "readonly",
+                    "display_name": "只读作用域",
+                    "type": "ACTION",
+                    "description": "仅允许查询类操作"
+                  }
+                ]
+              }
             }
           },
           "4xx": {
@@ -2754,17 +3768,50 @@
               }
             }
           }
+        ],
+        "tags": [
+          "资源管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles": {
       "get": {
+        "summary": "角色列表",
+        "description": "接口格式：/builtin/admin/api/v1/roles。支持分页、过滤与排序。",
         "operationId": "KnownAdmin_ListRoles",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListRolesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "roles": [
+                  {
+                    "id": "2001",
+                    "parent_id": "0",
+                    "code": "admin",
+                    "display_name": "系统管理员",
+                    "sort_order": 10,
+                    "type": "SYSTEM",
+                    "status": "ACTIVE",
+                    "description": "系统内置管理员角色"
+                  },
+                  {
+                    "id": "2002",
+                    "parent_id": "2001",
+                    "code": "auditor",
+                    "display_name": "审计员",
+                    "sort_order": 30,
+                    "type": "CUSTOM",
+                    "status": "ACTIVE",
+                    "description": "审计报表与日志查看角色"
+                  }
+                ],
+                "next_page_token": "roles:cursor:2",
+                "total_size": 2
+              }
             }
           },
           "4xx": {
@@ -2825,16 +3872,32 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       },
       "post": {
-        "summary": "角色相关",
+        "summary": "创建角色",
+        "description": "接口格式：/builtin/admin/api/v1/roles。根据 role 字段创建角色。请求体示例：{\"role\":{\"parent_id\":\"1\",\"code\":\"auditor\",\"display_name\":\"审计员\",\"type\":\"CUSTOM\",\"status\":\"ACTIVE\"}}。",
         "operationId": "KnownAdmin_CreateRole",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/adminv1Role"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "parent_id": "1",
+                "code": "auditor",
+                "display_name": "审计员",
+                "sort_order": 30,
+                "type": "CUSTOM",
+                "status": "ACTIVE",
+                "description": "审计报表与日志查看角色"
+              }
             }
           },
           "4xx": {
@@ -2859,17 +3922,34 @@
               "$ref": "#/definitions/adminv1Role"
             }
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles/{id}": {
       "get": {
+        "summary": "获取角色详情",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{id}。根据角色 ID 获取详情。",
         "operationId": "KnownAdmin_GetRole",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/adminv1Role"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "parent_id": "1",
+                "code": "auditor",
+                "display_name": "审计员",
+                "sort_order": 30,
+                "type": "CUSTOM",
+                "status": "ACTIVE",
+                "description": "审计报表与日志查看角色"
+              }
             }
           },
           "4xx": {
@@ -2893,9 +3973,14 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       },
       "delete": {
+        "summary": "删除角色",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{id}。删除指定角色。",
         "operationId": "KnownAdmin_DeleteRole",
         "responses": {
           "200": {
@@ -2903,6 +3988,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -2926,17 +4014,46 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles/{parent}/users": {
       "get": {
+        "summary": "角色用户列表",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{parent}/users。parent 表示角色 ID。",
         "operationId": "KnownAdmin_ListRoleUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListRoleUsersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "users": [
+                  {
+                    "id": "1",
+                    "username": "admin",
+                    "nickname": "系统管理员",
+                    "type": "ADMIN",
+                    "status": "ACTIVE",
+                    "email": "admin@example.com"
+                  },
+                  {
+                    "id": "2",
+                    "username": "alice",
+                    "nickname": "Alice",
+                    "type": "EMPLOYEE",
+                    "status": "ACTIVE",
+                    "email": "alice@example.com"
+                  }
+                ],
+                "next_page_token": "role-users:3",
+                "total_size": 2
+              }
             }
           },
           "4xx": {
@@ -2997,11 +4114,16 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles/{parent}/users/{user_id}": {
       "delete": {
+        "summary": "移除角色用户",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{parent}/users/{user_id}。parent 表示角色 ID。",
         "operationId": "KnownAdmin_DeleteRoleUser",
         "responses": {
           "200": {
@@ -3009,6 +4131,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -3039,17 +4164,34 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles/{role.id}": {
       "patch": {
+        "summary": "更新角色",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{role.id}。路径中的 role.id 应与请求体一致，支持 update_mask。请求体示例：{\"role\":{\"id\":\"2\",\"display_name\":\"审计员（高级）\",\"sort_order\":25},\"update_mask\":{\"paths\":[\"display_name\",\"sort_order\"]}}。",
         "operationId": "KnownAdmin_UpdateRole",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/adminv1Role"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "parent_id": "1",
+                "code": "auditor",
+                "display_name": "审计员（高级）",
+                "sort_order": 25,
+                "type": "CUSTOM",
+                "status": "ACTIVE",
+                "description": "增加策略回溯查看权限"
+              }
             }
           },
           "4xx": {
@@ -3141,18 +4283,62 @@
               "title": "Role 角色实体，表示用户在系统上的权限和功能"
             }
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles/{role_id}/permissions": {
       "get": {
-        "summary": "rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);\nrpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);\nrpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);",
+        "summary": "角色权限列表",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{role_id}/permissions。列出角色下所有权限。",
         "operationId": "KnownAdmin_ListRolePermissions",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListRolePermissionsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "permissions": [
+                  {
+                    "id": "3001",
+                    "code": "user-read",
+                    "display_name": "查看用户",
+                    "policy": {
+                      "id": "4001",
+                      "code": "admin-policy"
+                    },
+                    "bindings": [
+                      {
+                        "id": "5001",
+                        "resource_scope_id": "1001",
+                        "is_recursive": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "3002",
+                    "code": "user-manage",
+                    "display_name": "管理用户",
+                    "policy": {
+                      "id": "4001",
+                      "code": "admin-policy"
+                    },
+                    "bindings": [
+                      {
+                        "id": "5002",
+                        "resource_scope_id": "1002",
+                        "is_recursive": false
+                      }
+                    ]
+                  }
+                ],
+                "next_page_token": "role-perms:cursor:2",
+                "total_size": 2
+              }
             }
           },
           "4xx": {
@@ -3228,15 +4414,58 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       },
       "post": {
+        "summary": "为角色绑定权限",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{role_id}/permissions。一个角色可关联多个权限。请求体示例：{\"role_id\":\"2\",\"permissions\":[{\"id\":\"3001\"},{\"id\":\"3002\"}]}。",
         "operationId": "KnownAdmin_CreateRolePermissions",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1CreateRolePermissionsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "permissions": [
+                  {
+                    "id": "3001",
+                    "code": "user-read",
+                    "display_name": "查看用户",
+                    "policy": {
+                      "id": "4001",
+                      "code": "admin-policy"
+                    },
+                    "bindings": [
+                      {
+                        "id": "5001",
+                        "resource_scope_id": "1001",
+                        "is_recursive": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "3002",
+                    "code": "user-manage",
+                    "display_name": "管理用户",
+                    "policy": {
+                      "id": "4001",
+                      "code": "admin-policy"
+                    },
+                    "bindings": [
+                      {
+                        "id": "5002",
+                        "resource_scope_id": "1002",
+                        "is_recursive": false
+                      }
+                    ]
+                  }
+                ]
+              }
             }
           },
           "4xx": {
@@ -3274,11 +4503,16 @@
               }
             }
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles/{role_id}/permissions/{permission_id}": {
       "delete": {
+        "summary": "移除角色权限",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{role_id}/permissions/{permission_id}。删除角色下指定权限关联。",
         "operationId": "KnownAdmin_DeleteRolePermission",
         "responses": {
           "200": {
@@ -3286,6 +4520,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -3318,11 +4555,16 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/roles/{role_id}:assign": {
       "post": {
+        "summary": "为用户分配角色",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{role_id}:assign。为指定用户分配角色。请求体示例：{\"role_id\":\"2\",\"users\":[{\"id\":\"1001\"},{\"id\":\"1002\"}]}。",
         "operationId": "KnownAdmin_AssignRoleToUser",
         "responses": {
           "200": {
@@ -3330,6 +4572,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -3370,18 +4615,44 @@
               }
             }
           }
+        ],
+        "tags": [
+          "角色管理"
         ]
       }
     },
     "/builtin/admin/api/v1/scopes": {
       "get": {
-        "summary": "作用域管理",
+        "summary": "作用域列表",
+        "description": "接口格式：/builtin/admin/api/v1/scopes。支持分页、过滤与排序；page_token 与 offset 二选一。",
         "operationId": "KnownAdmin_ListScopes",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListScopesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "scopes": [
+                  {
+                    "id": "1",
+                    "code": "admin",
+                    "display_name": "后台管理端",
+                    "type": "PLATFORM",
+                    "description": "后台菜单与接口权限域"
+                  },
+                  {
+                    "id": "2",
+                    "code": "readonly",
+                    "display_name": "只读作用域",
+                    "type": "ACTION",
+                    "description": "仅允许查询类操作"
+                  }
+                ],
+                "next_page_token": "scopes:3",
+                "total_size": 6
+              }
             }
           },
           "4xx": {
@@ -3484,15 +4755,29 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "作用域管理"
         ]
       },
       "post": {
+        "summary": "创建作用域",
+        "description": "接口格式：/builtin/admin/api/v1/scopes。根据 scope 字段创建作用域。请求体示例：{\"scope\":{\"code\":\"audit-read\",\"display_name\":\"审计只读作用域\",\"type\":\"ACTION\",\"description\":\"审计查询能力\"}}。",
         "operationId": "KnownAdmin_CreateScope",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Scope"
+            },
+            "examples": {
+              "application/json": {
+                "id": "3",
+                "code": "audit-read",
+                "display_name": "审计只读作用域",
+                "type": "ACTION",
+                "description": "用于审计报表查询与导出"
+              }
             }
           },
           "4xx": {
@@ -3517,11 +4802,16 @@
               "$ref": "#/definitions/v1Scope"
             }
           }
+        ],
+        "tags": [
+          "作用域管理"
         ]
       }
     },
     "/builtin/admin/api/v1/scopes/{id}": {
       "delete": {
+        "summary": "删除作用域",
+        "description": "接口格式：/builtin/admin/api/v1/scopes/{id}。删除指定作用域。",
         "operationId": "KnownAdmin_DeleteScope",
         "responses": {
           "200": {
@@ -3529,6 +4819,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -3552,17 +4845,31 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "作用域管理"
         ]
       }
     },
     "/builtin/admin/api/v1/scopes/{scope.id}": {
       "patch": {
+        "summary": "更新作用域",
+        "description": "接口格式：/builtin/admin/api/v1/scopes/{scope.id}。路径中的 scope.id 应与请求体一致。请求体示例：{\"scope\":{\"id\":\"3\",\"display_name\":\"审计只读作用域（更新）\"},\"update_mask\":{\"paths\":[\"display_name\"]}}。",
         "operationId": "KnownAdmin_UpdateScope",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Scope"
+            },
+            "examples": {
+              "application/json": {
+                "id": "3",
+                "code": "audit-read",
+                "display_name": "审计只读作用域（更新）",
+                "type": "ACTION",
+                "description": "增加审计日志查看能力"
+              }
             }
           },
           "4xx": {
@@ -3612,17 +4919,49 @@
               "title": "Scope 作用域"
             }
           }
+        ],
+        "tags": [
+          "作用域管理"
         ]
       }
     },
     "/builtin/admin/api/v1/scopes/{scope_id}/resources": {
       "get": {
+        "summary": "列出作用域资源",
+        "description": "接口格式：/builtin/admin/api/v1/scopes/{scope_id}/resources。查询指定作用域下已绑定资源。",
         "operationId": "KnownAdmin_ListScopeResources",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1ListScopeResourcesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "resources": [
+                  {
+                    "id": "1",
+                    "code": "sys-dashboard",
+                    "display_name": "控制台",
+                    "type": "MENU",
+                    "status": "ENABLED"
+                  }
+                ],
+                "next_page_token": "scope-res:2",
+                "total_size": 8,
+                "scope_resource_items": [
+                  {
+                    "resource_scope_id": "1001",
+                    "resource": {
+                      "id": "1",
+                      "code": "sys-dashboard",
+                      "display_name": "控制台",
+                      "type": "MENU",
+                      "status": "ENABLED"
+                    }
+                  }
+                ]
+              }
             }
           },
           "4xx": {
@@ -3711,15 +5050,40 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "作用域管理"
         ]
       },
       "post": {
+        "summary": "作用域绑定资源",
+        "description": "接口格式：/builtin/admin/api/v1/scopes/{scope_id}/resources。一个作用域可关联多个资源。请求体示例：{\"scope_id\":\"1\",\"resources\":[{\"id\":\"1\"},{\"id\":\"2\"}]}。",
         "operationId": "KnownAdmin_CreateScopeResources",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1CreateScopeResourcesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "resources": [
+                  {
+                    "id": "1",
+                    "code": "sys-dashboard",
+                    "display_name": "控制台",
+                    "type": "MENU",
+                    "status": "ENABLED"
+                  },
+                  {
+                    "id": "2",
+                    "code": "report-center",
+                    "display_name": "报表中心",
+                    "type": "MENU",
+                    "status": "ENABLED"
+                  }
+                ]
+              }
             }
           },
           "4xx": {
@@ -3755,11 +5119,16 @@
               }
             }
           }
+        ],
+        "tags": [
+          "作用域管理"
         ]
       }
     },
     "/builtin/admin/api/v1/scopes/{scope_id}/resources/{resource_id}": {
       "delete": {
+        "summary": "移除作用域资源",
+        "description": "接口格式：/builtin/admin/api/v1/scopes/{scope_id}/resources/{resource_id}。移除指定作用域与资源关联。",
         "operationId": "KnownAdmin_DeleteScopeResource",
         "responses": {
           "200": {
@@ -3767,6 +5136,9 @@
             "schema": {
               "type": "object",
               "properties": {}
+            },
+            "examples": {
+              "application/json": {}
             }
           },
           "4xx": {
@@ -3797,6 +5169,9 @@
             "type": "string",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "作用域管理"
         ]
       }
     },
@@ -3815,14 +5190,39 @@
               "application/json": {
                 "users": [
                   {
-                    "id": "1",
-                    "username": "admin",
-                    "nickname": "系统管理员",
-                    "status": "ACTIVE"
+                    "id": "1001",
+                    "username": "alice",
+                    "nickname": "Alice Chen",
+                    "profile": "资深风控审计员",
+                    "picture": "https://cdn.example.com/avatars/alice.png",
+                    "website": "https://intra.example.com/u/alice",
+                    "timezone": "Asia/Shanghai",
+                    "locale": "zh-CN",
+                    "type": "EMPLOYEE",
+                    "status": "ACTIVE",
+                    "gender": "FEMALE",
+                    "phone_number": {
+                      "country_code": "86",
+                      "national_number": "13900001234"
+                    },
+                    "email": "alice@example.com"
+                  },
+                  {
+                    "id": "1002",
+                    "username": "bob",
+                    "nickname": "Bob Li",
+                    "profile": "平台研发工程师",
+                    "picture": "https://cdn.example.com/avatars/bob.png",
+                    "timezone": "Asia/Shanghai",
+                    "locale": "zh-CN",
+                    "type": "EMPLOYEE",
+                    "status": "ACTIVE",
+                    "gender": "MALE",
+                    "email": "bob@example.com"
                   }
                 ],
-                "next_page_token": "",
-                "total_size": 1
+                "next_page_token": "users:cursor:2",
+                "total_size": 2
               }
             }
           },
@@ -3936,7 +5336,7 @@
       },
       "post": {
         "summary": "创建用户",
-        "description": "接口格式：/builtin/admin/api/v1/users。根据 user 字段创建新用户。",
+        "description": "接口格式：/builtin/admin/api/v1/users。根据 user 字段创建新用户。请求体示例：{\"user\":{\"username\":\"alice\",\"nickname\":\"Alice\",\"type\":\"EMPLOYEE\",\"status\":\"ACTIVE\",\"email\":\"alice@example.com\",\"phone_number\":{\"country_code\":\"86\",\"national_number\":\"13900001234\"}}}。",
         "operationId": "KnownAdmin_CreateUser",
         "responses": {
           "200": {
@@ -3949,7 +5349,17 @@
                 "id": "2",
                 "username": "alice",
                 "nickname": "Alice",
-                "status": "ACTIVE"
+                "profile": "风控审计员",
+                "timezone": "Asia/Shanghai",
+                "locale": "zh-CN",
+                "type": "EMPLOYEE",
+                "status": "ACTIVE",
+                "gender": "FEMALE",
+                "phone_number": {
+                  "country_code": "86",
+                  "national_number": "13900001234"
+                },
+                "email": "alice@example.com"
               }
             }
           },
@@ -3994,10 +5404,21 @@
             },
             "examples": {
               "application/json": {
-                "id": "2",
+                "id": "1001",
                 "username": "alice",
-                "nickname": "Alice",
+                "nickname": "Alice Chen",
+                "profile": "资深风控审计员",
+                "picture": "https://cdn.example.com/avatars/alice.png",
+                "website": "https://intra.example.com/u/alice",
+                "timezone": "Asia/Shanghai",
+                "locale": "zh-CN",
+                "type": "EMPLOYEE",
                 "status": "ACTIVE",
+                "gender": "FEMALE",
+                "phone_number": {
+                  "country_code": "86",
+                  "national_number": "13900001234"
+                },
                 "email": "alice@example.com"
               }
             }
@@ -4040,7 +5461,7 @@
     "/builtin/admin/api/v1/users/{user.id}": {
       "patch": {
         "summary": "更新用户",
-        "description": "接口格式：/builtin/admin/api/v1/users/{user.id}。按请求中的 user/update_mask 更新指定用户。",
+        "description": "接口格式：/builtin/admin/api/v1/users/{user.id}。按请求中的 user/update_mask 更新指定用户。请求体示例：{\"user\":{\"id\":\"1001\",\"nickname\":\"Alice Chen\",\"profile\":\"资深风控审计员\"},\"update_mask\":{\"paths\":[\"nickname\",\"profile\"]}}。",
         "operationId": "KnownAdmin_UpdateUser",
         "responses": {
           "200": {
@@ -4053,7 +5474,13 @@
                 "id": "2",
                 "username": "alice",
                 "nickname": "Alice Chen",
-                "status": "ACTIVE"
+                "profile": "资深风控审计员",
+                "timezone": "Asia/Shanghai",
+                "locale": "zh-CN",
+                "type": "EMPLOYEE",
+                "status": "ACTIVE",
+                "gender": "FEMALE",
+                "email": "alice.chen@example.com"
               }
             }
           },
@@ -4203,7 +5630,7 @@
     "/builtin/admin/api/v1/users/{user_id}/password": {
       "put": {
         "summary": "更新用户密码",
-        "description": "接口格式：/builtin/admin/api/v1/users/{user_id}/password。更新指定用户密码（传递哈希值）。",
+        "description": "接口格式：/builtin/admin/api/v1/users/{user_id}/password。更新指定用户密码（传递哈希值）。请求体示例：{\"user_id\":\"1001\",\"old_password_hash\":\"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a\",\"new_password_hash\":\"5e884898da28047151d0e56f8dc6292773603d0d\"}。",
         "operationId": "KnownAdmin_UpdateUserPassword",
         "responses": {
           "200": {
@@ -4537,6 +5964,34 @@
       },
       "title": "Role 角色实体，表示用户在系统上的权限和功能"
     },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "v1ACMEConfig": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cache_dir": {
+          "type": "string"
+        }
+      }
+    },
     "v1Address": {
       "type": "object",
       "properties": {
@@ -4557,6 +6012,31 @@
         }
       },
       "title": "Address 用户地址\nhttps://openid.net/specs/openid-connect-core-1_0.html#AddressClaim"
+    },
+    "v1AuditPolicyConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string"
+        },
+        "event": {
+          "$ref": "#/definitions/v1AuditPolicyEventConfig"
+        }
+      }
+    },
+    "v1AuditPolicyEventConfig": {
+      "type": "object",
+      "properties": {
+        "must_succeed": {
+          "type": "boolean"
+        }
+      }
     },
     "v1AuthProvider": {
       "type": "object",
@@ -4695,7 +6175,24 @@
       }
     },
     "v1Authorization": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "allowed_groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "opa_native": {
+          "$ref": "#/definitions/v1OPANativeConfig"
+        },
+        "opa_external": {
+          "$ref": "#/definitions/v1OPAExternalConfig"
+        },
+        "opa_envoy_plugin": {
+          "$ref": "#/definitions/v1OPAEnvoyPluginConfig"
+        }
+      }
     },
     "v1AutomationsConfig": {
       "type": "object",
@@ -4705,6 +6202,9 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "kubernetes": {
+          "$ref": "#/definitions/v1KubernetesConfig"
         }
       }
     },
@@ -4743,6 +6243,15 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "driver": {
+          "type": "string"
+        },
+        "memory": {
+          "$ref": "#/definitions/v1MemoryCacheboxConfig"
+        },
+        "redis": {
+          "$ref": "#/definitions/v1RedisCacheboxConfig"
         }
       }
     },
@@ -4754,6 +6263,34 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "protocol": {
+          "type": "string"
+        },
+        "kafka_sarama": {
+          "$ref": "#/definitions/v1KafkaSaramaConfig"
+        },
+        "audit_policy": {
+          "$ref": "#/definitions/v1AuditPolicyConfig"
+        }
+      }
+    },
+    "v1ConnectionPoolConfig": {
+      "type": "object",
+      "properties": {
+        "max_idle_time": {
+          "type": "string"
+        },
+        "max_life_time": {
+          "type": "string"
+        },
+        "max_idle_conns": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "max_open_conns": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -5016,6 +6553,30 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "driver": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "protocol": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "dbname": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "string"
+        },
+        "connection_pool": {
+          "$ref": "#/definitions/v1ConnectionPoolConfig"
         }
       }
     },
@@ -5027,6 +6588,15 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "enable_pprof": {
+          "type": "boolean"
+        },
+        "log_level": {
+          "type": "string"
+        },
+        "log_format": {
+          "type": "string"
         }
       }
     },
@@ -5184,6 +6754,56 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "driver": {
+          "type": "string"
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tls": {
+          "$ref": "#/definitions/v1TLSConfig"
+        },
+        "heartbeat": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1ExporterEnableConfig": {
+      "type": "object",
+      "properties": {
+        "otlp": {
+          "type": "boolean"
+        },
+        "otlphttp": {
+          "type": "boolean"
+        },
+        "logging": {
+          "type": "boolean"
+        },
+        "prometheus": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1ExportersConfig": {
+      "type": "object",
+      "properties": {
+        "otlp": {
+          "$ref": "#/definitions/v1OTLPGRPCConfig"
+        },
+        "otlphttp": {
+          "$ref": "#/definitions/v1OTLPHTTPConfig"
+        },
+        "prometheus": {
+          "$ref": "#/definitions/v1PrometheusExporterConfig"
+        },
+        "logging": {
+          "$ref": "#/definitions/v1LoggingExporterConfig"
         }
       }
     },
@@ -5195,6 +6815,37 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "interface": {
+          "$ref": "#/definitions/v1FrontendInterfaceConfig"
+        }
+      }
+    },
+    "v1FrontendInterfaceConfig": {
+      "type": "object",
+      "properties": {
+        "admin": {
+          "$ref": "#/definitions/v1WebInterfaceConfig"
+        },
+        "openapi": {
+          "$ref": "#/definitions/v1WebInterfaceConfig"
+        },
+        "webroot": {
+          "$ref": "#/definitions/v1WebInterfaceConfig"
+        }
+      }
+    },
+    "v1GRPCServiceConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "address": {
+          "type": "string"
+        },
+        "tls_server": {
+          "$ref": "#/definitions/v1TLSConfig"
         }
       }
     },
@@ -5321,6 +6972,132 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值/未指定：系统默认值，通常不直接使用\n - DEPARTMENT: 1. 组织架构型 (Administrative/Organizational)\n逻辑：反映公司真实的行政隶属关系。通常与组织架构同步。\n - ROLE: 2. 角色/权限型 (Role/Permission)\n逻辑：纯粹为了授权而存在。例如 \"财务审批组\"、\"代码库管理员组\"。\n这种组不一定对应行政部门，而是跨部门的权限集合。\n - DYNAMIC: 3. 自动化/动态规则型 (Dynamic/Attribute-based)\n逻辑：成员不是手动添加的，而是根据 user 的属性（如 \"JobTitle == 'Manager' AND City == 'Shanghai'\"）自动维护。\n - SYSTEM: 4. 系统内置型 (System/Built-in)\n逻辑：系统预设，不可删除。例如 \"Everyone\" (全员组)、\"Authenticated Users\"。\n - PROJECT: 5. 项目/任务型 (Project/Workstream)\n逻辑：为了完成特定目标而临时或长期建立的协同组织。有明确的生命周期（结束后归档）。\n - EXTERNAL: 6. 外部协作型 (External/Guest)\n逻辑：用于管理外部供应商、合作伙伴、客户。在权限审计时通常需要特殊标记。\n - COMMUNITY: 7. 虚拟/兴趣小组 (Virtual/Community)\n逻辑：非正式组织，如“技术委员会”、“羽毛球协会”，通常用于非核心业务的通知和交流。",
       "title": "Type 群组类型，标识群组的业务用途\n群组类型，用于区分不同用途的群组"
+    },
+    "v1HTTPConfig": {
+      "type": "object",
+      "properties": {
+        "tls_client_config": {
+          "$ref": "#/definitions/v1TLSConfig"
+        },
+        "tls_handshake_timeout": {
+          "type": "string"
+        },
+        "disable_keep_alives": {
+          "type": "boolean"
+        },
+        "disable_compression": {
+          "type": "boolean"
+        },
+        "max_idle_conns": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "max_idle_conns_per_host": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "max_conns_per_host": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "idle_conn_timeout": {
+          "type": "string"
+        },
+        "response_header_timeout": {
+          "type": "string"
+        },
+        "expect_continue_timeout": {
+          "type": "string"
+        },
+        "max_response_header_bytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "write_buffer_size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "read_buffer_size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "force_attempt_http2": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1HTTPServiceConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "address": {
+          "type": "string"
+        },
+        "tls_auto": {
+          "$ref": "#/definitions/v1TLSAutoConfig"
+        },
+        "tls_server": {
+          "$ref": "#/definitions/v1TLSConfig"
+        },
+        "tls_client": {
+          "$ref": "#/definitions/v1TLSConfig"
+        }
+      }
+    },
+    "v1KafkaSaramaConfig": {
+      "type": "object",
+      "properties": {
+        "brokers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "topic": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/v1SaramaConfig"
+        }
+      }
+    },
+    "v1KubernetesConfig": {
+      "type": "object",
+      "properties": {
+        "config_path": {
+          "type": "string"
+        },
+        "rest_config": {
+          "$ref": "#/definitions/v1KubernetesRestConfig"
+        }
+      }
+    },
+    "v1KubernetesRestConfig": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "bearer_token": {
+          "type": "string"
+        },
+        "bearer_token_file": {
+          "type": "string"
+        },
+        "tls_client_config": {
+          "$ref": "#/definitions/v1KubernetesTLSClientConfig"
+        }
+      }
+    },
+    "v1KubernetesTLSClientConfig": {
+      "type": "object",
+      "properties": {
+        "insecure": {
+          "type": "boolean"
+        }
+      }
     },
     "v1LdapConfig": {
       "type": "object",
@@ -5726,6 +7503,23 @@
         },
         "automations": {
           "$ref": "#/definitions/v1AutomationsConfig"
+        },
+        "independent": {
+          "type": "object"
+        }
+      }
+    },
+    "v1LoggingExporterConfig": {
+      "type": "object",
+      "properties": {
+        "pretty_print": {
+          "type": "boolean"
+        },
+        "metrics_file_path": {
+          "type": "string"
+        },
+        "traces_file_path": {
+          "type": "string"
         }
       }
     },
@@ -5849,6 +7643,15 @@
       "default": "STATUS_UNSPECIFIED",
       "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - PENDING: 待审批 - 申请加入等待审批\n - ACTIVE: 正常状态 - 正式成员，拥有完整权限\n - INVITED: 被邀请 - 收到邀请但尚未回应\n - DISABLED: 已禁用 - 临时限制权限\n - REJECTED: 被拒绝 - 申请或邀请被拒绝\n - LEFT: 已退出 - 主动退出或离职\n - SUSPENDED: 已暂停 - 临时暂停，如休假、停职等\n - TRANSFERRING: 调动中 - 正在进行组织间调动的过渡状态",
       "title": "Status 成员关系状态，管理成员的生命周期"
+    },
+    "v1MemoryCacheboxConfig": {
+      "type": "object",
+      "properties": {
+        "max_entry": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
     },
     "v1OAuth2Discovery": {
       "type": "object",
@@ -6025,8 +7828,134 @@
       "description": "=== 核心字段（所有 OAuth2 类型通用）===",
       "title": "OAuthConfig OAuth2 系身份提供商通用配置\n适用于 OIDC、OAUTH2、GITHUB、GOOGLE、WECHAT 等类型\n服务端根据 AuthProvider.type 决定具体认证流程和默认值"
     },
+    "v1OIDCConfig": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "type": "string"
+        },
+        "client_secret": {
+          "type": "string"
+        },
+        "supported_signing_algs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "skip_client_id_check": {
+          "type": "boolean"
+        },
+        "skip_expiry_check": {
+          "type": "boolean"
+        },
+        "skip_issuer_check": {
+          "type": "boolean"
+        },
+        "insecure_skip_verify": {
+          "type": "boolean"
+        }
+      }
+    },
     "v1OIDCProvider": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "issuer": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/v1OIDCConfig"
+        }
+      }
+    },
+    "v1OPAEnvoyPluginConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "service": {
+          "$ref": "#/definitions/v1OPAEnvoyPluginServiceConfig"
+        }
+      }
+    },
+    "v1OPAEnvoyPluginServiceConfig": {
+      "type": "object",
+      "properties": {
+        "grpc_address": {
+          "type": "string"
+        }
+      }
+    },
+    "v1OPAExternalConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "config": {
+          "type": "string"
+        }
+      }
+    },
+    "v1OPANativeConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "policy": {
+          "$ref": "#/definitions/v1OPAPolicyConfig"
+        }
+      }
+    },
+    "v1OPAPolicyConfig": {
+      "type": "object",
+      "properties": {
+        "auth_file": {
+          "type": "string"
+        },
+        "data_file": {
+          "type": "string"
+        }
+      }
+    },
+    "v1OTLPGRPCConfig": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1OTLPHTTPConfig": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "traces_url_path": {
+          "type": "string"
+        },
+        "metrics_url_path": {
+          "type": "string"
+        },
+        "logs_url_path": {
+          "type": "string"
+        }
+      }
     },
     "v1ObjstoreConfig": {
       "type": "object",
@@ -6036,6 +7965,12 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/v1S3Config"
         }
       }
     },
@@ -6047,6 +7982,12 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "telemetry": {
+          "$ref": "#/definitions/v1TelemetryConfig"
+        },
+        "exporters": {
+          "$ref": "#/definitions/v1ExportersConfig"
         }
       }
     },
@@ -6153,6 +8094,55 @@
       ],
       "default": "TYPE_UNSPECIFIED",
       "title": "Type 策略类型"
+    },
+    "v1PrometheusExporterConfig": {
+      "type": "object",
+      "properties": {
+        "metrics_url_path": {
+          "type": "string"
+        }
+      }
+    },
+    "v1RedisCacheboxConfig": {
+      "type": "object",
+      "properties": {
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "db_number": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sentinel": {
+          "$ref": "#/definitions/v1RedisSentinelConfig"
+        },
+        "tls_client_config": {
+          "$ref": "#/definitions/v1TLSConfig"
+        }
+      }
+    },
+    "v1RedisSentinelConfig": {
+      "type": "object",
+      "properties": {
+        "master_name": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
     },
     "v1Resource": {
       "type": "object",
@@ -6297,6 +8287,441 @@
       "description": "- TYPE_UNSPECIFIED: 默认值／未指定类型：系统默认值，通常不直接使用\n - SYSTEM: 系统内置角色：由系统预定义，不可删除，权限固定\n - CUSTOM: 自定义角色：用户创建的角色，可完全自定义权限\n - TEMPLATE: 模板角色：预设的角色模板，可基于此创建新角色",
       "title": "Type 角色类型枚举，定义角色的来源和管理方式\n用于区分不同类型的角色，影响角色的可编辑性和权限管理策略"
     },
+    "v1S3Config": {
+      "type": "object",
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "access_key": {
+          "type": "string"
+        },
+        "insecure": {
+          "type": "boolean"
+        },
+        "secret_key": {
+          "type": "string"
+        },
+        "session_token": {
+          "type": "string"
+        },
+        "put_user_metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "put_user_tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "http_config": {
+          "$ref": "#/definitions/v1HTTPConfig"
+        },
+        "signature_version": {
+          "type": "string"
+        },
+        "list_objects_version": {
+          "type": "string"
+        },
+        "bucket_lookup_type": {
+          "type": "string"
+        },
+        "part_size": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "sse_config": {
+          "$ref": "#/definitions/v1SSEConfig"
+        }
+      }
+    },
+    "v1SPIFFEConfig": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SSEConfig": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "kms_key_id": {
+          "type": "string"
+        },
+        "kms_encryption_context": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "encryption_key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaConfig": {
+      "type": "object",
+      "properties": {
+        "net": {
+          "$ref": "#/definitions/v1SaramaNetConfig"
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1SaramaMetadataConfig"
+        },
+        "producer": {
+          "$ref": "#/definitions/v1SaramaProducerConfig"
+        },
+        "consumer": {
+          "$ref": "#/definitions/v1SaramaConsumerConfig"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "rack_id": {
+          "type": "string"
+        },
+        "channel_buffer_size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaConsumerConfig": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "$ref": "#/definitions/v1SaramaConsumerGroupConfig"
+        },
+        "retry": {
+          "$ref": "#/definitions/v1SaramaConsumerRetryConfig"
+        },
+        "fetch": {
+          "$ref": "#/definitions/v1SaramaConsumerFetchConfig"
+        },
+        "max_wait_time": {
+          "type": "string"
+        },
+        "max_processing_time": {
+          "type": "string"
+        },
+        "return": {
+          "$ref": "#/definitions/v1SaramaConsumerReturnConfig"
+        },
+        "offsets": {
+          "$ref": "#/definitions/v1SaramaConsumerOffsetsConfig"
+        },
+        "isolation_level": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1SaramaConsumerFetchConfig": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "default_size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "max": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1SaramaConsumerGroupConfig": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "$ref": "#/definitions/v1SaramaConsumerGroupSessionConfig"
+        },
+        "heartbeat": {
+          "$ref": "#/definitions/v1SaramaConsumerGroupHeartbeatConfig"
+        },
+        "rebalance": {
+          "$ref": "#/definitions/v1SaramaConsumerGroupRebalanceConfig"
+        }
+      }
+    },
+    "v1SaramaConsumerGroupHeartbeatConfig": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaConsumerGroupRebalanceConfig": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "type": "string"
+        },
+        "timeout": {
+          "type": "string"
+        },
+        "retry": {
+          "$ref": "#/definitions/v1SaramaConsumerGroupRebalanceRetryConfig"
+        }
+      }
+    },
+    "v1SaramaConsumerGroupRebalanceRetryConfig": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "backoff": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaConsumerGroupSessionConfig": {
+      "type": "object",
+      "properties": {
+        "timeout": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaConsumerOffsetsAutoCommitConfig": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean"
+        },
+        "interval": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaConsumerOffsetsConfig": {
+      "type": "object",
+      "properties": {
+        "auto_commit": {
+          "$ref": "#/definitions/v1SaramaConsumerOffsetsAutoCommitConfig"
+        },
+        "initial": {
+          "type": "string",
+          "format": "int64"
+        },
+        "retention": {
+          "type": "string"
+        },
+        "retry": {
+          "$ref": "#/definitions/v1SaramaConsumerOffsetsRetryConfig"
+        }
+      }
+    },
+    "v1SaramaConsumerOffsetsRetryConfig": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1SaramaConsumerRetryConfig": {
+      "type": "object",
+      "properties": {
+        "backoff": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaConsumerReturnConfig": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1SaramaMetadataConfig": {
+      "type": "object",
+      "properties": {
+        "retry": {
+          "$ref": "#/definitions/v1SaramaMetadataRetryConfig"
+        },
+        "refresh_frequency": {
+          "type": "string"
+        },
+        "full": {
+          "type": "boolean"
+        },
+        "timeout": {
+          "type": "string"
+        },
+        "allow_auto_topic_creation": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1SaramaMetadataRetryConfig": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "backoff": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaNetConfig": {
+      "type": "object",
+      "properties": {
+        "max_open_requests": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dial_timeout": {
+          "type": "string"
+        },
+        "read_timeout": {
+          "type": "string"
+        },
+        "write_timeout": {
+          "type": "string"
+        },
+        "tls": {
+          "$ref": "#/definitions/v1SaramaNetTLSConfig"
+        },
+        "sasl": {
+          "$ref": "#/definitions/v1SaramaNetSASLConfig"
+        },
+        "keep_alive": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaNetSASLConfig": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean"
+        },
+        "mechanism": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaNetTLSConfig": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1SaramaProducerConfig": {
+      "type": "object",
+      "properties": {
+        "max_message_bytes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "required_acks": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "timeout": {
+          "type": "string"
+        },
+        "compression": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "compression_level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "idempotent": {
+          "type": "boolean"
+        },
+        "return": {
+          "$ref": "#/definitions/v1SaramaProducerReturnConfig"
+        },
+        "flush": {
+          "$ref": "#/definitions/v1SaramaProducerFlushConfig"
+        },
+        "retry": {
+          "$ref": "#/definitions/v1SaramaProducerRetryConfig"
+        }
+      }
+    },
+    "v1SaramaProducerFlushConfig": {
+      "type": "object",
+      "properties": {
+        "bytes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "messages": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "frequency": {
+          "type": "string"
+        },
+        "max_messages": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1SaramaProducerRetryConfig": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "backoff": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaramaProducerReturnConfig": {
+      "type": "object",
+      "properties": {
+        "successes": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "boolean"
+        }
+      }
+    },
     "v1Scope": {
       "type": "object",
       "properties": {
@@ -6370,6 +8795,55 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "root_path": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "service_code": {
+          "type": "string"
+        },
+        "api_endpoint": {
+          "type": "string"
+        },
+        "grpc_address": {
+          "type": "string"
+        },
+        "http_address": {
+          "type": "string"
+        },
+        "public_address": {
+          "type": "string"
+        },
+        "grpc_service": {
+          "$ref": "#/definitions/v1GRPCServiceConfig"
+        },
+        "http_service": {
+          "$ref": "#/definitions/v1HTTPServiceConfig"
+        },
+        "integrations": {
+          "$ref": "#/definitions/v1ServicesIntegrationConfig"
+        },
+        "security_key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ServicesIntegrationConfig": {
+      "type": "object",
+      "properties": {
+        "grpc": {
+          "$ref": "#/definitions/v1ServicesIntegrationGRPCConfig"
+        }
+      }
+    },
+    "v1ServicesIntegrationGRPCConfig": {
+      "type": "object",
+      "properties": {
+        "admin": {
+          "type": "boolean"
         }
       }
     },
@@ -6384,6 +8858,113 @@
       "default": "STRUCTURE_UNSPECIFIED",
       "description": "- STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
       "title": "通用：用于任何支持层级 / 关系返回的 List API"
+    },
+    "v1TLSAutoConfig": {
+      "type": "object",
+      "properties": {
+        "acme": {
+          "$ref": "#/definitions/v1ACMEConfig"
+        },
+        "spiffe": {
+          "$ref": "#/definitions/v1SPIFFEConfig"
+        }
+      }
+    },
+    "v1TLSConfig": {
+      "type": "object",
+      "properties": {
+        "server_name": {
+          "type": "string"
+        },
+        "insecure_skip_verify": {
+          "type": "boolean"
+        },
+        "min_version": {
+          "type": "string"
+        },
+        "max_version": {
+          "type": "string"
+        },
+        "ca_file": {
+          "type": "string"
+        },
+        "cert_file": {
+          "type": "string"
+        },
+        "key_file": {
+          "type": "string"
+        }
+      }
+    },
+    "v1TelemetryConfig": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "$ref": "#/definitions/v1TelemetryMetricConfig"
+        },
+        "traces": {
+          "$ref": "#/definitions/v1TelemetryTraceConfig"
+        }
+      }
+    },
+    "v1TelemetryMetricConfig": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string"
+        },
+        "push_interval": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "exporter_enable": {
+          "$ref": "#/definitions/v1ExporterEnableConfig"
+        }
+      }
+    },
+    "v1TelemetryTraceConfig": {
+      "type": "object",
+      "properties": {
+        "sample_ratio": {
+          "type": "number",
+          "format": "double"
+        },
+        "exporter_enable": {
+          "$ref": "#/definitions/v1ExporterEnableConfig"
+        },
+        "log_fields": {
+          "$ref": "#/definitions/v1TelemetryTraceLogFieldsConfig"
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TelemetryTraceFilterConfig"
+          }
+        }
+      }
+    },
+    "v1TelemetryTraceFilterConfig": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string"
+        },
+        "url_path": {
+          "type": "string"
+        }
+      }
+    },
+    "v1TelemetryTraceLogFieldsConfig": {
+      "type": "object",
+      "properties": {
+        "http_request": {
+          "type": "boolean"
+        },
+        "http_response": {
+          "type": "boolean"
+        }
+      }
     },
     "v1UpdateDepartmentMembersResponse": {
       "type": "object"
@@ -6573,6 +9154,23 @@
       "default": "VISIBILITY_UNSPECIFIED",
       "description": "- VISIBILITY_GLOBAL: 全开：跨部门、跨层级全局可见\n资源/部门：系统中所有合法用户均可检索/看到\n - VISIBILITY_SUBTREE: 组织架构树可见：本部门及下属部门可见（向下递归）\n部门：成员处于相同节点或上级节点可见其下属节点（不管下级节点设置的可见性）\n资源：同部门及子部门成员可见\n - VISIBILITY_LOCAL: 仅本级可见：仅限本部门成员，不包含子部门\n部门：仅同级成员可见，不向下扩散\n资源：仅本节点成员可见\n - VISIBILITY_RESTRICTED: 私有：仅创建者/负责人及系统内部可见（最严限制）\n部门：同级成员也不可见，仅管理员或特定负责人可见\n资源：仅创建者或指定授权人可见\n - VISIBILITY_SPECIFIC: 特定受众：基于白名单（如特定团队、特定角色）\n如果逻辑复杂，通常此项作为占位，具体配置存入关联表",
       "title": "可见性是“前置过滤”，权限是“后置校验”\n通用：部门/资源/凭证的可见性策略"
+    },
+    "v1WebInterfaceConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "embedded": {
+          "type": "boolean"
+        },
+        "handle_url": {
+          "type": "string"
+        },
+        "tracing": {
+          "type": "boolean"
+        }
+      }
     }
   },
   "securityDefinitions": {

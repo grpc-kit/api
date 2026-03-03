@@ -5,6 +5,8 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+import "google/protobuf/struct.proto";
+
 message LocalConfig {
   ServicesConfig services = 1;
   DiscoverConfig discover = 2;
@@ -17,16 +19,32 @@ message LocalConfig {
   ObservablesConfig observables = 9;
   CloudEventsConfig cloudevents = 10;
   AutomationsConfig automations = 11;
+  google.protobuf.Struct independent = 12;
 }
 
 message ServicesConfig {
   string name = 1;
   bool enabled = 2;
+  string root_path = 3;
+  string namespace = 4;
+  string service_code = 5;
+  string api_endpoint = 6;
+  string grpc_address = 7;
+  string http_address = 8;
+  string public_address = 9;
+  GRPCServiceConfig grpc_service = 10;
+  HTTPServiceConfig http_service = 11;
+  ServicesIntegrationConfig integrations = 12;
+  string security_key = 13;
 }
 
 message DiscoverConfig {
   string name = 1;
   bool enabled = 2;
+  string driver = 3;
+  repeated string endpoints = 4;
+  TLSConfig tls = 5;
+  int64 heartbeat = 6;
 }
 
 message SecurityConfig {
@@ -40,49 +58,64 @@ message SecurityConfig {
 message DatabaseConfig {
   string name = 1;
   bool enabled = 2;
-
+  string driver = 3;
+  string username = 4;
+  string password = 5;
+  string protocol = 6;
+  string address = 7;
+  string dbname = 8;
+  string parameters = 9;
+  ConnectionPoolConfig connection_pool = 10;
 }
 
 message CacheboxConfig {
   string name = 1;
   bool enabled = 2;
-
+  string driver = 3;
+  MemoryCacheboxConfig memory = 4;
+  RedisCacheboxConfig redis = 5;
 }
 
 message DebuggerConfig {
   string name = 1;
   bool enabled = 2;
-
+  bool enable_pprof = 3;
+  string log_level = 4;
+  string log_format = 5;
 }
 
 message ObjstoreConfig {
   string name = 1;
   bool enabled = 2;
-
+  string type = 3;
+  S3Config config = 4;
 }
 
 message FrontendConfig {
   string name = 1;
   bool enabled = 2;
-
+  FrontendInterfaceConfig interface = 3;
 }
 
 message ObservablesConfig {
   string name = 1;
   bool enabled = 2;
-
+  TelemetryConfig telemetry = 3;
+  ExportersConfig exporters = 4;
 }
 
 message CloudEventsConfig {
   string name = 1;
   bool enabled = 2;
-
+  string protocol = 3;
+  KafkaSaramaConfig kafka_sarama = 4;
+  AuditPolicyConfig audit_policy = 5;
 }
 
 message AutomationsConfig {
   string name = 1;
   bool enabled = 2;
-
+  KubernetesConfig kubernetes = 3;
 }
 
 message Authentication {
@@ -92,11 +125,25 @@ message Authentication {
 }
 
 message Authorization {
-
+  repeated string allowed_groups = 1;
+  OPANativeConfig opa_native = 2;
+  OPAExternalConfig opa_external = 3;
+  OPAEnvoyPluginConfig opa_envoy_plugin = 4;
 }
 
 message OIDCProvider {
+  string issuer = 1;
+  OIDCConfig config = 2;
+}
 
+message OIDCConfig {
+  string client_id = 1;
+  string client_secret = 2;
+  repeated string supported_signing_algs = 3;
+  bool skip_client_id_check = 4;
+  bool skip_expiry_check = 5;
+  bool skip_issuer_check = 6;
+  bool insecure_skip_verify = 7;
 }
 
 message BasicAuth {
@@ -118,4 +165,415 @@ message GetConfigRequest {
 
 message GetConfigSecurityRequest {
 
+}
+
+message GetConfigServicesRequest {}
+
+message GetConfigDiscoverRequest {}
+
+message GetConfigDatabaseRequest {}
+
+message GetConfigCacheboxRequest {}
+
+message GetConfigDebuggerRequest {}
+
+message GetConfigObjstoreRequest {}
+
+message GetConfigFrontendRequest {}
+
+message GetConfigObservablesRequest {}
+
+message GetConfigCloudEventsRequest {}
+
+message GetConfigAutomationsRequest {}
+
+message GRPCServiceConfig {
+  bool enabled = 1;
+  string address = 2;
+  TLSConfig tls_server = 3;
+}
+
+message HTTPServiceConfig {
+  bool enabled = 1;
+  string address = 2;
+  TLSAutoConfig tls_auto = 3;
+  TLSConfig tls_server = 4;
+  TLSConfig tls_client = 5;
+}
+
+message TLSAutoConfig {
+  ACMEConfig acme = 1;
+  SPIFFEConfig spiffe = 2;
+}
+
+message ACMEConfig {
+  string server = 1;
+  string email = 2;
+  repeated string domains = 3;
+  string cache_dir = 4;
+}
+
+message SPIFFEConfig {
+  string agent = 1;
+}
+
+message ServicesIntegrationConfig {
+  ServicesIntegrationGRPCConfig grpc = 1;
+}
+
+message ServicesIntegrationGRPCConfig {
+  bool admin = 1;
+}
+
+message TLSConfig {
+  string server_name = 1;
+  bool insecure_skip_verify = 2;
+  string min_version = 3;
+  string max_version = 4;
+  string ca_file = 5;
+  string cert_file = 6;
+  string key_file = 7;
+}
+
+message ConnectionPoolConfig {
+  string max_idle_time = 1;
+  string max_life_time = 2;
+  int32 max_idle_conns = 3;
+  int32 max_open_conns = 4;
+}
+
+message MemoryCacheboxConfig {
+  int32 max_entry = 1;
+}
+
+message RedisCacheboxConfig {
+  repeated string endpoints = 1;
+  string username = 2;
+  string password = 3;
+  int32 db_number = 4;
+  RedisSentinelConfig sentinel = 5;
+  TLSConfig tls_client_config = 6;
+}
+
+message RedisSentinelConfig {
+  string master_name = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message FrontendInterfaceConfig {
+  WebInterfaceConfig admin = 1;
+  WebInterfaceConfig openapi = 2;
+  WebInterfaceConfig webroot = 3;
+}
+
+message WebInterfaceConfig {
+  bool enabled = 1;
+  bool embedded = 2;
+  string handle_url = 3;
+  bool tracing = 4;
+}
+
+message TelemetryConfig {
+  TelemetryMetricConfig metrics = 1;
+  TelemetryTraceConfig traces = 2;
+}
+
+message TelemetryMetricConfig {
+  string namespace = 1;
+  int32 push_interval = 2;
+  ExporterEnableConfig exporter_enable = 3;
+}
+
+message TelemetryTraceConfig {
+  double sample_ratio = 1;
+  ExporterEnableConfig exporter_enable = 2;
+  TelemetryTraceLogFieldsConfig log_fields = 3;
+  repeated TelemetryTraceFilterConfig filters = 4;
+}
+
+message TelemetryTraceLogFieldsConfig {
+  bool http_request = 1;
+  bool http_response = 2;
+}
+
+message TelemetryTraceFilterConfig {
+  string method = 1;
+  string url_path = 2;
+}
+
+message ExporterEnableConfig {
+  bool otlp = 1;
+  bool otlphttp = 2;
+  bool logging = 3;
+  bool prometheus = 4;
+}
+
+message ExportersConfig {
+  OTLPGRPCConfig otlp = 1;
+  OTLPHTTPConfig otlphttp = 2;
+  PrometheusExporterConfig prometheus = 3;
+  LoggingExporterConfig logging = 4;
+}
+
+message OTLPGRPCConfig {
+  string endpoint = 1;
+  map<string, string> headers = 2;
+}
+
+message OTLPHTTPConfig {
+  string endpoint = 1;
+  map<string, string> headers = 2;
+  string traces_url_path = 3;
+  string metrics_url_path = 4;
+  string logs_url_path = 5;
+}
+
+message PrometheusExporterConfig {
+  string metrics_url_path = 1;
+}
+
+message LoggingExporterConfig {
+  bool pretty_print = 1;
+  string metrics_file_path = 2;
+  string traces_file_path = 3;
+}
+
+message AuditPolicyConfig {
+  bool enabled = 1;
+  string topic = 2;
+  string level = 3;
+  AuditPolicyEventConfig event = 4;
+}
+
+message AuditPolicyEventConfig {
+  bool must_succeed = 1;
+}
+
+message KafkaSaramaConfig {
+  repeated string brokers = 1;
+  string topic = 2;
+  SaramaConfig config = 3;
+}
+
+message SaramaConfig {
+  SaramaNetConfig net = 1;
+  SaramaMetadataConfig metadata = 2;
+  SaramaProducerConfig producer = 3;
+  SaramaConsumerConfig consumer = 4;
+  string client_id = 5;
+  string rack_id = 6;
+  int32 channel_buffer_size = 7;
+  string version = 8;
+}
+
+message SaramaNetConfig {
+  int32 max_open_requests = 1;
+  string dial_timeout = 2;
+  string read_timeout = 3;
+  string write_timeout = 4;
+  SaramaNetTLSConfig tls = 5;
+  SaramaNetSASLConfig sasl = 6;
+  string keep_alive = 7;
+}
+
+message SaramaNetTLSConfig {
+  bool enable = 1;
+}
+
+message SaramaNetSASLConfig {
+  bool enable = 1;
+  string mechanism = 2;
+  string user = 3;
+  string password = 4;
+}
+
+message SaramaMetadataConfig {
+  SaramaMetadataRetryConfig retry = 1;
+  string refresh_frequency = 2;
+  bool full = 3;
+  string timeout = 4;
+  bool allow_auto_topic_creation = 5;
+}
+
+message SaramaMetadataRetryConfig {
+  int32 max = 1;
+  string backoff = 2;
+}
+
+message SaramaProducerConfig {
+  int32 max_message_bytes = 1;
+  int32 required_acks = 2;
+  string timeout = 3;
+  int32 compression = 4;
+  int32 compression_level = 5;
+  bool idempotent = 6;
+  SaramaProducerReturnConfig return = 7;
+  SaramaProducerFlushConfig flush = 8;
+  SaramaProducerRetryConfig retry = 9;
+}
+
+message SaramaProducerReturnConfig {
+  bool successes = 1;
+  bool errors = 2;
+}
+
+message SaramaProducerFlushConfig {
+  int32 bytes = 1;
+  int32 messages = 2;
+  string frequency = 3;
+  int32 max_messages = 4;
+}
+
+message SaramaProducerRetryConfig {
+  int32 max = 1;
+  string backoff = 2;
+}
+
+message SaramaConsumerConfig {
+  SaramaConsumerGroupConfig group = 1;
+  SaramaConsumerRetryConfig retry = 2;
+  SaramaConsumerFetchConfig fetch = 3;
+  string max_wait_time = 4;
+  string max_processing_time = 5;
+  SaramaConsumerReturnConfig return = 6;
+  SaramaConsumerOffsetsConfig offsets = 7;
+  int32 isolation_level = 8;
+}
+
+message SaramaConsumerGroupConfig {
+  SaramaConsumerGroupSessionConfig session = 1;
+  SaramaConsumerGroupHeartbeatConfig heartbeat = 2;
+  SaramaConsumerGroupRebalanceConfig rebalance = 3;
+}
+
+message SaramaConsumerGroupSessionConfig {
+  string timeout = 1;
+}
+
+message SaramaConsumerGroupHeartbeatConfig {
+  string interval = 1;
+}
+
+message SaramaConsumerGroupRebalanceConfig {
+  string strategy = 1;
+  string timeout = 2;
+  SaramaConsumerGroupRebalanceRetryConfig retry = 3;
+}
+
+message SaramaConsumerGroupRebalanceRetryConfig {
+  int32 max = 1;
+  string backoff = 2;
+}
+
+message SaramaConsumerRetryConfig {
+  string backoff = 1;
+}
+
+message SaramaConsumerFetchConfig {
+  int32 min = 1;
+  int32 default_size = 2;
+  int32 max = 3;
+}
+
+message SaramaConsumerReturnConfig {
+  bool errors = 1;
+}
+
+message SaramaConsumerOffsetsConfig {
+  SaramaConsumerOffsetsAutoCommitConfig auto_commit = 1;
+  int64 initial = 2;
+  string retention = 3;
+  SaramaConsumerOffsetsRetryConfig retry = 4;
+}
+
+message SaramaConsumerOffsetsAutoCommitConfig {
+  bool enable = 1;
+  string interval = 2;
+}
+
+message SaramaConsumerOffsetsRetryConfig {
+  int32 max = 1;
+}
+
+message OPANativeConfig {
+  bool enabled = 1;
+  OPAPolicyConfig policy = 2;
+}
+
+message OPAPolicyConfig {
+  string auth_file = 1;
+  string data_file = 2;
+}
+
+message OPAExternalConfig {
+  bool enabled = 1;
+  string config = 2;
+}
+
+message OPAEnvoyPluginConfig {
+  bool enabled = 1;
+  OPAEnvoyPluginServiceConfig service = 2;
+}
+
+message OPAEnvoyPluginServiceConfig {
+  string grpc_address = 1;
+}
+
+message HTTPConfig {
+  TLSConfig tls_client_config = 1;
+  string tls_handshake_timeout = 2;
+  bool disable_keep_alives = 3;
+  bool disable_compression = 4;
+  int32 max_idle_conns = 5;
+  int32 max_idle_conns_per_host = 6;
+  int32 max_conns_per_host = 7;
+  string idle_conn_timeout = 8;
+  string response_header_timeout = 9;
+  string expect_continue_timeout = 10;
+  int64 max_response_header_bytes = 11;
+  int32 write_buffer_size = 12;
+  int32 read_buffer_size = 13;
+  bool force_attempt_http2 = 14;
+}
+
+message SSEConfig {
+  string type = 1;
+  string kms_key_id = 2;
+  map<string, string> kms_encryption_context = 3;
+  string encryption_key = 4;
+}
+
+message S3Config {
+  string bucket = 1;
+  string endpoint = 2;
+  string region = 3;
+  string access_key = 4;
+  bool insecure = 5;
+  string secret_key = 6;
+  string session_token = 7;
+  map<string, string> put_user_metadata = 8;
+  map<string, string> put_user_tags = 9;
+  HTTPConfig http_config = 10;
+  string signature_version = 11;
+  string list_objects_version = 12;
+  string bucket_lookup_type = 13;
+  uint64 part_size = 14;
+  SSEConfig sse_config = 15;
+}
+
+message KubernetesConfig {
+  string config_path = 1;
+  KubernetesRestConfig rest_config = 2;
+}
+
+message KubernetesRestConfig {
+  string host = 1;
+  string bearer_token = 2;
+  string bearer_token_file = 3;
+  KubernetesTLSClientConfig tls_client_config = 4;
+}
+
+message KubernetesTLSClientConfig {
+  bool insecure = 1;
 }

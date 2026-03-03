@@ -10,8 +10,28 @@ http:
     # 本地配置
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfig
     get: "/builtin/admin/api/v1/config"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigServices
+    get: "/builtin/admin/api/v1/config/services"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigDiscover
+    get: "/builtin/admin/api/v1/config/discover"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigSecurity
     get: "/builtin/admin/api/v1/config/security"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigDatabase
+    get: "/builtin/admin/api/v1/config/database"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigCachebox
+    get: "/builtin/admin/api/v1/config/cachebox"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigDebugger
+    get: "/builtin/admin/api/v1/config/debugger"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigObjstore
+    get: "/builtin/admin/api/v1/config/objstore"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigFrontend
+    get: "/builtin/admin/api/v1/config/frontend"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigObservables
+    get: "/builtin/admin/api/v1/config/observables"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigCloudEvents
+    get: "/builtin/admin/api/v1/config/cloudevents"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetConfigAutomations
+    get: "/builtin/admin/api/v1/config/automations"
 
     # 认证鉴权
     ## 创建认证令牌
