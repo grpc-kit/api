@@ -1008,7 +1008,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大部门数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大部门数。\n- structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。\n- structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -1695,7 +1695,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大群组数。\n- structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。\n- structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -2572,7 +2572,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大权限数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大权限数。\n- structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。\n- structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -2958,7 +2958,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大策略数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大策略数。\n- structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。\n- structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -3280,7 +3280,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大资源数。\n- structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。\n- structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -4678,7 +4678,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大作用域数。\n- structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。\n- structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -4987,7 +4987,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大资源数。\n- structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。\n- structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。",
             "in": "query",
             "required": false,
             "type": "integer",
