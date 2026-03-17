@@ -502,6 +502,8 @@ message User {
 
   // 自定义元数据，用于存储额外的用户信息（如 JSON 字符串）
   map<string, string> metadata = 27;
+  // 是否启用 MFA（TOTP）
+  bool mfa_enabled = 28;
 }
 
 // Role 角色实体，表示用户在系统上的权限和功能
@@ -1126,8 +1128,18 @@ message OAuth2Userinfo {
 
 // AuthToken 登录成功响应
 // 参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5
+// 当用户启用了 MFA 时，密码校验通过后 access_token 为空，
+// 需要前端根据 mfa_required 发起二步验证。
 message AuthToken {
   string access_token = 1;
   string token_type = 2;
   int32 expires_in = 3;
+
+  // MFA challenge（仅当用户启用了 MFA 时填充）
+  // 未启用 MFA 的用户此三字段均为零值，旧客户端可安全忽略。
+  bool mfa_required = 10;
+  // 服务端生成的一次性 challenge 标识，TTL 5 分钟
+  string challenge_id = 11;
+  // challenge 类型，当前固定为 "TOTP"
+  string challenge_type = 12;
 }

@@ -134,3 +134,50 @@ message UpdateAuthProviderRequest {
   // 示例: paths: ["display_name", "enabled", "scopes"]
   google.protobuf.FieldMask update_mask = 3;
 }
+
+// VerifyAuthMFARequest 登录时的 MFA 二步验证请求
+// 在 CreateAuthLogin 返回 mfa_required=true 后，前端携带 challenge_id 和 TOTP 码调用此接口。
+message VerifyAuthMFARequest {
+  // CreateAuthLogin 返回的一次性 challenge 标识
+  string challenge_id = 1;
+  // 用户从验证器应用获取的 6 位 TOTP 验证码
+  string totp_code = 2;
+}
+
+// SetupUserMFARequest 初始化用户 MFA 设置（生成密钥 + 二维码 URI）
+message SetupUserMFARequest {
+  // 目标用户 ID
+  int64 user_id = 1;
+}
+
+// SetupUserMFAResponse 返回 TOTP 密钥和 otpauth URI 供前端展示
+message SetupUserMFAResponse {
+  // Base32 编码的 TOTP 密钥（仅此次返回，后续不再可见）
+  string secret = 1;
+  // otpauth://totp/... 格式的 URI，前端可据此生成二维码
+  string qr_uri = 2;
+  // 确认验证用的 challenge_id，TTL 5 分钟
+  string challenge_id = 3;
+}
+
+// ConfirmUserMFARequest 确认开启 MFA（用户扫码后输入验证码确认）
+message ConfirmUserMFARequest {
+  // SetupUserMFA 返回的 challenge_id
+  string challenge_id = 1;
+  // 用户从验证器应用获取的 6 位 TOTP 验证码
+  string totp_code = 2;
+}
+
+// ConfirmUserMFAResponse 确认成功后返回恢复码
+message ConfirmUserMFAResponse {
+  // 恢复码列表（一次性展示，用户必须安全保存）
+  repeated string recovery_codes = 1;
+}
+
+// DisableUserMFARequest 关闭用户 MFA
+message DisableUserMFARequest {
+  // 目标用户 ID
+  int64 user_id = 1;
+  // 当前有效的 6 位 TOTP 验证码（或恢复码）
+  string totp_code = 2;
+}

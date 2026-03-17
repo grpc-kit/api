@@ -244,6 +244,24 @@ http:
     put: "/builtin/admin/api/v1/users/{user_id}/password"
     body: "*"
 
+    # MFA 多因素认证
+    ## 登录 MFA 验证
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.VerifyAuthMFA
+    post: "/builtin/admin/api/v1/auth/mfa/verify"
+    body: "*"
+    ## 设置 MFA（获取密钥和二维码）
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.SetupUserMFA
+    post: "/builtin/admin/api/v1/users/{user_id}/mfa/setup"
+    body: "*"
+    ## 确认开启 MFA
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ConfirmUserMFA
+    post: "/builtin/admin/api/v1/auth/mfa/confirm"
+    body: "*"
+    ## 关闭 MFA
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DisableUserMFA
+    post: "/builtin/admin/api/v1/users/{user_id}/mfa/disable"
+    body: "*"
+
     # 群组管理
     ## 创建群组
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateGroup

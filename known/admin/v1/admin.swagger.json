@@ -127,6 +127,107 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/auth/mfa/confirm": {
+      "post": {
+        "summary": "确认开启 MFA",
+        "description": "接口格式：/builtin/admin/api/v1/auth/mfa/confirm。用户扫码绑定验证器后输入 6 位 TOTP 码确认开启 MFA。请求体示例：{\"challenge_id\":\"uuid-xxx\",\"totp_code\":\"123456\"}。",
+        "operationId": "KnownAdmin_ConfirmUserMFA",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmUserMFAResponse"
+            },
+            "examples": {
+              "application/json": {
+                "recovery_codes": [
+                  "a1b2c3d4",
+                  "e5f6g7h8",
+                  "i9j0k1l2",
+                  "m3n4o5p6",
+                  "q7r8s9t0",
+                  "u1v2w3x4",
+                  "y5z6a7b8",
+                  "c9d0e1f2"
+                ]
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmUserMFARequest"
+            }
+          }
+        ],
+        "tags": [
+          "MFA 多因素认证"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/auth/mfa/verify": {
+      "post": {
+        "summary": "登录 MFA 验证",
+        "description": "接口格式：/builtin/admin/api/v1/auth/mfa/verify。在 CreateAuthLogin 返回 mfa_required=true 后，前端调用此接口完成 TOTP 二步验证。请求体示例：{\"challenge_id\":\"uuid-xxx\",\"totp_code\":\"123456\"}。",
+        "operationId": "KnownAdmin_VerifyAuthMFA",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthToken"
+            },
+            "examples": {
+              "application/json": {
+                "access_token": "eyJhbGci...",
+                "token_type": "Bearer",
+                "expires_in": 86400
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VerifyAuthMFARequest"
+            }
+          }
+        ],
+        "tags": [
+          "MFA 多因素认证"
+        ]
+      }
+    },
     "/builtin/admin/api/v1/auth/providers": {
       "get": {
         "summary": "认证提供商列表",
@@ -5615,6 +5716,10 @@
                     "type": "string"
                   },
                   "title": "自定义元数据，用于存储额外的用户信息（如 JSON 字符串）"
+                },
+                "mfa_enabled": {
+                  "type": "boolean",
+                  "title": "是否启用 MFA（TOTP）"
                 }
               },
               "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
@@ -5624,6 +5729,121 @@
         ],
         "tags": [
           "用户管理"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/users/{user_id}/mfa/disable": {
+      "post": {
+        "summary": "关闭 MFA",
+        "description": "接口格式：/builtin/admin/api/v1/users/{user_id}/mfa/disable。验证当前 TOTP 码或恢复码后关闭指定用户的 MFA。请求体示例：{\"user_id\":\"1001\",\"totp_code\":\"123456\"}。",
+        "operationId": "KnownAdmin_DisableUserMFA",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "application/json": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "目标用户 ID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "totp_code": {
+                  "type": "string",
+                  "title": "当前有效的 6 位 TOTP 验证码（或恢复码）"
+                }
+              },
+              "title": "DisableUserMFARequest 关闭用户 MFA"
+            }
+          }
+        ],
+        "tags": [
+          "MFA 多因素认证"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/users/{user_id}/mfa/setup": {
+      "post": {
+        "summary": "设置 MFA（获取密钥和二维码）",
+        "description": "接口格式：/builtin/admin/api/v1/users/{user_id}/mfa/setup。为指定用户生成 TOTP 密钥和 otpauth URI，前端据此展示二维码供用户扫描。",
+        "operationId": "KnownAdmin_SetupUserMFA",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SetupUserMFAResponse"
+            },
+            "examples": {
+              "application/json": {
+                "secret": "JBSWY3DPEHPK3PXP",
+                "qr_uri": "otpauth://totp/KnownAdmin:alice?secret=JBSWY3DPEHPK3PXP\u0026issuer=KnownAdmin",
+                "challenge_id": "uuid-xxx"
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "目标用户 ID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "SetupUserMFARequest 初始化用户 MFA 设置（生成密钥 + 二维码 URI）"
+            }
+          }
+        ],
+        "tags": [
+          "MFA 多因素认证"
         ]
       }
     },
@@ -6149,9 +6369,21 @@
         "expires_in": {
           "type": "integer",
           "format": "int32"
+        },
+        "mfa_required": {
+          "type": "boolean",
+          "title": "MFA challenge（仅当用户启用了 MFA 时填充）\n未启用 MFA 的用户此三字段均为零值，旧客户端可安全忽略。"
+        },
+        "challenge_id": {
+          "type": "string",
+          "title": "服务端生成的一次性 challenge 标识，TTL 5 分钟"
+        },
+        "challenge_type": {
+          "type": "string",
+          "title": "challenge 类型，当前固定为 \"TOTP\""
         }
       },
-      "title": "AuthToken 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5"
+      "title": "AuthToken 登录成功响应\n参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5\n当用户启用了 MFA 时，密码校验通过后 access_token 为空，\n需要前端根据 mfa_required 发起二步验证。"
     },
     "v1Authentication": {
       "type": "object",
@@ -6274,6 +6506,33 @@
           "$ref": "#/definitions/v1AuditPolicyConfig"
         }
       }
+    },
+    "v1ConfirmUserMFARequest": {
+      "type": "object",
+      "properties": {
+        "challenge_id": {
+          "type": "string",
+          "title": "SetupUserMFA 返回的 challenge_id"
+        },
+        "totp_code": {
+          "type": "string",
+          "title": "用户从验证器应用获取的 6 位 TOTP 验证码"
+        }
+      },
+      "title": "ConfirmUserMFARequest 确认开启 MFA（用户扫码后输入验证码确认）"
+    },
+    "v1ConfirmUserMFAResponse": {
+      "type": "object",
+      "properties": {
+        "recovery_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "恢复码列表（一次性展示，用户必须安全保存）"
+        }
+      },
+      "title": "ConfirmUserMFAResponse 确认成功后返回恢复码"
     },
     "v1ConnectionPoolConfig": {
       "type": "object",
@@ -8847,6 +9106,24 @@
         }
       }
     },
+    "v1SetupUserMFAResponse": {
+      "type": "object",
+      "properties": {
+        "secret": {
+          "type": "string",
+          "title": "Base32 编码的 TOTP 密钥（仅此次返回，后续不再可见）"
+        },
+        "qr_uri": {
+          "type": "string",
+          "title": "otpauth://totp/... 格式的 URI，前端可据此生成二维码"
+        },
+        "challenge_id": {
+          "type": "string",
+          "title": "确认验证用的 challenge_id，TTL 5 分钟"
+        }
+      },
+      "title": "SetupUserMFAResponse 返回 TOTP 密钥和 otpauth URI 供前端展示"
+    },
     "v1Structure": {
       "type": "string",
       "enum": [
@@ -9093,6 +9370,10 @@
             "type": "string"
           },
           "title": "自定义元数据，用于存储额外的用户信息（如 JSON 字符串）"
+        },
+        "mfa_enabled": {
+          "type": "boolean",
+          "title": "是否启用 MFA（TOTP）"
         }
       },
       "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
@@ -9128,6 +9409,20 @@
       "default": "TYPE_UNSPECIFIED",
       "description": "- TYPE_UNSPECIFIED: 默认值\n - CUSTOMER: 外部用户 / 业务伙伴\n\n前台用户 / 消费者\n - MERCHANT: 商户 / 卖家\n - SUPPLIER: 供应商 / 合作方\n - EMPLOYEE: 内部用户 / 员工\n\n后台用户 / 内部员工\n - ADMIN: 系统管理员\n - SYSTEM: 系统账户 (为安全和区分，编号拉开)\n\n系统集成账户 / 机器人",
       "title": "用户的基础身份类型，后端自动维护更新，非人为更新"
+    },
+    "v1VerifyAuthMFARequest": {
+      "type": "object",
+      "properties": {
+        "challenge_id": {
+          "type": "string",
+          "title": "CreateAuthLogin 返回的一次性 challenge 标识"
+        },
+        "totp_code": {
+          "type": "string",
+          "title": "用户从验证器应用获取的 6 位 TOTP 验证码"
+        }
+      },
+      "title": "VerifyAuthMFARequest 登录时的 MFA 二步验证请求\n在 CreateAuthLogin 返回 mfa_required=true 后，前端携带 challenge_id 和 TOTP 码调用此接口。"
     },
     "v1View": {
       "type": "string",

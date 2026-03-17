@@ -133,6 +133,46 @@ openapiOptions:
           "200":
             examples:
               "application/json": '{"access_token":"<jwt>","token_type":"Bearer"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.VerifyAuthMFA
+      option:
+        tags:
+          - "MFA 多因素认证"
+        summary: "登录 MFA 验证"
+        description: '接口格式：/builtin/admin/api/v1/auth/mfa/verify。在 CreateAuthLogin 返回 mfa_required=true 后，前端调用此接口完成 TOTP 二步验证。请求体示例：{"challenge_id":"uuid-xxx","totp_code":"123456"}。'
+        responses:
+          "200":
+            examples:
+              "application/json": '{"access_token":"eyJhbGci...","token_type":"Bearer","expires_in":86400}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.SetupUserMFA
+      option:
+        tags:
+          - "MFA 多因素认证"
+        summary: "设置 MFA（获取密钥和二维码）"
+        description: '接口格式：/builtin/admin/api/v1/users/{user_id}/mfa/setup。为指定用户生成 TOTP 密钥和 otpauth URI，前端据此展示二维码供用户扫描。'
+        responses:
+          "200":
+            examples:
+              "application/json": '{"secret":"JBSWY3DPEHPK3PXP","qr_uri":"otpauth://totp/KnownAdmin:alice?secret=JBSWY3DPEHPK3PXP&issuer=KnownAdmin","challenge_id":"uuid-xxx"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.ConfirmUserMFA
+      option:
+        tags:
+          - "MFA 多因素认证"
+        summary: "确认开启 MFA"
+        description: '接口格式：/builtin/admin/api/v1/auth/mfa/confirm。用户扫码绑定验证器后输入 6 位 TOTP 码确认开启 MFA。请求体示例：{"challenge_id":"uuid-xxx","totp_code":"123456"}。'
+        responses:
+          "200":
+            examples:
+              "application/json": '{"recovery_codes":["a1b2c3d4","e5f6g7h8","i9j0k1l2","m3n4o5p6","q7r8s9t0","u1v2w3x4","y5z6a7b8","c9d0e1f2"]}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.DisableUserMFA
+      option:
+        tags:
+          - "MFA 多因素认证"
+        summary: "关闭 MFA"
+        description: '接口格式：/builtin/admin/api/v1/users/{user_id}/mfa/disable。验证当前 TOTP 码或恢复码后关闭指定用户的 MFA。请求体示例：{"user_id":"1001","totp_code":"123456"}。'
+        responses:
+          "200":
+            examples:
+              "application/json": '{}'
     - method: grpc_kit.api.known.admin.v1.KnownAdmin.ListResources
       option:
         tags:
