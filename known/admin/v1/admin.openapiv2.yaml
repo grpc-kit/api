@@ -143,6 +143,26 @@ openapiOptions:
           "200":
             examples:
               "application/json": '{"access_token":"eyJhbGci...","token_type":"Bearer","expires_in":86400}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.StartAuthMFASetup
+      option:
+        tags:
+          - "MFA 多因素认证"
+        summary: "登录态首次配置 MFA（开始）"
+        description: '接口格式：/builtin/admin/api/v1/auth/mfa/setup/start。当登录返回 challenge_type=TOTP_SETUP 时，调用本接口获取二维码和密钥。请求体示例：{"challenge_id":"uuid-xxx"}。'
+        responses:
+          "200":
+            examples:
+              "application/json": '{"secret":"JBSWY3DPEHPK3PXP","qr_uri":"otpauth://totp/KnownAdmin:alice?secret=JBSWY3DPEHPK3PXP&issuer=KnownAdmin","setup_challenge_id":"uuid-setup-xxx"}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.ConfirmAuthMFASetup
+      option:
+        tags:
+          - "MFA 多因素认证"
+        summary: "登录态首次配置 MFA（确认）"
+        description: '接口格式：/builtin/admin/api/v1/auth/mfa/setup/confirm。输入 6 位 TOTP 验证码确认绑定并签发登录 token。请求体示例：{"setup_challenge_id":"uuid-setup-xxx","totp_code":"123456"}。'
+        responses:
+          "200":
+            examples:
+              "application/json": '{"access_token":"eyJhbGci...","token_type":"Bearer","expires_in":86400}'
     - method: grpc_kit.api.known.admin.v1.KnownAdmin.SetupUserMFA
       option:
         tags:

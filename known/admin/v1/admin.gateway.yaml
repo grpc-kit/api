@@ -249,6 +249,14 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.VerifyAuthMFA
     post: "/builtin/admin/api/v1/auth/mfa/verify"
     body: "*"
+    ## 登录态首次配置 MFA（获取密钥和二维码）
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.StartAuthMFASetup
+    post: "/builtin/admin/api/v1/auth/mfa/setup/start"
+    body: "*"
+    ## 登录态确认首次配置 MFA
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ConfirmAuthMFASetup
+    post: "/builtin/admin/api/v1/auth/mfa/setup/confirm"
+    body: "*"
     ## 设置 MFA（获取密钥和二维码）
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.SetupUserMFA
     post: "/builtin/admin/api/v1/users/{user_id}/mfa/setup"

@@ -181,6 +181,100 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/auth/mfa/setup/confirm": {
+      "post": {
+        "summary": "登录态首次配置 MFA（确认）",
+        "description": "接口格式：/builtin/admin/api/v1/auth/mfa/setup/confirm。输入 6 位 TOTP 验证码确认绑定并签发登录 token。请求体示例：{\"setup_challenge_id\":\"uuid-setup-xxx\",\"totp_code\":\"123456\"}。",
+        "operationId": "KnownAdmin_ConfirmAuthMFASetup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthToken"
+            },
+            "examples": {
+              "application/json": {
+                "access_token": "eyJhbGci...",
+                "token_type": "Bearer",
+                "expires_in": 86400
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmAuthMFASetupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MFA 多因素认证"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/auth/mfa/setup/start": {
+      "post": {
+        "summary": "登录态首次配置 MFA（开始）",
+        "description": "接口格式：/builtin/admin/api/v1/auth/mfa/setup/start。当登录返回 challenge_type=TOTP_SETUP 时，调用本接口获取二维码和密钥。请求体示例：{\"challenge_id\":\"uuid-xxx\"}。",
+        "operationId": "KnownAdmin_StartAuthMFASetup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1StartAuthMFASetupResponse"
+            },
+            "examples": {
+              "application/json": {
+                "secret": "JBSWY3DPEHPK3PXP",
+                "qr_uri": "otpauth://totp/KnownAdmin:alice?secret=JBSWY3DPEHPK3PXP\u0026issuer=KnownAdmin",
+                "setup_challenge_id": "uuid-setup-xxx"
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1StartAuthMFASetupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MFA 多因素认证"
+        ]
+      }
+    },
     "/builtin/admin/api/v1/auth/mfa/verify": {
       "post": {
         "summary": "登录 MFA 验证",
@@ -6301,6 +6395,10 @@
           "$ref": "#/definitions/v1OAuthConfig",
           "title": "OAuth2 系身份提供商通用配置\n适用于 type=OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT"
         },
+        "local_config": {
+          "$ref": "#/definitions/v1LocalAuthConfig",
+          "title": "LOCAL 身份提供商配置，仅 type=LOCAL 时使用"
+        },
         "created_by": {
           "type": "string",
           "format": "int64",
@@ -6506,6 +6604,18 @@
           "$ref": "#/definitions/v1AuditPolicyConfig"
         }
       }
+    },
+    "v1ConfirmAuthMFASetupRequest": {
+      "type": "object",
+      "properties": {
+        "setup_challenge_id": {
+          "type": "string"
+        },
+        "totp_code": {
+          "type": "string"
+        }
+      },
+      "title": "ConfirmAuthMFASetupRequest 确认登录态首绑 MFA"
     },
     "v1ConfirmUserMFARequest": {
       "type": "object",
@@ -7116,6 +7226,21 @@
         },
         "token_type": {
           "type": "string"
+        },
+        "expires_in": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "mfa_required": {
+          "type": "boolean",
+          "title": "MFA challenge（当启用了 LOCAL 全局强制 MFA 时填充）"
+        },
+        "challenge_id": {
+          "type": "string"
+        },
+        "challenge_type": {
+          "type": "string",
+          "title": "challenge 类型：TOTP_SETUP 或 TOTP_VERIFY"
         }
       }
     },
@@ -7726,6 +7851,16 @@
           "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
+    },
+    "v1LocalAuthConfig": {
+      "type": "object",
+      "properties": {
+        "enforce_mfa_for_all_users": {
+          "type": "boolean",
+          "title": "EnforceMfaForAllUsers 是否对所有用户强制启用 MFA\n开启后，无论用户通过 LOCAL/LDAP/OIDC/OAUTH2 等何种方式完成一阶认证，\n都必须先完成 LOCAL MFA（首次绑定或验证）后才能签发最终 access_token。"
+        }
+      },
+      "title": "LocalAuthConfig LOCAL 身份提供商配置"
     },
     "v1LocalConfig": {
       "type": "object",
@@ -9123,6 +9258,32 @@
         }
       },
       "title": "SetupUserMFAResponse 返回 TOTP 密钥和 otpauth URI 供前端展示"
+    },
+    "v1StartAuthMFASetupRequest": {
+      "type": "object",
+      "properties": {
+        "challenge_id": {
+          "type": "string",
+          "title": "CreateAuthLogin/GetAuthCallback 返回的 challenge_id（challenge_type=TOTP_SETUP）"
+        }
+      },
+      "title": "StartAuthMFASetupRequest 登录态首次配置 MFA（不依赖 user_id）"
+    },
+    "v1StartAuthMFASetupResponse": {
+      "type": "object",
+      "properties": {
+        "secret": {
+          "type": "string"
+        },
+        "qr_uri": {
+          "type": "string"
+        },
+        "setup_challenge_id": {
+          "type": "string",
+          "title": "确认首绑使用的 setup challenge"
+        }
+      },
+      "title": "StartAuthMFASetupResponse 返回 TOTP 密钥和二维码 URI"
     },
     "v1Structure": {
       "type": "string",

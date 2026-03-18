@@ -49,6 +49,8 @@ service KnownAdmin {
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
   // MFA 多因素认证
   rpc VerifyAuthMFA(VerifyAuthMFARequest) returns (AuthToken);
+  rpc StartAuthMFASetup(StartAuthMFASetupRequest) returns (StartAuthMFASetupResponse);
+  rpc ConfirmAuthMFASetup(ConfirmAuthMFASetupRequest) returns (AuthToken);
   rpc SetupUserMFA(SetupUserMFARequest) returns (SetupUserMFAResponse);
   rpc ConfirmUserMFA(ConfirmUserMFARequest) returns (ConfirmUserMFAResponse);
   rpc DisableUserMFA(DisableUserMFARequest) returns (google.protobuf.Empty);

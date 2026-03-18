@@ -110,6 +110,13 @@ message GetAuthCallbackRequest {
 message GetAuthCallbackResponse {
   string access_token = 1;
   string token_type = 2;
+  int32 expires_in = 3;
+
+  // MFA challenge（当启用了 LOCAL 全局强制 MFA 时填充）
+  bool mfa_required = 10;
+  string challenge_id = 11;
+  // challenge 类型：TOTP_SETUP 或 TOTP_VERIFY
+  string challenge_type = 12;
 }
 
 message CreateAuthProviderRequest {
@@ -179,5 +186,25 @@ message DisableUserMFARequest {
   // 目标用户 ID
   int64 user_id = 1;
   // 当前有效的 6 位 TOTP 验证码（或恢复码）
+  string totp_code = 2;
+}
+
+// StartAuthMFASetupRequest 登录态首次配置 MFA（不依赖 user_id）
+message StartAuthMFASetupRequest {
+  // CreateAuthLogin/GetAuthCallback 返回的 challenge_id（challenge_type=TOTP_SETUP）
+  string challenge_id = 1;
+}
+
+// StartAuthMFASetupResponse 返回 TOTP 密钥和二维码 URI
+message StartAuthMFASetupResponse {
+  string secret = 1;
+  string qr_uri = 2;
+  // 确认首绑使用的 setup challenge
+  string setup_challenge_id = 3;
+}
+
+// ConfirmAuthMFASetupRequest 确认登录态首绑 MFA
+message ConfirmAuthMFASetupRequest {
+  string setup_challenge_id = 1;
   string totp_code = 2;
 }
