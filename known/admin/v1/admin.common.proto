@@ -240,6 +240,8 @@ message Scope {
   string display_name = 4;
 
   string description = 5;
+
+  bool protected = 6;
 }
 
 // Resource 资源定义，如：菜单等
@@ -827,6 +829,7 @@ message AuthProvider {
     LocalAuthConfig local_config = 12;
   }
 
+  bool protected = 13;
   // ======== 审计区（20-24） ========
 
   // CreatedBy 创建者用户ID，记录该提供商的创建人

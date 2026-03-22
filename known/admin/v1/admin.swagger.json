@@ -5109,6 +5109,9 @@
                 },
                 "description": {
                   "type": "string"
+                },
+                "protected": {
+                  "type": "boolean"
                 }
               },
               "title": "Scope 作用域"
@@ -6398,6 +6401,10 @@
         "local_config": {
           "$ref": "#/definitions/v1LocalAuthConfig",
           "title": "LOCAL 身份提供商配置，仅 type=LOCAL 时使用"
+        },
+        "protected": {
+          "type": "boolean",
+          "title": "======== 审计区（20-24） ========"
         },
         "created_by": {
           "type": "string",
@@ -9136,6 +9143,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "protected": {
+          "type": "boolean"
         }
       },
       "title": "Scope 作用域"
