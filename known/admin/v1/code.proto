@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+// 系统种子公知代号。推导后的持久化 code 与 admin.common.proto 中 Resource.code 一致：
+// 小写字母、数字、连字符（kebab-case）；由 pkg/admin 从枚举名去前缀后 ToLower 并将 '_' 换为 '-'（见单测）。
+
+enum DepartmentCode {
+  DEPARTMENT_CODE_UNSPECIFIED = 0;
+  // DB code: "root"
+  DEPARTMENT_CODE_ROOT = 1;
+  // DB code: "guest"
+  DEPARTMENT_CODE_GUEST = 2;
+}
+
+enum RoleCode {
+  ROLE_CODE_UNSPECIFIED = 0;
+  // DB code: "superadmin"
+  ROLE_CODE_SUPERADMIN = 1;
+}
+
+enum AuthProviderCode {
+  AUTH_PROVIDER_CODE_UNSPECIFIED = 0;
+  // DB code: "local"
+  AUTH_PROVIDER_CODE_LOCAL = 1;
+}
+
+enum ResourceSeedCode {
+  RESOURCE_SEED_CODE_UNSPECIFIED = 0;
+  RESOURCE_SEED_CODE_ROOT_MENU = 1;    // "root-menu"
+  RESOURCE_SEED_CODE_ROOT_PAGE = 2;    // "root-page"
+  RESOURCE_SEED_CODE_ROOT_BUTTON = 3;  // "root-button"
+  RESOURCE_SEED_CODE_ROOT_API = 4;     // "root-api"
+  RESOURCE_SEED_CODE_ROOT_DATA = 5;    // "root-data"
+  RESOURCE_SEED_CODE_ROOT_SYSTEM = 6;  // "root-system"
+}
+
+enum CredentialSeedCode {
+  CREDENTIAL_SEED_CODE_UNSPECIFIED = 0;
+  // DB code: "key1"
+  CREDENTIAL_SEED_CODE_KEY1 = 1;
+}
+
+enum BootstrapUsername {
+  BOOTSTRAP_USERNAME_UNSPECIFIED = 0;
+  // lion_users.username: "admin"
+  BOOTSTRAP_USERNAME_ADMIN = 1;
+}
