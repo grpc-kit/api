@@ -493,22 +493,22 @@ openapiOptions:
           "200":
             examples:
               "application/json": '{"roles":[{"id":"2001","parent_id":"0","code":"admin","display_name":"系统管理员","sort_order":10,"type":"SYSTEM","status":"ACTIVE","description":"系统内置管理员角色"},{"id":"2002","parent_id":"2001","code":"auditor","display_name":"审计员","sort_order":30,"type":"CUSTOM","status":"ACTIVE","description":"审计报表与日志查看角色"}],"next_page_token":"roles:cursor:2","total_size":2}'
-    - method: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoleUsers
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoleMembers
       option:
         tags:
           - "角色管理"
-        summary: "角色用户列表"
-        description: "接口格式：/builtin/admin/api/v1/roles/{parent}/users。parent 表示角色 ID。"
+        summary: "角色成员列表"
+        description: "接口格式：/builtin/admin/api/v1/roles/{parent}/members。parent 表示角色 ID。"
         responses:
           "200":
             examples:
-              "application/json": '{"users":[{"id":"1","username":"admin","nickname":"系统管理员","type":"ADMIN","status":"ACTIVE","email":"admin@example.com"},{"id":"2","username":"alice","nickname":"Alice","type":"EMPLOYEE","status":"ACTIVE","email":"alice@example.com"}],"next_page_token":"role-users:3","total_size":2}'
-    - method: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleUser
+              "application/json": '{"members":[{"id":"10","user_id":"1","username":"admin","nickname":"系统管理员","target_type":"ROLE","target_id":"2001","member_role":"MEMBER","member_status":"ACTIVE"},{"id":"11","user_id":"2","username":"alice","nickname":"Alice","target_type":"ROLE","target_id":"2001","member_role":"MEMBER","member_status":"ACTIVE"}],"next_page_token":"role-members:3","total_size":2}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleMember
       option:
         tags:
           - "角色管理"
-        summary: "移除角色用户"
-        description: "接口格式：/builtin/admin/api/v1/roles/{parent}/users/{user_id}。parent 表示角色 ID。"
+        summary: "移除角色成员"
+        description: "接口格式：/builtin/admin/api/v1/roles/{parent}/members/{user_id}。parent 表示角色 ID。"
         responses:
           "200":
             examples:
@@ -553,12 +553,22 @@ openapiOptions:
           "200":
             examples:
               "application/json": '{}'
-    - method: grpc_kit.api.known.admin.v1.KnownAdmin.AssignRoleToUser
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRoleMembers
       option:
         tags:
           - "角色管理"
-        summary: "为用户分配角色"
-        description: '接口格式：/builtin/admin/api/v1/roles/{role_id}:assign。为指定用户分配角色。请求体示例：{"role_id":"2","users":[{"id":"1001"},{"id":"1002"}]}。'
+        summary: "创建角色成员"
+        description: '接口格式：POST /builtin/admin/api/v1/roles/{parent}/members。parent 为角色 ID；请求体为 members 数组，如 [{"user_id":"1001"},{"user_id":"1002"}]。'
+        responses:
+          "200":
+            examples:
+              "application/json": '{}'
+    - method: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateRoleMembers
+      option:
+        tags:
+          - "角色管理"
+        summary: "更新角色成员"
+        description: '接口格式：PATCH /builtin/admin/api/v1/roles/{parent}/members。parent 为角色 ID；请求体为 members 数组（与 List 返回结构一致，每行以 user_roles.id 定位时可传 id，否则传 user_id）。无 FieldMask：每条 member 对 member_role、member_status、member_type、expired_at、metadata、description 整段写入（请先 GET 列表再改）。示例：[{"id":"10","user_id":"1","member_role":"ADMIN","member_status":"ACTIVE","description":"运维"}]。'
         responses:
           "200":
             examples:

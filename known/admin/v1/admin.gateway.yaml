@@ -146,41 +146,48 @@ http:
     delete: "/builtin/admin/api/v1/permissions/{id}"
 
     # 角色管理
-    ## 角色列表
+    ## 角色实体
+    ### 角色列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoles
     get: "/builtin/admin/api/v1/roles"
-    ## 角色用户列表
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoleUsers
-    get: "/builtin/admin/api/v1/roles/{parent}/users"
-    ## 删除角色用户
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleUser
-    delete: "/builtin/admin/api/v1/roles/{parent}/users/{user_id}"
-    ## 创建角色
+    ### 创建角色
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRole
     post: "/builtin/admin/api/v1/roles"
     body: "role"
-    ## 角色详情
+    ### 角色详情
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetRole
     get: "/builtin/admin/api/v1/roles/{id}"
-    ## 更新角色
+    ### 更新角色
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateRole
     patch: "/builtin/admin/api/v1/roles/{role.id}"
     body: "role"
-    ## 删除角色
+    ### 删除角色
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRole
     delete: "/builtin/admin/api/v1/roles/{id}"
-    ## 为用户分配角色
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.AssignRoleToUser
-    post: "/builtin/admin/api/v1/roles/{role_id}:assign"
-    body: "*"
-    ## 为角色关联权限
+    ## 角色成员
+    ### 创建角色成员
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRoleMembers
+    post: "/builtin/admin/api/v1/roles/{parent}/members"
+    body: "members"
+    ### 更新角色成员，对同角色下批量更新多个成员
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateRoleMembers
+    patch: "/builtin/admin/api/v1/roles/{parent}/members"
+    body: "members"
+    ### 角色成员列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRoleMembers
+    get: "/builtin/admin/api/v1/roles/{parent}/members"
+    ### 删除角色成员
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleMember
+    delete: "/builtin/admin/api/v1/roles/{parent}/members/{user_id}"
+    ## 角色权限
+    ### 为角色关联权限
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRolePermissions
     post: "/builtin/admin/api/v1/roles/{role_id}/permissions"
     body: "permissions"
-    ## 删除角色下关联权限
+    ### 删除角色下关联权限
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRolePermission
     delete: "/builtin/admin/api/v1/roles/{role_id}/permissions/{permission_id}"
-    ## 列出角色下关联权限
+    ### 列出角色下关联权限
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRolePermissions
     get: "/builtin/admin/api/v1/roles/{role_id}/permissions"
     # ## 为角色关联资源数据范围（临时注释）

@@ -91,9 +91,10 @@ service KnownAdmin {
   rpc UpdateRole(UpdateRoleRequest) returns(Role);
   rpc DeleteRole(DeleteRoleRequest) returns(google.protobuf.Empty);
   rpc ListRoles(ListRolesRequest) returns(ListRolesResponse);
-  rpc ListRoleUsers(ListRoleUsersRequest) returns(ListRoleUsersResponse);
-  rpc DeleteRoleUser(DeleteRoleUserRequest) returns(google.protobuf.Empty);
-  rpc AssignRoleToUser(AssignRoleToUserRequest) returns(google.protobuf.Empty);
+  rpc ListRoleMembers(ListRoleMembersRequest) returns(ListRoleMembersResponse);
+  rpc CreateRoleMembers(CreateRoleMembersRequest) returns(CreateRoleMembersResponse);
+  rpc UpdateRoleMembers(UpdateRoleMembersRequest) returns(UpdateRoleMembersResponse);
+  rpc DeleteRoleMember(DeleteRoleMemberRequest) returns(google.protobuf.Empty);
   rpc CreateRolePermissions(CreateRolePermissionsRequest) returns(CreateRolePermissionsResponse);
   rpc DeleteRolePermission(DeleteRolePermissionRequest) returns(google.protobuf.Empty);
   rpc ListRolePermissions(ListRolePermissionsRequest) returns(ListRolePermissionsResponse);

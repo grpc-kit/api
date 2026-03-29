@@ -72,12 +72,12 @@ message ListRolesResponse {
   int32 total_size = 3;
 }
 
-message ListRoleUsersRequest {
+message ListRoleMembersRequest {
   // 父资源名称，用于限定范围。
   // 格式示例: "organizations/123" 或 "projects/456"。
   string parent = 1;
 
-  // 每页返回的最大用户数。
+  // 每页返回的最大成员数。
   // - 如果未指定，则使用服务端默认值 (如 20)。
   // - 最大不超过 100 (超出时强制截断)。
   int32 page_size = 2;
@@ -101,9 +101,9 @@ message ListRoleUsersRequest {
   string order_by = 5;
 }
 
-message ListRoleUsersResponse {
-  // 符合查询条件的用户资源。
-  repeated User users = 1;
+message ListRoleMembersResponse {
+  // 角色成员关系列表（与 ListGroupMembersResponse 结构一致）。
+  repeated Membership members = 1;
 
   // 用于获取下一页结果的 token。
   // - 如果为空，表示没有更多结果。
@@ -118,18 +118,30 @@ message ListRoleUsersResponse {
   int32 total_size = 3;
 }
 
-message DeleteRoleUserRequest {
-  // 父资源名称，用于限定范围。
-  // 格式示例: "organizations/123" 或 "projects/456"。
+message DeleteRoleMemberRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers / CreateRoleMembers）
   string parent = 1;
 
   int64 user_id = 2;
 }
 
-message AssignRoleToUserRequest {
-  int64 role_id = 1;
+message CreateRoleMembersRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）
+  string parent = 1;
+  repeated Membership members = 2;
+}
 
-  repeated User users = 2;
+message CreateRoleMembersResponse {
+}
+
+message UpdateRoleMembersRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）
+  string parent = 1;
+  repeated Membership members = 2;
+}
+
+message UpdateRoleMembersResponse {
+
 }
 
 message CreateRolePermissionsRequest {

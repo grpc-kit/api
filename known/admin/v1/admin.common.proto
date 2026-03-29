@@ -689,11 +689,14 @@ message Membership {
     TARGET_TYPE_UNSPECIFIED = 0;  // 未指定
     GROUP = 1;                    // 群组
     DEPARTMENT = 2;               // 部门
+    ROLE = 3;                     // 角色
   }
   TargetType target_type = 5;
 
-  // TargetID 关联目标的 ID（群组ID 或 部门ID）
-  // 与 target_type 配合使用，确定具体的关联实体
+  // TargetID 关联目标的 ID（与 target_type 配合使用）
+  // - GROUP: 群组 ID
+  // - DEPARTMENT: 部门 ID
+  // - ROLE: 角色 ID（如 user_roles 成员关系）
   int64 target_id = 6;
 
   // Role 用户在目标实体中的角色

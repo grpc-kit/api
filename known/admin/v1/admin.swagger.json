@@ -4215,38 +4215,42 @@
         ]
       }
     },
-    "/builtin/admin/api/v1/roles/{parent}/users": {
+    "/builtin/admin/api/v1/roles/{parent}/members": {
       "get": {
-        "summary": "角色用户列表",
-        "description": "接口格式：/builtin/admin/api/v1/roles/{parent}/users。parent 表示角色 ID。",
-        "operationId": "KnownAdmin_ListRoleUsers",
+        "summary": "角色成员列表",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{parent}/members。parent 表示角色 ID。",
+        "operationId": "KnownAdmin_ListRoleMembers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ListRoleUsersResponse"
+              "$ref": "#/definitions/v1ListRoleMembersResponse"
             },
             "examples": {
               "application/json": {
-                "users": [
+                "members": [
                   {
-                    "id": "1",
+                    "id": "10",
+                    "user_id": "1",
                     "username": "admin",
                     "nickname": "系统管理员",
-                    "type": "ADMIN",
-                    "status": "ACTIVE",
-                    "email": "admin@example.com"
+                    "target_type": "ROLE",
+                    "target_id": "2001",
+                    "member_role": "MEMBER",
+                    "member_status": "ACTIVE"
                   },
                   {
-                    "id": "2",
+                    "id": "11",
+                    "user_id": "2",
                     "username": "alice",
                     "nickname": "Alice",
-                    "type": "EMPLOYEE",
-                    "status": "ACTIVE",
-                    "email": "alice@example.com"
+                    "target_type": "ROLE",
+                    "target_id": "2001",
+                    "member_role": "MEMBER",
+                    "member_status": "ACTIVE"
                   }
                 ],
-                "next_page_token": "role-users:3",
+                "next_page_token": "role-members:3",
                 "total_size": 2
               }
             }
@@ -4274,7 +4278,7 @@
           },
           {
             "name": "page_size",
-            "description": "每页返回的最大用户数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
+            "description": "每页返回的最大成员数。\n- 如果未指定，则使用服务端默认值 (如 20)。\n- 最大不超过 100 (超出时强制截断)。",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -4313,13 +4317,117 @@
         "tags": [
           "角色管理"
         ]
+      },
+      "post": {
+        "summary": "创建角色成员",
+        "description": "接口格式：POST /builtin/admin/api/v1/roles/{parent}/members。parent 为角色 ID；请求体为 members 数组，如 [{\"user_id\":\"1001\"},{\"user_id\":\"1002\"}]。",
+        "operationId": "KnownAdmin_CreateRoleMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateRoleMembersResponse"
+            },
+            "examples": {
+              "application/json": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "members",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1Membership"
+              }
+            }
+          }
+        ],
+        "tags": [
+          "角色管理"
+        ]
+      },
+      "patch": {
+        "summary": "更新角色成员",
+        "description": "接口格式：PATCH /builtin/admin/api/v1/roles/{parent}/members。parent 为角色 ID；请求体为 members 数组（与 List 返回结构一致，每行以 user_roles.id 定位时可传 id，否则传 user_id）。无 FieldMask：每条 member 对 member_role、member_status、member_type、expired_at、metadata、description 整段写入（请先 GET 列表再改）。示例：[{\"id\":\"10\",\"user_id\":\"1\",\"member_role\":\"ADMIN\",\"member_status\":\"ACTIVE\",\"description\":\"运维\"}]。",
+        "operationId": "KnownAdmin_UpdateRoleMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateRoleMembersResponse"
+            },
+            "examples": {
+              "application/json": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "members",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1Membership"
+              }
+            }
+          }
+        ],
+        "tags": [
+          "角色管理"
+        ]
       }
     },
-    "/builtin/admin/api/v1/roles/{parent}/users/{user_id}": {
+    "/builtin/admin/api/v1/roles/{parent}/members/{user_id}": {
       "delete": {
-        "summary": "移除角色用户",
-        "description": "接口格式：/builtin/admin/api/v1/roles/{parent}/users/{user_id}。parent 表示角色 ID。",
-        "operationId": "KnownAdmin_DeleteRoleUser",
+        "summary": "移除角色成员",
+        "description": "接口格式：/builtin/admin/api/v1/roles/{parent}/members/{user_id}。parent 表示角色 ID。",
+        "operationId": "KnownAdmin_DeleteRoleMember",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -4347,7 +4455,7 @@
         "parameters": [
           {
             "name": "parent",
-            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "description": "父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers / CreateRoleMembers）",
             "in": "path",
             "required": true,
             "type": "string"
@@ -4749,66 +4857,6 @@
             "required": true,
             "type": "string",
             "format": "int64"
-          }
-        ],
-        "tags": [
-          "角色管理"
-        ]
-      }
-    },
-    "/builtin/admin/api/v1/roles/{role_id}:assign": {
-      "post": {
-        "summary": "为用户分配角色",
-        "description": "接口格式：/builtin/admin/api/v1/roles/{role_id}:assign。为指定用户分配角色。请求体示例：{\"role_id\":\"2\",\"users\":[{\"id\":\"1001\"},{\"id\":\"1002\"}]}。",
-        "operationId": "KnownAdmin_AssignRoleToUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
-              "application/json": {}
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "role_id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "users": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "$ref": "#/definitions/v1User"
-                  }
-                }
-              }
-            }
           }
         ],
         "tags": [
@@ -6152,10 +6200,11 @@
       "enum": [
         "TARGET_TYPE_UNSPECIFIED",
         "GROUP",
-        "DEPARTMENT"
+        "DEPARTMENT",
+        "ROLE"
       ],
       "default": "TARGET_TYPE_UNSPECIFIED",
-      "description": "- TARGET_TYPE_UNSPECIFIED: 未指定\n - GROUP: 群组\n - DEPARTMENT: 部门",
+      "description": "- TARGET_TYPE_UNSPECIFIED: 未指定\n - GROUP: 群组\n - DEPARTMENT: 部门\n - ROLE: 角色",
       "title": "TargetType 关联目标类型，区分成员属于哪种组织实体"
     },
     "OAuth2JSONWebKeysKey": {
@@ -6752,6 +6801,9 @@
           }
         }
       }
+    },
+    "v1CreateRoleMembersResponse": {
+      "type": "object"
     },
     "v1CreateRolePermissionsResponse": {
       "type": "object",
@@ -7723,6 +7775,28 @@
         }
       }
     },
+    "v1ListRoleMembersResponse": {
+      "type": "object",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Membership"
+          },
+          "title": "角色成员关系列表（与 ListGroupMembersResponse 结构一致）。"
+        },
+        "next_page_token": {
+          "type": "string",
+          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
+        }
+      }
+    },
     "v1ListRolePermissionsResponse": {
       "type": "object",
       "properties": {
@@ -7741,28 +7815,6 @@
           "type": "integer",
           "format": "int32",
           "title": "符合条件的权限总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
-        }
-      }
-    },
-    "v1ListRoleUsersResponse": {
-      "type": "object",
-      "properties": {
-        "users": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1User"
-          },
-          "title": "符合查询条件的用户资源。"
-        },
-        "next_page_token": {
-          "type": "string",
-          "title": "用于获取下一页结果的 token。\n- 如果为空，表示没有更多结果。\n- 客户端不需要理解其内容，只需原样传回。\nAIP-132: 必须字段。"
-        },
-        "total_size": {
-          "type": "integer",
-          "format": "int32",
-          "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
     },
@@ -7951,7 +8003,7 @@
         "target_id": {
           "type": "string",
           "format": "int64",
-          "title": "TargetID 关联目标的 ID（群组ID 或 部门ID）\n与 target_type 配合使用，确定具体的关联实体"
+          "title": "TargetID 关联目标的 ID（与 target_type 配合使用）\n- GROUP: 群组 ID\n- DEPARTMENT: 部门 ID\n- ROLE: 角色 ID（如 user_roles 成员关系）"
         },
         "member_role": {
           "$ref": "#/definitions/v1MembershipRole"
@@ -9415,6 +9467,9 @@
       }
     },
     "v1UpdateDepartmentMembersResponse": {
+      "type": "object"
+    },
+    "v1UpdateRoleMembersResponse": {
       "type": "object"
     },
     "v1UpdateUserPasswordResponse": {
