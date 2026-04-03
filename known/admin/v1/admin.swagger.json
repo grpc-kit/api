@@ -4581,6 +4581,9 @@
                     "$ref": "#/definitions/adminv1Role"
                   },
                   "title": "Children 直接子角色列表，用于构建完整的角色树"
+                },
+                "protected": {
+                  "type": "boolean"
                 }
               },
               "title": "Role 角色实体，表示用户在系统上的权限和功能"
@@ -6326,6 +6329,9 @@
             "$ref": "#/definitions/adminv1Role"
           },
           "title": "Children 直接子角色列表，用于构建完整的角色树"
+        },
+        "protected": {
+          "type": "boolean"
         }
       },
       "title": "Role 角色实体，表示用户在系统上的权限和功能"

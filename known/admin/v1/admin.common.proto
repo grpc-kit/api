@@ -566,6 +566,8 @@ message Role {
 
   // Children 直接子角色列表，用于构建完整的角色树
   repeated Role children = 13;
+
+  bool protected = 14;
 }
 
 // Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形
