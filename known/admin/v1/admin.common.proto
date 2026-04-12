@@ -394,6 +394,8 @@ message Permission {
     int64 resource_scope_id = 2;
     // 是否递归子资源
     bool is_recursive = 3;
+    // 可选：允许的 HTTP methods，若为空则按 scope.code 默认映射
+    repeated string allow_methods = 4;
 
     Resource resource = 5;
   }

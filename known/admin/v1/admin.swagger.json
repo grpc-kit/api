@@ -6249,6 +6249,13 @@
           "type": "boolean",
           "title": "是否递归子资源"
         },
+        "allow_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "可选：允许的 HTTP methods，若为空则按 scope.code 默认映射"
+        },
         "resource": {
           "$ref": "#/definitions/v1Resource"
         }
