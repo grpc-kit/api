@@ -126,6 +126,63 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePolicy
     delete: "/builtin/admin/api/v1/policies/{id}"
 
+    # 动作管理
+    ## 获取动作
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetAction
+    get: "/builtin/admin/api/v1/actions/{id}"
+    ## 动作列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListActions
+    get: "/builtin/admin/api/v1/actions"
+    ## 创建动作
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateAction
+    post: "/builtin/admin/api/v1/actions"
+    body: "action"
+    ## 更新动作
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateAction
+    patch: "/builtin/admin/api/v1/actions/{action.id}"
+    body: "action"
+    ## 删除动作
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteAction
+    delete: "/builtin/admin/api/v1/actions/{id}"
+
+    # 策略语句管理
+    ## 获取策略语句
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetPolicyStatement
+    get: "/builtin/admin/api/v1/policy-statements/{id}"
+    ## 策略语句列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPolicyStatements
+    get: "/builtin/admin/api/v1/policy-statements"
+    ## 创建策略语句
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreatePolicyStatement
+    post: "/builtin/admin/api/v1/policy-statements"
+    body: "statement"
+    ## 更新策略语句
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdatePolicyStatement
+    patch: "/builtin/admin/api/v1/policy-statements/{statement.id}"
+    body: "statement"
+    ## 删除策略语句
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePolicyStatement
+    delete: "/builtin/admin/api/v1/policy-statements/{id}"
+
+    # 策略挂载管理
+    ## 获取策略挂载
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetPolicyAttachment
+    get: "/builtin/admin/api/v1/policy-attachments/{id}"
+    ## 策略挂载列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPolicyAttachments
+    get: "/builtin/admin/api/v1/policy-attachments"
+    ## 创建策略挂载
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreatePolicyAttachment
+    post: "/builtin/admin/api/v1/policy-attachments"
+    body: "attachment"
+    ## 更新策略挂载
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdatePolicyAttachment
+    patch: "/builtin/admin/api/v1/policy-attachments/{attachment.id}"
+    body: "attachment"
+    ## 删除策略挂载
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePolicyAttachment
+    delete: "/builtin/admin/api/v1/policy-attachments/{id}"
+
     # 权限管理
     ## 权限列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPermissions

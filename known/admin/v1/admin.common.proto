@@ -94,9 +94,9 @@ message Department {
   int64 parent_id = 2;
   
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "tech-dept"、"hr"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "tech.dept"、"hr"；自动 "a7k2m3x9b5f1"
   string code = 3;
   
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
@@ -232,9 +232,9 @@ message Scope {
   Type type = 2;
 
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "admin"、"readonly"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "admin"、"order.read"；自动 "a7k2m3x9b5f1"
   // 默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）
   string code = 3;
   string display_name = 4;
@@ -251,9 +251,9 @@ message Resource {
   // ParentID 父资源 ID，为 0 表示顶级资源
   int64 parent_id = 2;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "user-management"、"system-config"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "user.management"、"system-config"；自动 "a7k2m3x9b5f1"
   string code = 3;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化
@@ -356,9 +356,9 @@ message Policy {
   Status status = 3;
 
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "allow-read"、"deny-delete"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "allow.read"、"deny-delete"；自动 "a7k2m3x9b5f1"
   string code = 4;
 
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
@@ -369,13 +369,57 @@ message Policy {
 
   // Description 策略描述，详细说明策略职责和业务范围
   string description = 7;
+
+  // Kind V3 语义层策略分类，与旧 type 并行保留
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    ACCESS_POLICY = 1;
+    RESOURCE_POLICY = 2;
+    PERMISSION_BOUNDARY = 3;
+    ORGANIZATION_POLICY = 4;
+    TRUST_POLICY = 5;
+    GATEWAY_POLICY = 6;
+  }
+  Kind kind = 8;
+
+  // EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式
+  enum EngineMode {
+    ENGINE_MODE_UNSPECIFIED = 0;
+    CANONICAL = 1;
+    OPA = 2;
+    ENVOY_RBAC = 3;
+    HYBRID = 4;
+  }
+  EngineMode engine_mode = 9;
+
+  // VersionNo 策略版本号，用于发布与回滚
+  int64 version_no = 10;
+
+  // PublishState 发布状态，与 status 区分开，专用于版本发布流程
+  enum PublishState {
+    PUBLISH_STATE_UNSPECIFIED = 0;
+    UNPUBLISHED = 1;
+    PUBLISHED = 2;
+    ROLLED_BACK = 3;
+    ARCHIVED_STATE = 4;
+  }
+  PublishState publish_state = 11;
+
+  // IsSystem 是否为系统内置策略
+  bool is_system = 12;
+
+  // Statements 该策略下挂载的语句集合
+  repeated PolicyStatement statements = 13;
+
+  // Attachments 该策略当前已挂载的生效边界
+  repeated PolicyAttachment attachments = 14;
 }
 
 message Permission {
   // ID 资源 ID
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   string code = 2;
   string display_name = 3;
@@ -520,9 +564,9 @@ message Role {
   int64 parent_id = 2;
 
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "admin"、"user-manager"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "admin"、"user.manager"；自动 "a7k2m3x9b5f1"
   string code = 3;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于角色名称的多语言显示，便于不同地区用户理解角色含义
@@ -578,9 +622,9 @@ message Group {
   // ID 群组 ID，全局唯一标识
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "dev-team"、"project-alpha"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "dev.team"、"project-alpha"；自动 "a7k2m3x9b5f1"
   string code = 2;
 
   // Type 群组类型，标识群组的业务用途
@@ -782,9 +826,9 @@ message AuthProvider {
   // ID 全局唯一标识
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "github"、"corp-ldap"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "github"、"corp.ldap"；自动 "a7k2m3x9b5f1"
   string code = 2;
 
   // Type 身份提供商类型
@@ -1075,9 +1119,9 @@ message Credential {
 
   int64 id = 1;             // 凭证唯一 ID
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字和连字符，不允许连续连字符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "api-signing-key"、"tls-cert"；自动 "a7k2m3x9b5f1"
+  // 示例：手动 "api.signing-key"、"tls-cert"；自动 "a7k2m3x9b5f1"
   string code = 2;
 
   Type type = 3;             // 凭证类型
@@ -1162,4 +1206,81 @@ message AuthToken {
   string challenge_id = 11;
   // challenge 类型，当前固定为 "TOTP"
   string challenge_type = 12;
+}
+
+// Action 统一动作字典
+message Action {
+  int64 id = 1;
+  string code = 2;
+  string display_name = 3;
+  Resource.Type resource_type = 4;
+  string http_method = 5;
+  bool protected = 6;
+  string description = 7;
+  int64 created_by = 8;
+  int64 updated_by = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+// PolicyStatement 策略语句，是授权评估的最小单元
+message PolicyStatement {
+  int64 id = 1;
+  int64 policy_id = 2;
+  string sid = 3;
+
+  enum Effect {
+    EFFECT_UNSPECIFIED = 0;
+    ALLOW = 1;
+    DENY = 2;
+  }
+  Effect effect = 4;
+
+  string action_selector = 5;
+  string resource_selector = 6;
+  string condition_json = 7;
+  int32 priority = 8;
+  string description = 9;
+  int64 created_by = 10;
+  int64 updated_by = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
+// PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体
+message PolicyAttachment {
+  int64 id = 1;
+  int64 policy_id = 2;
+
+  enum PrincipalType {
+    PRINCIPAL_TYPE_UNSPECIFIED = 0;
+    USER = 1;
+    ROLE = 2;
+    GROUP = 3;
+    DEPARTMENT = 4;
+    SERVICE_ACCOUNT = 5;
+    CLIENT_APP = 6;
+    TENANT = 7;
+  }
+  PrincipalType principal_type = 3;
+
+  int64 principal_id = 4;
+  int64 resource_id = 5;
+  bool is_recursive = 6;
+
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    ACTIVE = 1;
+    DISABLED = 2;
+    EXPIRED = 3;
+  }
+  Status status = 7;
+
+  string condition_json = 8;
+  google.protobuf.Timestamp expires_at = 9;
+  string description = 10;
+  int64 created_by = 11;
+  int64 updated_by = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
 }

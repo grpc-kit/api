@@ -20,6 +20,9 @@ import "known/admin/v1/database.proto";
 import "known/admin/v1/scope.proto";
 import "known/admin/v1/policy.proto";
 import "known/admin/v1/permission.proto";
+import "known/admin/v1/actions.proto";
+import "known/admin/v1/policy_statement.proto";
+import "known/admin/v1/policy_attachment.proto";
 
 service KnownAdmin {
   // 本地配置
@@ -77,6 +80,27 @@ service KnownAdmin {
   rpc CreatePolicy(CreatePolicyRequest) returns(Policy);
   rpc UpdatePolicy(UpdatePolicyRequest) returns(Policy);
   rpc DeletePolicy(DeletePolicyRequest) returns(google.protobuf.Empty);
+
+  // 动作管理
+  rpc GetAction(GetActionRequest) returns(Action);
+  rpc ListActions(ListActionsRequest) returns(ListActionsResponse);
+  rpc CreateAction(CreateActionRequest) returns(Action);
+  rpc UpdateAction(UpdateActionRequest) returns(Action);
+  rpc DeleteAction(DeleteActionRequest) returns(google.protobuf.Empty);
+
+  // 策略语句管理
+  rpc GetPolicyStatement(GetPolicyStatementRequest) returns(PolicyStatement);
+  rpc ListPolicyStatements(ListPolicyStatementsRequest) returns(ListPolicyStatementsResponse);
+  rpc CreatePolicyStatement(CreatePolicyStatementRequest) returns(PolicyStatement);
+  rpc UpdatePolicyStatement(UpdatePolicyStatementRequest) returns(PolicyStatement);
+  rpc DeletePolicyStatement(DeletePolicyStatementRequest) returns(google.protobuf.Empty);
+
+  // 策略挂载管理
+  rpc GetPolicyAttachment(GetPolicyAttachmentRequest) returns(PolicyAttachment);
+  rpc ListPolicyAttachments(ListPolicyAttachmentsRequest) returns(ListPolicyAttachmentsResponse);
+  rpc CreatePolicyAttachment(CreatePolicyAttachmentRequest) returns(PolicyAttachment);
+  rpc UpdatePolicyAttachment(UpdatePolicyAttachmentRequest) returns(PolicyAttachment);
+  rpc DeletePolicyAttachment(DeletePolicyAttachmentRequest) returns(google.protobuf.Empty);
 
   // 权限管理
   rpc ListPermissions(ListPermissionsRequest) returns(ListPermissionsResponse);
