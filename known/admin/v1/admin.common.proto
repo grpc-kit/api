@@ -330,9 +330,14 @@ message Resource {
   google.protobuf.Timestamp updated_at = 21;
 }
 
-// Policy 策略定义
+// Policy 策略定义，是一组 policy statements 的逻辑容器。
+// 它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。
+// 推荐约束：
+// 1. allow / deny 语义放在 statements；
+// 2. policy 负责聚合、复用、审计、发布与回滚；
+// 3. attachment 负责把 policy 挂到具体主体上。
 message Policy {
-  // ID 资源 ID
+  // ID 策略唯一标识
   int64 id = 1;
 
   // Type 策略类型
@@ -371,13 +376,15 @@ message Policy {
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   string display_name = 5;
 
-  // Value 策略值，根据策略类型不同，表示不同的含义
+  // Value 策略原始内容或编译前载荷。
+  // 对于 statement 驱动模型，一期建议仅作为扩展字段保留，不作为主授权事实来源。
   string value = 6;
 
   // Description 策略描述，详细说明策略职责和业务范围
   string description = 7;
 
-  // EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式
+  // EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式。
+  // 建议以 CANONICAL 为事实源，再向 OPA / Envoy 做投影编译。
   enum EngineMode {
     ENGINE_MODE_UNSPECIFIED = 0;
     CANONICAL = 1;
@@ -387,7 +394,7 @@ message Policy {
   }
   EngineMode engine_mode = 8;
 
-  // VersionNo 策略版本号，用于发布与回滚
+  // VersionNo 策略版本号，用于发布、灰度与回滚
   int64 version_no = 9;
 
   // Protected 是否为系统内置/受保护的策略，受保护的策略不可删除
@@ -1193,11 +1200,18 @@ message AuthToken {
   string challenge_type = 12;
 }
 
-// Action 统一动作字典
+// Action 统一动作字典，用于定义“主体可以对资源做什么”。
+// 它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。
+// 推荐约束：
+// 1. action 使用稳定编码，如 read / list / create / update / delete / invoke；
+// 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
+// 3. resource_type 用于描述该动作主要适配的资源类型范围。
 message Action {
   int64 id = 1;
+  // 动作唯一编码，建议采用稳定且可治理的命名规范
   string code = 2;
   string display_name = 3;
+  // 动作关联的资源类型；后续建议进一步演进为 resource_type_id 外键化
   Resource.Type resource_type = 4;
   // ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式
   // 支持多协议同时映射，key 为协议标识符，value 为协议特定配置
@@ -1217,7 +1231,12 @@ message Action {
   google.protobuf.Timestamp updated_at = 11;
 }
 
-// PolicyStatement 策略语句，是授权评估的最小单元
+// PolicyStatement 策略语句，是授权评估的最小单元。
+// 一条 statement 负责定义：对哪些 action、哪些 resource，在什么 condition 下，产生 allow / deny。
+// 约束建议：
+// 1. 资源匹配主逻辑放在 resource_selector，而不是放在 attachment 层；
+// 2. 条件判断主逻辑放在 condition_json，用于表达上下文、属性、时间窗等命中条件；
+// 3. priority 数值越小优先级越高，且显式 DENY 优先于 ALLOW。
 message PolicyStatement {
   int64 id = 1;
   int64 policy_id = 2;
@@ -1230,9 +1249,13 @@ message PolicyStatement {
   }
   Effect effect = 4;
 
+  // 动作选择器，建议使用标准动作编码、通配符或 JSON 数组表达
   string action_selector = 5;
+  // 资源选择器，建议作为资源匹配的主入口，如资源名、资源树路径、资源标签、GRN 模式等
   string resource_selector = 6;
+  // 结构化条件表达式，建议承载鉴权判断条件，而不是挂载关系状态
   string condition_json = 7;
+  // 优先级，数值越小优先级越高
   int32 priority = 8;
   string description = 9;
   int64 created_by = 10;
@@ -1241,7 +1264,13 @@ message PolicyStatement {
   google.protobuf.Timestamp updated_at = 13;
 }
 
-// PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体
+// PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体。
+// 该结构只负责表达“把哪个 policy 挂给谁、何时生效”，不负责承载主资源匹配逻辑。
+// 推荐约束：
+// 1. principal_* 表示挂载目标主体；
+// 2. resource_id 如保留，仅表示挂载边界资源，0 表示全局挂载；
+// 3. is_recursive 只有在 resource_id > 0 时才有意义；
+// 4. 具体 allow / deny 与资源命中，仍应由 policy_statements 负责。
 message PolicyAttachment {
   int64 id = 1;
   int64 policy_id = 2;
@@ -1259,7 +1288,9 @@ message PolicyAttachment {
   PrincipalType principal_type = 3;
 
   int64 principal_id = 4;
+  // 可选：挂载边界资源。用于表达“该策略仅在某个资源根节点/资源子树下生效”，0 表示不限定资源边界
   int64 resource_id = 5;
+  // 是否递归到 resource_id 对应资源的子树；若 resource_id = 0，建议固定为 false
   bool is_recursive = 6;
 
   enum Status {
@@ -1270,7 +1301,9 @@ message PolicyAttachment {
   }
   Status status = 7;
 
+  // 可选：挂载层附加条件，仅用于控制挂载关系是否生效；不建议承载主授权逻辑
   string condition_json = 8;
+  // 到期时间，超时后该挂载关系失效
   google.protobuf.Timestamp expires_at = 9;
   string description = 10;
   int64 created_by = 11;
