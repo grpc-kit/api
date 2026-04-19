@@ -94,7 +94,7 @@ message Department {
   int64 parent_id = 2;
   
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "tech.dept"、"hr"；自动 "a7k2m3x9b5f1"
   string code = 3;
@@ -232,7 +232,7 @@ message Scope {
   Type type = 2;
 
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "admin"、"order.read"；自动 "a7k2m3x9b5f1"
   // 默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）
@@ -251,12 +251,19 @@ message Resource {
   // ParentID 父资源 ID，为 0 表示顶级资源
   int64 parent_id = 2;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "user.management"、"system-config"；自动 "a7k2m3x9b5f1"
   string code = 3;
+  // Name 稳定资源名（GRN），全局唯一
+  // 格式模板：grn:{service}:{tenant}:{region}:{resource_type}:{resource_path}
+  // 示例：
+  // - grn:admin:default:global:menu:system.user.list
+  // - grn:admin:default:global:api:/builtin/admin/api/v1/users
+  // - grn:llm:tenant-a:cn-hz:model:gpt-4o
+  string name = 22;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
-  // 用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化
+  // 用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化
   string display_name = 4;
   // SortOrder 资源排序顺序，用于同级资源的显示顺序
   // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
@@ -267,8 +274,8 @@ message Resource {
   enum Type {
     TYPE_UNSPECIFIED = 0;
     MENU    = 1; // 菜单（页面入口，会在菜单栏中显示）
-    PAGE    = 2; // 页面（路由级，不会在菜单栏中显示）
-    BUTTON  = 3; // 按钮 / UI 操作
+    DOMAIN  = 2; // 领域资源（业务实体/页面域对象等）
+    LLM     = 3; // LLM 资源（模型/网关/Agent/Tool 等）
     API     = 4; // 后端接口（包含 grpc、http 等）
     DATA    = 5; // 数据级资源（行 / 字段）
     SYSTEM  = 6; // 系统级 / 非 UI 资源（如：系统设置、系统日志等）
@@ -356,7 +363,7 @@ message Policy {
   Status status = 3;
 
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "allow.read"、"deny-delete"；自动 "a7k2m3x9b5f1"
   string code = 4;
@@ -370,18 +377,6 @@ message Policy {
   // Description 策略描述，详细说明策略职责和业务范围
   string description = 7;
 
-  // Kind V3 语义层策略分类，与旧 type 并行保留
-  enum Kind {
-    KIND_UNSPECIFIED = 0;
-    ACCESS_POLICY = 1;
-    RESOURCE_POLICY = 2;
-    PERMISSION_BOUNDARY = 3;
-    ORGANIZATION_POLICY = 4;
-    TRUST_POLICY = 5;
-    GATEWAY_POLICY = 6;
-  }
-  Kind kind = 8;
-
   // EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式
   enum EngineMode {
     ENGINE_MODE_UNSPECIFIED = 0;
@@ -390,36 +385,26 @@ message Policy {
     ENVOY_RBAC = 3;
     HYBRID = 4;
   }
-  EngineMode engine_mode = 9;
+  EngineMode engine_mode = 8;
 
   // VersionNo 策略版本号，用于发布与回滚
-  int64 version_no = 10;
+  int64 version_no = 9;
 
-  // PublishState 发布状态，与 status 区分开，专用于版本发布流程
-  enum PublishState {
-    PUBLISH_STATE_UNSPECIFIED = 0;
-    UNPUBLISHED = 1;
-    PUBLISHED = 2;
-    ROLLED_BACK = 3;
-    ARCHIVED_STATE = 4;
-  }
-  PublishState publish_state = 11;
-
-  // IsSystem 是否为系统内置策略
-  bool is_system = 12;
+  // Protected 是否为系统内置/受保护的策略，受保护的策略不可删除
+  bool protected = 10;
 
   // Statements 该策略下挂载的语句集合
-  repeated PolicyStatement statements = 13;
+  repeated PolicyStatement statements = 11;
 
   // Attachments 该策略当前已挂载的生效边界
-  repeated PolicyAttachment attachments = 14;
+  repeated PolicyAttachment attachments = 12;
 }
 
 message Permission {
   // ID 资源 ID
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   string code = 2;
   string display_name = 3;
@@ -564,7 +549,7 @@ message Role {
   int64 parent_id = 2;
 
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "admin"、"user.manager"；自动 "a7k2m3x9b5f1"
   string code = 3;
@@ -622,7 +607,7 @@ message Group {
   // ID 群组 ID，全局唯一标识
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "dev.team"、"project-alpha"；自动 "a7k2m3x9b5f1"
   string code = 2;
@@ -826,7 +811,7 @@ message AuthProvider {
   // ID 全局唯一标识
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "github"、"corp.ldap"；自动 "a7k2m3x9b5f1"
   string code = 2;
@@ -1119,7 +1104,7 @@ message Credential {
 
   int64 id = 1;             // 凭证唯一 ID
   // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "api.signing-key"、"tls-cert"；自动 "a7k2m3x9b5f1"
   string code = 2;
@@ -1214,7 +1199,16 @@ message Action {
   string code = 2;
   string display_name = 3;
   Resource.Type resource_type = 4;
-  string http_method = 5;
+  // ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式
+  // 支持多协议同时映射，key 为协议标识符，value 为协议特定配置
+  // 示例：
+  // {
+  //   "http": {"method": "GET", "path_pattern": "/api/v1/users"},
+  //   "grpc": {"service": "admin.UserService", "method": "ListUsers"},
+  //   "event": {"topic": "user.created", "operation": "publish"},
+  //   "mcp": {"tool": "list_users"}
+  // }
+  string projection_mapping = 5;
   bool protected = 6;
   string description = 7;
   int64 created_by = 8;

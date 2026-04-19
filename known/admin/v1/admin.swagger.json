@@ -205,8 +205,9 @@
                 "resource_type": {
                   "$ref": "#/definitions/v1ResourceType"
                 },
-                "http_method": {
-                  "type": "string"
+                "projection_mapping": {
+                  "type": "string",
+                  "title": "ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式\n支持多协议同时映射，key 为协议标识符，value 为协议特定配置\n示例：\n{\n  \"http\": {\"method\": \"GET\", \"path_pattern\": \"/api/v1/users\"},\n  \"grpc\": {\"service\": \"admin.UserService\", \"method\": \"ListUsers\"},\n  \"event\": {\"topic\": \"user.created\", \"operation\": \"publish\"},\n  \"mcp\": {\"tool\": \"list_users\"}\n}"
                 },
                 "protected": {
                   "type": "boolean"
@@ -1688,7 +1689,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"tech.dept\"、\"hr\"；自动 \"a7k2m3x9b5f1\""
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"tech.dept\"、\"hr\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "display_name": {
                   "type": "string",
@@ -2385,7 +2386,7 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"dev.team\"、\"project-alpha\"；自动 \"a7k2m3x9b5f1\""
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"dev.team\"、\"project-alpha\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "type": {
                   "$ref": "#/definitions/v1GroupType"
@@ -3170,7 +3171,7 @@
         "parameters": [
           {
             "name": "permission",
-            "description": "{\n\"code\": \"manage-users\",\n\"display_name\": \"管理用户列表\",\n\"policy\": {\n\"id\": \"10\"\n},\n\"bindings\": [\n{\n\"resource_scope_id\": 1,\n\"is_recursive\": true\n}\n],\n\"description\": \"允许查看和管理用户列表\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9-]，长度 2-32，不允许连续 \"--\"。",
+            "description": "{\n\"code\": \"manage-users\",\n\"display_name\": \"管理用户列表\",\n\"policy\": {\n\"id\": \"10\"\n},\n\"bindings\": [\n{\n\"resource_scope_id\": 1,\n\"is_recursive\": true\n}\n],\n\"description\": \"允许查看和管理用户列表\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
             "in": "body",
             "required": true,
             "schema": {
@@ -3354,7 +3355,7 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码"
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码"
                 },
                 "display_name": {
                   "type": "string"
@@ -3555,7 +3556,7 @@
         "parameters": [
           {
             "name": "policy",
-            "description": "{\n\"code\": \"admin-policy\",\n\"display_name\": \"管理员策略\",\n\"type\": \"ROLE\",\n\"status\": \"ENABLED\",\n\"value\": \"admin\",\n\"description\": \"管理员权限策略\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9-]，长度 2-32，不允许连续 \"--\"。",
+            "description": "{\n\"code\": \"admin-policy\",\n\"display_name\": \"管理员策略\",\n\"type\": \"ROLE\",\n\"status\": \"ENABLED\",\n\"value\": \"admin\",\n\"description\": \"管理员权限策略\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
             "in": "body",
             "required": true,
             "schema": {
@@ -3672,7 +3673,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow.read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow.read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "display_name": {
                   "type": "string",
@@ -3686,9 +3687,6 @@
                   "type": "string",
                   "title": "Description 策略描述，详细说明策略职责和业务范围"
                 },
-                "kind": {
-                  "$ref": "#/definitions/PolicyKind"
-                },
                 "engine_mode": {
                   "$ref": "#/definitions/PolicyEngineMode"
                 },
@@ -3697,12 +3695,9 @@
                   "format": "int64",
                   "title": "VersionNo 策略版本号，用于发布与回滚"
                 },
-                "publish_state": {
-                  "$ref": "#/definitions/PolicyPublishState"
-                },
-                "is_system": {
+                "protected": {
                   "type": "boolean",
-                  "title": "IsSystem 是否为系统内置策略"
+                  "title": "Protected 是否为系统内置/受保护的策略，受保护的策略不可删除"
                 },
                 "statements": {
                   "type": "array",
@@ -4553,7 +4548,7 @@
         "parameters": [
           {
             "name": "resource",
-            "description": "{\n\"parent_id\": \"1\",\n\"code\": \"user-management\",\n\"display_name\": \"用户管理\",\n\"sort_order\": 0,\n\"type\": \"MENU\",\n\"status\": \"ENABLED\",\n\"visibility\": \"VISIBLE\",\n\"locator\": \"/hello/world\",\n\"visual\": \"avatar\",\n\"manifest\": \"\",\n\"metadata\": {\n\"hello\": \"world\"\n},\n\"description\": \"admin\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9-]，长度 2-32，不允许连续 \"--\"。",
+            "description": "{\n\"parent_id\": \"1\",\n\"code\": \"user-management\",\n\"display_name\": \"用户管理\",\n\"sort_order\": 0,\n\"type\": \"MENU\",\n\"status\": \"ENABLED\",\n\"visibility\": \"VISIBLE\",\n\"locator\": \"/hello/world\",\n\"visual\": \"avatar\",\n\"manifest\": \"\",\n\"metadata\": {\n\"hello\": \"world\"\n},\n\"description\": \"admin\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
             "in": "body",
             "required": true,
             "schema": {
@@ -4734,11 +4729,15 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user.management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user.management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
+                },
+                "name": {
+                  "type": "string",
+                  "title": "Name 稳定资源名（GRN），全局唯一\n格式模板：grn:{service}:{tenant}:{region}:{resource_type}:{resource_path}\n示例：\n- grn:admin:default:global:menu:system.user.list\n- grn:admin:default:global:api:/builtin/admin/api/v1/users\n- grn:llm:tenant-a:cn-hz:model:gpt-4o"
                 },
                 "display_name": {
                   "type": "string",
-                  "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化"
+                  "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化"
                 },
                 "sort_order": {
                   "type": "integer",
@@ -5456,7 +5455,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"user.manager\"；自动 \"a7k2m3x9b5f1\""
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"user.manager\"；自动 \"a7k2m3x9b5f1\""
                 },
                 "display_name": {
                   "type": "string",
@@ -6075,7 +6074,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"order.read\"；自动 \"a7k2m3x9b5f1\"\n默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）"
+                  "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"order.read\"；自动 \"a7k2m3x9b5f1\"\n默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）"
                 },
                 "display_name": {
                   "type": "string"
@@ -7209,32 +7208,6 @@
       "default": "ENGINE_MODE_UNSPECIFIED",
       "title": "EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式"
     },
-    "PolicyKind": {
-      "type": "string",
-      "enum": [
-        "KIND_UNSPECIFIED",
-        "ACCESS_POLICY",
-        "RESOURCE_POLICY",
-        "PERMISSION_BOUNDARY",
-        "ORGANIZATION_POLICY",
-        "TRUST_POLICY",
-        "GATEWAY_POLICY"
-      ],
-      "default": "KIND_UNSPECIFIED",
-      "title": "Kind V3 语义层策略分类，与旧 type 并行保留"
-    },
-    "PolicyPublishState": {
-      "type": "string",
-      "enum": [
-        "PUBLISH_STATE_UNSPECIFIED",
-        "UNPUBLISHED",
-        "PUBLISHED",
-        "ROLLED_BACK",
-        "ARCHIVED_STATE"
-      ],
-      "default": "PUBLISH_STATE_UNSPECIFIED",
-      "title": "PublishState 发布状态，与 status 区分开，专用于版本发布流程"
-    },
     "PolicyStatementEffect": {
       "type": "string",
       "enum": [
@@ -7272,7 +7245,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"user.manager\"；自动 \"a7k2m3x9b5f1\""
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"user.manager\"；自动 \"a7k2m3x9b5f1\""
         },
         "display_name": {
           "type": "string",
@@ -7370,8 +7343,9 @@
         "resource_type": {
           "$ref": "#/definitions/v1ResourceType"
         },
-        "http_method": {
-          "type": "string"
+        "projection_mapping": {
+          "type": "string",
+          "title": "ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式\n支持多协议同时映射，key 为协议标识符，value 为协议特定配置\n示例：\n{\n  \"http\": {\"method\": \"GET\", \"path_pattern\": \"/api/v1/users\"},\n  \"grpc\": {\"service\": \"admin.UserService\", \"method\": \"ListUsers\"},\n  \"event\": {\"topic\": \"user.created\", \"operation\": \"publish\"},\n  \"mcp\": {\"tool\": \"list_users\"}\n}"
         },
         "protected": {
           "type": "boolean"
@@ -7454,7 +7428,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"github\"、\"corp.ldap\"；自动 \"a7k2m3x9b5f1\""
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"github\"、\"corp.ldap\"；自动 \"a7k2m3x9b5f1\""
         },
         "type": {
           "$ref": "#/definitions/v1AuthProviderType"
@@ -7880,7 +7854,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"api.signing-key\"、\"tls-cert\"；自动 \"a7k2m3x9b5f1\""
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"api.signing-key\"、\"tls-cert\"；自动 \"a7k2m3x9b5f1\""
         },
         "type": {
           "$ref": "#/definitions/v1CredentialType",
@@ -8083,7 +8057,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"tech.dept\"、\"hr\"；自动 \"a7k2m3x9b5f1\""
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"tech.dept\"、\"hr\"；自动 \"a7k2m3x9b5f1\""
         },
         "display_name": {
           "type": "string",
@@ -8353,7 +8327,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"dev.team\"、\"project-alpha\"；自动 \"a7k2m3x9b5f1\""
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"dev.team\"、\"project-alpha\"；自动 \"a7k2m3x9b5f1\""
         },
         "type": {
           "$ref": "#/definitions/v1GroupType"
@@ -9551,7 +9525,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码"
         },
         "display_name": {
           "type": "string"
@@ -9602,7 +9576,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow.read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow.read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
         },
         "display_name": {
           "type": "string",
@@ -9616,9 +9590,6 @@
           "type": "string",
           "title": "Description 策略描述，详细说明策略职责和业务范围"
         },
-        "kind": {
-          "$ref": "#/definitions/PolicyKind"
-        },
         "engine_mode": {
           "$ref": "#/definitions/PolicyEngineMode"
         },
@@ -9627,12 +9598,9 @@
           "format": "int64",
           "title": "VersionNo 策略版本号，用于发布与回滚"
         },
-        "publish_state": {
-          "$ref": "#/definitions/PolicyPublishState"
-        },
-        "is_system": {
+        "protected": {
           "type": "boolean",
-          "title": "IsSystem 是否为系统内置策略"
+          "title": "Protected 是否为系统内置/受保护的策略，受保护的策略不可删除"
         },
         "statements": {
           "type": "array",
@@ -9862,11 +9830,15 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user.management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user.management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
+        },
+        "name": {
+          "type": "string",
+          "title": "Name 稳定资源名（GRN），全局唯一\n格式模板：grn:{service}:{tenant}:{region}:{resource_type}:{resource_path}\n示例：\n- grn:admin:default:global:menu:system.user.list\n- grn:admin:default:global:api:/builtin/admin/api/v1/users\n- grn:llm:tenant-a:cn-hz:model:gpt-4o"
         },
         "display_name": {
           "type": "string",
-          "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、按钮等界面元素的国际化"
+          "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化"
         },
         "sort_order": {
           "type": "integer",
@@ -9957,14 +9929,14 @@
       "enum": [
         "TYPE_UNSPECIFIED",
         "MENU",
-        "PAGE",
-        "BUTTON",
+        "DOMAIN",
+        "LLM",
         "API",
         "DATA",
         "SYSTEM"
       ],
       "default": "TYPE_UNSPECIFIED",
-      "description": "- MENU: 菜单（页面入口，会在菜单栏中显示）\n - PAGE: 页面（路由级，不会在菜单栏中显示）\n - BUTTON: 按钮 / UI 操作\n - API: 后端接口（包含 grpc、http 等）\n - DATA: 数据级资源（行 / 字段）\n - SYSTEM: 系统级 / 非 UI 资源（如：系统设置、系统日志等）",
+      "description": "- MENU: 菜单（页面入口，会在菜单栏中显示）\n - DOMAIN: 领域资源（业务实体/页面域对象等）\n - LLM: LLM 资源（模型/网关/Agent/Tool 等）\n - API: 后端接口（包含 grpc、http 等）\n - DATA: 数据级资源（行 / 字段）\n - SYSTEM: 系统级 / 非 UI 资源（如：系统设置、系统日志等）",
       "title": "Type 资源类型"
     },
     "v1RoleStatus": {
@@ -10438,7 +10410,7 @@
         },
         "code": {
           "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符和点号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"order.read\"；自动 \"a7k2m3x9b5f1\"\n默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）"
+          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"order.read\"；自动 \"a7k2m3x9b5f1\"\n默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）"
         },
         "display_name": {
           "type": "string"
