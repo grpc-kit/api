@@ -190,20 +190,22 @@
           },
           {
             "name": "action",
-            "description": "Action 统一动作字典",
+            "description": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，如 read / list / create / update / delete / invoke；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type 用于描述该动作主要适配的资源类型范围。",
             "in": "body",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "code": {
-                  "type": "string"
+                  "type": "string",
+                  "title": "动作唯一编码，建议采用稳定且可治理的命名规范"
                 },
                 "display_name": {
                   "type": "string"
                 },
                 "resource_type": {
-                  "$ref": "#/definitions/v1ResourceType"
+                  "$ref": "#/definitions/v1ResourceType",
+                  "title": "动作关联的资源类型；后续建议进一步演进为 resource_type_id 外键化"
                 },
                 "projection_mapping": {
                   "type": "string",
@@ -232,7 +234,7 @@
                   "format": "date-time"
                 }
               },
-              "title": "Action 统一动作字典"
+              "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，如 read / list / create / update / delete / invoke；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type 用于描述该动作主要适配的资源类型范围。"
             }
           }
         ]
@@ -3651,7 +3653,7 @@
         "parameters": [
           {
             "name": "policy.id",
-            "description": "ID 资源 ID",
+            "description": "ID 策略唯一标识",
             "in": "path",
             "required": true,
             "type": "string",
@@ -3659,7 +3661,7 @@
           },
           {
             "name": "policy",
-            "description": "Policy 策略定义",
+            "description": "Policy 策略定义，是一组 policy statements 的逻辑容器。\n它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。\n推荐约束：\n1. allow / deny 语义放在 statements；\n2. policy 负责聚合、复用、审计、发布与回滚；\n3. attachment 负责把 policy 挂到具体主体上。",
             "in": "body",
             "required": true,
             "schema": {
@@ -3681,7 +3683,7 @@
                 },
                 "value": {
                   "type": "string",
-                  "title": "Value 策略值，根据策略类型不同，表示不同的含义"
+                  "title": "Value 策略原始内容或编译前载荷。\n对于 statement 驱动模型，一期建议仅作为扩展字段保留，不作为主授权事实来源。"
                 },
                 "description": {
                   "type": "string",
@@ -3693,7 +3695,7 @@
                 "version_no": {
                   "type": "string",
                   "format": "int64",
-                  "title": "VersionNo 策略版本号，用于发布与回滚"
+                  "title": "VersionNo 策略版本号，用于发布、灰度与回滚"
                 },
                 "protected": {
                   "type": "boolean",
@@ -3716,7 +3718,7 @@
                   "title": "Attachments 该策略当前已挂载的生效边界"
                 }
               },
-              "title": "Policy 策略定义"
+              "title": "Policy 策略定义，是一组 policy statements 的逻辑容器。\n它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。\n推荐约束：\n1. allow / deny 语义放在 statements；\n2. policy 负责聚合、复用、审计、发布与回滚；\n3. attachment 负责把 policy 挂到具体主体上。"
             }
           }
         ],
@@ -3915,7 +3917,7 @@
           },
           {
             "name": "attachment",
-            "description": "PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体",
+            "description": "PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体。\n该结构只负责表达“把哪个 policy 挂给谁、何时生效”，不负责承载主资源匹配逻辑。\n推荐约束：\n1. principal_* 表示挂载目标主体；\n2. resource_id 如保留，仅表示挂载边界资源，0 表示全局挂载；\n3. is_recursive 只有在 resource_id \u003e 0 时才有意义；\n4. 具体 allow / deny 与资源命中，仍应由 policy_statements 负责。",
             "in": "body",
             "required": true,
             "schema": {
@@ -3934,20 +3936,24 @@
                 },
                 "resource_id": {
                   "type": "string",
-                  "format": "int64"
+                  "format": "int64",
+                  "title": "可选：挂载边界资源。用于表达“该策略仅在某个资源根节点/资源子树下生效”，0 表示不限定资源边界"
                 },
                 "is_recursive": {
-                  "type": "boolean"
+                  "type": "boolean",
+                  "title": "是否递归到 resource_id 对应资源的子树；若 resource_id = 0，建议固定为 false"
                 },
                 "status": {
                   "$ref": "#/definitions/v1PolicyAttachmentStatus"
                 },
                 "condition_json": {
-                  "type": "string"
+                  "type": "string",
+                  "title": "可选：挂载层附加条件，仅用于控制挂载关系是否生效；不建议承载主授权逻辑"
                 },
                 "expires_at": {
                   "type": "string",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "title": "到期时间，超时后该挂载关系失效"
                 },
                 "description": {
                   "type": "string"
@@ -3969,7 +3975,7 @@
                   "format": "date-time"
                 }
               },
-              "title": "PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体"
+              "title": "PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体。\n该结构只负责表达“把哪个 policy 挂给谁、何时生效”，不负责承载主资源匹配逻辑。\n推荐约束：\n1. principal_* 表示挂载目标主体；\n2. resource_id 如保留，仅表示挂载边界资源，0 表示全局挂载；\n3. is_recursive 只有在 resource_id \u003e 0 时才有意义；\n4. 具体 allow / deny 与资源命中，仍应由 policy_statements 负责。"
             }
           }
         ]
@@ -4277,7 +4283,7 @@
           },
           {
             "name": "statement",
-            "description": "PolicyStatement 策略语句，是授权评估的最小单元",
+            "description": "PolicyStatement 策略语句，是授权评估的最小单元。\n一条 statement 负责定义：对哪些 action、哪些 resource，在什么 condition 下，产生 allow / deny。\n约束建议：\n1. 资源匹配主逻辑放在 resource_selector，而不是放在 attachment 层；\n2. 条件判断主逻辑放在 condition_json，用于表达上下文、属性、时间窗等命中条件；\n3. priority 数值越小优先级越高，且显式 DENY 优先于 ALLOW。",
             "in": "body",
             "required": true,
             "schema": {
@@ -4294,17 +4300,21 @@
                   "$ref": "#/definitions/PolicyStatementEffect"
                 },
                 "action_selector": {
-                  "type": "string"
+                  "type": "string",
+                  "title": "动作选择器，建议使用标准动作编码、通配符或 JSON 数组表达"
                 },
                 "resource_selector": {
-                  "type": "string"
+                  "type": "string",
+                  "title": "资源选择器，建议作为资源匹配的主入口，如资源名、资源树路径、资源标签、GRN 模式等"
                 },
                 "condition_json": {
-                  "type": "string"
+                  "type": "string",
+                  "title": "结构化条件表达式，建议承载鉴权判断条件，而不是挂载关系状态"
                 },
                 "priority": {
                   "type": "integer",
-                  "format": "int32"
+                  "format": "int32",
+                  "title": "优先级，数值越小优先级越高"
                 },
                 "description": {
                   "type": "string"
@@ -4326,7 +4336,7 @@
                   "format": "date-time"
                 }
               },
-              "title": "PolicyStatement 策略语句，是授权评估的最小单元"
+              "title": "PolicyStatement 策略语句，是授权评估的最小单元。\n一条 statement 负责定义：对哪些 action、哪些 resource，在什么 condition 下，产生 allow / deny。\n约束建议：\n1. 资源匹配主逻辑放在 resource_selector，而不是放在 attachment 层；\n2. 条件判断主逻辑放在 condition_json，用于表达上下文、属性、时间窗等命中条件；\n3. priority 数值越小优先级越高，且显式 DENY 优先于 ALLOW。"
             }
           }
         ]
@@ -6789,6 +6799,22 @@
                 "mfa_enabled": {
                   "type": "boolean",
                   "title": "是否启用 MFA（TOTP）"
+                },
+                "department_members": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/v1Membership"
+                  },
+                  "title": "用户所属部门成员关系，详情视图或完整视图时返回"
+                },
+                "group_members": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/v1Membership"
+                  },
+                  "title": "用户所属群组成员关系，详情视图或完整视图时返回"
                 }
               },
               "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
@@ -7206,7 +7232,7 @@
         "HYBRID"
       ],
       "default": "ENGINE_MODE_UNSPECIFIED",
-      "title": "EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式"
+      "title": "EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式。\n建议以 CANONICAL 为事实源，再向 OPA / Envoy 做投影编译。"
     },
     "PolicyStatementEffect": {
       "type": "string",
@@ -7335,13 +7361,15 @@
           "format": "int64"
         },
         "code": {
-          "type": "string"
+          "type": "string",
+          "title": "动作唯一编码，建议采用稳定且可治理的命名规范"
         },
         "display_name": {
           "type": "string"
         },
         "resource_type": {
-          "$ref": "#/definitions/v1ResourceType"
+          "$ref": "#/definitions/v1ResourceType",
+          "title": "动作关联的资源类型；后续建议进一步演进为 resource_type_id 外键化"
         },
         "projection_mapping": {
           "type": "string",
@@ -7370,7 +7398,7 @@
           "format": "date-time"
         }
       },
-      "title": "Action 统一动作字典"
+      "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，如 read / list / create / update / delete / invoke；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type 用于描述该动作主要适配的资源类型范围。"
     },
     "v1Address": {
       "type": "object",
@@ -9125,6 +9153,10 @@
         "description": {
           "type": "string",
           "title": "Description 详细说明信息"
+        },
+        "target_name": {
+          "type": "string",
+          "title": "TargetName 关联目标的展示名称，用于前端直接显示部门名、群组名或角色名"
         }
       },
       "title": "Membership 统一成员关系实体\n用于描述用户与任意组织实体（群组、部门等）之间的关联关系\n支持多状态管理、角色定义、成员类型区分和审计追踪"
@@ -9566,7 +9598,7 @@
         "id": {
           "type": "string",
           "format": "int64",
-          "title": "ID 资源 ID"
+          "title": "ID 策略唯一标识"
         },
         "type": {
           "$ref": "#/definitions/v1PolicyType"
@@ -9584,7 +9616,7 @@
         },
         "value": {
           "type": "string",
-          "title": "Value 策略值，根据策略类型不同，表示不同的含义"
+          "title": "Value 策略原始内容或编译前载荷。\n对于 statement 驱动模型，一期建议仅作为扩展字段保留，不作为主授权事实来源。"
         },
         "description": {
           "type": "string",
@@ -9596,7 +9628,7 @@
         "version_no": {
           "type": "string",
           "format": "int64",
-          "title": "VersionNo 策略版本号，用于发布与回滚"
+          "title": "VersionNo 策略版本号，用于发布、灰度与回滚"
         },
         "protected": {
           "type": "boolean",
@@ -9619,7 +9651,7 @@
           "title": "Attachments 该策略当前已挂载的生效边界"
         }
       },
-      "title": "Policy 策略定义"
+      "title": "Policy 策略定义，是一组 policy statements 的逻辑容器。\n它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。\n推荐约束：\n1. allow / deny 语义放在 statements；\n2. policy 负责聚合、复用、审计、发布与回滚；\n3. attachment 负责把 policy 挂到具体主体上。"
     },
     "v1PolicyAttachment": {
       "type": "object",
@@ -9641,20 +9673,24 @@
         },
         "resource_id": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "title": "可选：挂载边界资源。用于表达“该策略仅在某个资源根节点/资源子树下生效”，0 表示不限定资源边界"
         },
         "is_recursive": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "是否递归到 resource_id 对应资源的子树；若 resource_id = 0，建议固定为 false"
         },
         "status": {
           "$ref": "#/definitions/v1PolicyAttachmentStatus"
         },
         "condition_json": {
-          "type": "string"
+          "type": "string",
+          "title": "可选：挂载层附加条件，仅用于控制挂载关系是否生效；不建议承载主授权逻辑"
         },
         "expires_at": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "到期时间，超时后该挂载关系失效"
         },
         "description": {
           "type": "string"
@@ -9676,7 +9712,7 @@
           "format": "date-time"
         }
       },
-      "title": "PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体"
+      "title": "PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体。\n该结构只负责表达“把哪个 policy 挂给谁、何时生效”，不负责承载主资源匹配逻辑。\n推荐约束：\n1. principal_* 表示挂载目标主体；\n2. resource_id 如保留，仅表示挂载边界资源，0 表示全局挂载；\n3. is_recursive 只有在 resource_id \u003e 0 时才有意义；\n4. 具体 allow / deny 与资源命中，仍应由 policy_statements 负责。"
     },
     "v1PolicyAttachmentStatus": {
       "type": "string",
@@ -9706,17 +9742,21 @@
           "$ref": "#/definitions/PolicyStatementEffect"
         },
         "action_selector": {
-          "type": "string"
+          "type": "string",
+          "title": "动作选择器，建议使用标准动作编码、通配符或 JSON 数组表达"
         },
         "resource_selector": {
-          "type": "string"
+          "type": "string",
+          "title": "资源选择器，建议作为资源匹配的主入口，如资源名、资源树路径、资源标签、GRN 模式等"
         },
         "condition_json": {
-          "type": "string"
+          "type": "string",
+          "title": "结构化条件表达式，建议承载鉴权判断条件，而不是挂载关系状态"
         },
         "priority": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "优先级，数值越小优先级越高"
         },
         "description": {
           "type": "string"
@@ -9738,7 +9778,7 @@
           "format": "date-time"
         }
       },
-      "title": "PolicyStatement 策略语句，是授权评估的最小单元"
+      "title": "PolicyStatement 策略语句，是授权评估的最小单元。\n一条 statement 负责定义：对哪些 action、哪些 resource，在什么 condition 下，产生 allow / deny。\n约束建议：\n1. 资源匹配主逻辑放在 resource_selector，而不是放在 attachment 层；\n2. 条件判断主逻辑放在 condition_json，用于表达上下文、属性、时间窗等命中条件；\n3. priority 数值越小优先级越高，且显式 DENY 优先于 ALLOW。"
     },
     "v1PolicyStatus": {
       "type": "string",
@@ -10822,6 +10862,22 @@
         "mfa_enabled": {
           "type": "boolean",
           "title": "是否启用 MFA（TOTP）"
+        },
+        "department_members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Membership"
+          },
+          "title": "用户所属部门成员关系，详情视图或完整视图时返回"
+        },
+        "group_members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Membership"
+          },
+          "title": "用户所属群组成员关系，详情视图或完整视图时返回"
         }
       },
       "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",

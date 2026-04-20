@@ -544,6 +544,10 @@ message User {
   map<string, string> metadata = 27;
   // 是否启用 MFA（TOTP）
   bool mfa_enabled = 28;
+  // 用户所属部门成员关系，详情视图或完整视图时返回
+  repeated Membership department_members = 29;
+  // 用户所属群组成员关系，详情视图或完整视图时返回
+  repeated Membership group_members = 30;
 }
 
 // Role 角色实体，表示用户在系统上的权限和功能
@@ -809,6 +813,9 @@ message Membership {
 
   // Description 详细说明信息
   string description = 17;
+
+  // TargetName 关联目标的展示名称，用于前端直接显示部门名、群组名或角色名
+  string target_name = 18;
 }
 
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
