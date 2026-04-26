@@ -255,20 +255,9 @@ message Resource {
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "user.management"、"system-config"；自动 "a7k2m3x9b5f1"
   string code = 3;
-  // Name 稳定资源名（GRN），全局唯一
-  // 格式模板：grn:{service}:{tenant}:{region}:{resource_type}:{resource_path}
-  // 示例：
-  // - grn:admin:default:global:menu:system.user.list
-  // - grn:admin:default:global:api:/builtin/admin/api/v1/users
-  // - grn:llm:tenant-a:cn-hz:model:gpt-4o
-  string name = 22;
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化
   string display_name = 4;
-  // SortOrder 资源排序顺序，用于同级资源的显示顺序
-  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
-  // 默认值：100，范围：1-9999
-  int32 sort_order = 5 [deprecated = true];
 
   // Type 资源类型
   enum Type {
@@ -301,12 +290,6 @@ message Resource {
   // Visibility 资源可见性/展示策略（使用公共枚举 Visibility）
   Visibility visibility = 8;
 
-  // Locator 资源路径，我怎么找到你
-  string locator = 11 [deprecated = true];
-  // visual 资源图标，我怎么看到你
-  string visual = 12 [deprecated = true];
-  // Manifest 资源描述，我怎么用你
-  string manifest = 13 [deprecated = true];
   // Metadata 扩展元数据
   // 用于存储上述三个核心字段无法涵盖的特定平台/业务属性
   map<string, string> metadata = 14;

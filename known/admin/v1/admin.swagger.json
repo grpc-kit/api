@@ -4693,7 +4693,7 @@
         "parameters": [
           {
             "name": "resource",
-            "description": "{\n\"parent_id\": \"1\",\n\"code\": \"user-management\",\n\"display_name\": \"用户管理\",\n\"sort_order\": 0,\n\"type\": \"MENU\",\n\"status\": \"ENABLED\",\n\"visibility\": \"VISIBLE\",\n\"locator\": \"/hello/world\",\n\"visual\": \"avatar\",\n\"manifest\": \"\",\n\"metadata\": {\n\"hello\": \"world\"\n},\n\"description\": \"admin\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
+            "description": "{\n\"parent_id\": \"1\",\n\"code\": \"user-management\",\n\"display_name\": \"用户管理\",\n\"type\": \"MENU\",\n\"status\": \"ENABLED\",\n\"visibility\": \"VISIBLE\",\n\"metadata\": {\n\"hello\": \"world\"\n},\n\"description\": \"admin\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
             "in": "body",
             "required": true,
             "schema": {
@@ -4876,18 +4876,9 @@
                   "type": "string",
                   "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user.management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
                 },
-                "name": {
-                  "type": "string",
-                  "title": "Name 稳定资源名（GRN），全局唯一\n格式模板：grn:{service}:{tenant}:{region}:{resource_type}:{resource_path}\n示例：\n- grn:admin:default:global:menu:system.user.list\n- grn:admin:default:global:api:/builtin/admin/api/v1/users\n- grn:llm:tenant-a:cn-hz:model:gpt-4o"
-                },
                 "display_name": {
                   "type": "string",
                   "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化"
-                },
-                "sort_order": {
-                  "type": "integer",
-                  "format": "int32",
-                  "title": "SortOrder 资源排序顺序，用于同级资源的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
                 },
                 "type": {
                   "$ref": "#/definitions/v1ResourceType"
@@ -4898,18 +4889,6 @@
                 "visibility": {
                   "$ref": "#/definitions/v1Visibility",
                   "title": "Visibility 资源可见性/展示策略（使用公共枚举 Visibility）"
-                },
-                "locator": {
-                  "type": "string",
-                  "title": "Locator 资源路径，我怎么找到你"
-                },
-                "visual": {
-                  "type": "string",
-                  "title": "visual 资源图标，我怎么看到你"
-                },
-                "manifest": {
-                  "type": "string",
-                  "title": "Manifest 资源描述，我怎么用你"
                 },
                 "metadata": {
                   "type": "object",
@@ -9313,18 +9292,9 @@
           "type": "string",
           "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"user.management\"、\"system-config\"；自动 \"a7k2m3x9b5f1\""
         },
-        "name": {
-          "type": "string",
-          "title": "Name 稳定资源名（GRN），全局唯一\n格式模板：grn:{service}:{tenant}:{region}:{resource_type}:{resource_path}\n示例：\n- grn:admin:default:global:menu:system.user.list\n- grn:admin:default:global:api:/builtin/admin/api/v1/users\n- grn:llm:tenant-a:cn-hz:model:gpt-4o"
-        },
         "display_name": {
           "type": "string",
           "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明\n用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化"
-        },
-        "sort_order": {
-          "type": "integer",
-          "format": "int32",
-          "title": "SortOrder 资源排序顺序，用于同级资源的显示顺序\n数值越小排序越靠前，建议使用 10 的倍数便于后续插入\n默认值：100，范围：1-9999"
         },
         "type": {
           "$ref": "#/definitions/v1ResourceType"
@@ -9335,18 +9305,6 @@
         "visibility": {
           "$ref": "#/definitions/v1Visibility",
           "title": "Visibility 资源可见性/展示策略（使用公共枚举 Visibility）"
-        },
-        "locator": {
-          "type": "string",
-          "title": "Locator 资源路径，我怎么找到你"
-        },
-        "visual": {
-          "type": "string",
-          "title": "visual 资源图标，我怎么看到你"
-        },
-        "manifest": {
-          "type": "string",
-          "title": "Manifest 资源描述，我怎么用你"
         },
         "metadata": {
           "type": "object",
