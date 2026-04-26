@@ -17,9 +17,7 @@ import "known/admin/v1/user.proto";
 import "known/admin/v1/roles.proto";
 import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
-import "known/admin/v1/scope.proto";
 import "known/admin/v1/policy.proto";
-import "known/admin/v1/permission.proto";
 import "known/admin/v1/actions.proto";
 import "known/admin/v1/policy_statement.proto";
 import "known/admin/v1/policy_attachment.proto";
@@ -67,7 +65,6 @@ service KnownAdmin {
   rpc CreateResource(CreateResourceRequest) returns(Resource);
   rpc UpdateResource(UpdateResourceRequest) returns(Resource);
   rpc DeleteResource(DeleteResourceRequest) returns(google.protobuf.Empty);
-  rpc CreateResourceScopes(CreateResourceScopesRequest) returns(CreateResourceScopesResponse);
 
   // 服务字典管理
   rpc ListServices(ListServicesRequest) returns(ListServicesResponse);
@@ -86,15 +83,6 @@ service KnownAdmin {
   rpc CreateMenu(CreateMenuRequest) returns(Menu);
   rpc UpdateMenu(UpdateMenuRequest) returns(Menu);
   rpc DeleteMenu(DeleteMenuRequest) returns(google.protobuf.Empty);
-
-  // 作用域管理
-  rpc ListScopes(ListScopesRequest) returns(ListScopesResponse);
-  rpc CreateScope(CreateScopeRequest) returns(Scope);
-  rpc UpdateScope(UpdateScopeRequest) returns(Scope);
-  rpc DeleteScope(DeleteScopeRequest) returns(google.protobuf.Empty);
-  rpc ListScopeResources(ListScopeResourcesRequest) returns(ListScopeResourcesResponse);
-  rpc DeleteScopeResource(DeleteScopeResourceRequest) returns(google.protobuf.Empty);
-  rpc CreateScopeResources(CreateScopeResourcesRequest) returns(CreateScopeResourcesResponse);
 
   // 策略管理
   rpc ListPolicies(ListPoliciesRequest) returns(ListPoliciesResponse);
@@ -123,13 +111,6 @@ service KnownAdmin {
   rpc UpdatePolicyAttachment(UpdatePolicyAttachmentRequest) returns(PolicyAttachment);
   rpc DeletePolicyAttachment(DeletePolicyAttachmentRequest) returns(google.protobuf.Empty);
 
-  // 权限管理
-  rpc ListPermissions(ListPermissionsRequest) returns(ListPermissionsResponse);
-  rpc GetPermission(GetPermissionRequest) returns(Permission);
-  rpc CreatePermission(CreatePermissionRequest) returns(Permission);
-  rpc UpdatePermission(UpdatePermissionRequest) returns(Permission);
-  rpc DeletePermission(DeletePermissionRequest) returns(google.protobuf.Empty);
-
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);
   rpc GetRole(GetRoleRequest) returns(Role);
@@ -140,9 +121,6 @@ service KnownAdmin {
   rpc CreateRoleMembers(CreateRoleMembersRequest) returns(CreateRoleMembersResponse);
   rpc UpdateRoleMembers(UpdateRoleMembersRequest) returns(UpdateRoleMembersResponse);
   rpc DeleteRoleMember(DeleteRoleMemberRequest) returns(google.protobuf.Empty);
-  rpc CreateRolePermissions(CreateRolePermissionsRequest) returns(CreateRolePermissionsResponse);
-  rpc DeleteRolePermission(DeleteRolePermissionRequest) returns(google.protobuf.Empty);
-  rpc ListRolePermissions(ListRolePermissionsRequest) returns(ListRolePermissionsResponse);
   //rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);
   //rpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);
   //rpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);

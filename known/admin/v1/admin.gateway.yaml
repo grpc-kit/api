@@ -79,11 +79,6 @@ http:
     ## 删除资源
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteResource
     delete: "/builtin/admin/api/v1/resources/{id}"
-    ## 一个资源关联多个作用域
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateResourceScopes
-    post: "/builtin/admin/api/v1/resources/{resource_id}/scopes"
-    body: "scopes"
-
     # 服务字典管理
     ## 服务列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListServices
@@ -131,33 +126,6 @@ http:
     ## 删除菜单
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteMenu
     delete: "/builtin/admin/api/v1/menus/{id}"
-
-    # 作用域管理
-    ## 作用域列表
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListScopes
-    get: "/builtin/admin/api/v1/scopes"
-    ## 创建作用域
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateScope
-    post: "/builtin/admin/api/v1/scopes"
-    body: "scope"
-    ## 更新作用域
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateScope
-    patch: "/builtin/admin/api/v1/scopes/{scope.id}"
-    body: "scope"
-    ## 删除作用域
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteScope
-    delete: "/builtin/admin/api/v1/scopes/{id}"
-    ## 指定作用域下的资源列表
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListScopeResources
-    get: "/builtin/admin/api/v1/scopes/{scope_id}/resources"
-    ## 删除作用域资源
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteScopeResource
-    delete: "/builtin/admin/api/v1/scopes/{scope_id}/resources/{resource_id}"
-    ## 一个作用域关联多个资源
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateScopeResources
-    post: "/builtin/admin/api/v1/scopes/{scope_id}/resources"
-    body: "resources"
-
     # 策略管理
     ## 策略列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPolicies
@@ -230,26 +198,6 @@ http:
     ## 删除策略挂载
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePolicyAttachment
     delete: "/builtin/admin/api/v1/policy-attachments/{id}"
-
-    # 权限管理
-    ## 权限列表
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListPermissions
-    get: "/builtin/admin/api/v1/permissions"
-    ## 权限详情
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetPermission
-    get: "/builtin/admin/api/v1/permissions/{id}"
-    ## 创建权限
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreatePermission
-    post: "/builtin/admin/api/v1/permissions"
-    body: "permission"
-    ## 更新权限
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdatePermission
-    patch: "/builtin/admin/api/v1/permissions/{permission.id}"
-    body: "permission"
-    ## 删除权限
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeletePermission
-    delete: "/builtin/admin/api/v1/permissions/{id}"
-
     # 角色管理
     ## 角色实体
     ### 角色列表
@@ -284,17 +232,6 @@ http:
     ### 删除角色成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRoleMember
     delete: "/builtin/admin/api/v1/roles/{parent}/members/{user_id}"
-    ## 角色权限
-    ### 为角色关联权限
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRolePermissions
-    post: "/builtin/admin/api/v1/roles/{role_id}/permissions"
-    body: "permissions"
-    ### 删除角色下关联权限
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteRolePermission
-    delete: "/builtin/admin/api/v1/roles/{role_id}/permissions/{permission_id}"
-    ### 列出角色下关联权限
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListRolePermissions
-    get: "/builtin/admin/api/v1/roles/{role_id}/permissions"
     # ## 为角色关联资源数据范围（临时注释）
     # - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateRoleDataRanges
     #   post: "/builtin/admin/api/v1/roles/{role_id}/data/ranges"
