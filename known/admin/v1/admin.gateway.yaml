@@ -84,6 +84,54 @@ http:
     post: "/builtin/admin/api/v1/resources/{resource_id}/scopes"
     body: "scopes"
 
+    # 服务字典管理
+    ## 服务列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListServices
+    get: "/builtin/admin/api/v1/services"
+    ## 创建服务
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateService
+    post: "/builtin/admin/api/v1/services"
+    body: "service"
+    ## 更新服务
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateService
+    patch: "/builtin/admin/api/v1/services/{service.id}"
+    body: "service"
+    ## 删除服务
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteService
+    delete: "/builtin/admin/api/v1/services/{id}"
+
+    # 资源类型字典管理
+    ## 资源类型列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListResourceTypes
+    get: "/builtin/admin/api/v1/resource-types"
+    ## 创建资源类型
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateResourceType
+    post: "/builtin/admin/api/v1/resource-types"
+    body: "resource_type"
+    ## 更新资源类型
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateResourceType
+    patch: "/builtin/admin/api/v1/resource-types/{resource_type.id}"
+    body: "resource_type"
+    ## 删除资源类型
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteResourceType
+    delete: "/builtin/admin/api/v1/resource-types/{id}"
+
+    # 菜单管理
+    ## 菜单列表
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListMenus
+    get: "/builtin/admin/api/v1/menus"
+    ## 创建菜单
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateMenu
+    post: "/builtin/admin/api/v1/menus"
+    body: "menu"
+    ## 更新菜单
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateMenu
+    patch: "/builtin/admin/api/v1/menus/{menu.id}"
+    body: "menu"
+    ## 删除菜单
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteMenu
+    delete: "/builtin/admin/api/v1/menus/{id}"
+
     # 作用域管理
     ## 作用域列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListScopes

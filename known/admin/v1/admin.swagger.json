@@ -2859,6 +2859,290 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/menus": {
+      "get": {
+        "summary": "菜单管理",
+        "operationId": "KnownAdmin_ListMenus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListMenusResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "view",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "structure",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRUCTURE_UNSPECIFIED",
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
+            ],
+            "default": "STRUCTURE_UNSPECIFIED"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "resource_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_CreateMenu",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Menu"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "menu",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Menu"
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/menus/{id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteMenu",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/menus/{menu.id}": {
+      "patch": {
+        "operationId": "KnownAdmin_UpdateMenu",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Menu"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "menu.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "menu",
+            "description": "Menu 菜单业务定义。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "parent_id": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "resource_id": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "display_name": {
+                  "type": "string"
+                },
+                "route_path": {
+                  "type": "string"
+                },
+                "component": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "sort_order": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "surface_mask": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "metadata": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/v1Menu"
+                  }
+                },
+                "visibility": {
+                  "$ref": "#/definitions/v1Visibility"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "protected": {
+                  "type": "boolean"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "title": "Menu 菜单业务定义。"
+            }
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/oatuh2/.well-known/openid-configuration": {
       "get": {
         "summary": "获取 OAuth2 Discovery",
@@ -4342,6 +4626,251 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/resource-types": {
+      "get": {
+        "summary": "资源类型字典管理",
+        "operationId": "KnownAdmin_ListResourceTypes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListResourceTypesResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "view",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "structure",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRUCTURE_UNSPECIFIED",
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
+            ],
+            "default": "STRUCTURE_UNSPECIFIED"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "service_code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_CreateResourceType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ResourceType"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource_type",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ResourceType"
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/resource-types/{id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteResourceType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/resource-types/{resource_type.id}": {
+      "patch": {
+        "operationId": "KnownAdmin_UpdateResourceType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ResourceType"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource_type.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "resource_type",
+            "description": "ResourceType 资源类型字典定义。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "display_name": {
+                  "type": "string"
+                },
+                "service_code": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "protected": {
+                  "type": "boolean"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "title": "ResourceType 资源类型字典定义。"
+            }
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/resources": {
       "get": {
         "summary": "资源列表",
@@ -4818,6 +5347,25 @@
                 "updated_at": {
                   "type": "string",
                   "format": "date-time"
+                },
+                "resource_type_code": {
+                  "type": "string",
+                  "title": "新资源模型字段"
+                },
+                "service_code": {
+                  "type": "string"
+                },
+                "tenant_id": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "resource_path": {
+                  "type": "string"
+                },
+                "grn": {
+                  "type": "string"
                 }
               },
               "title": "Resource 资源定义，如：菜单等"
@@ -6352,6 +6900,245 @@
         ],
         "tags": [
           "作用域管理"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/services": {
+      "get": {
+        "summary": "服务字典管理",
+        "operationId": "KnownAdmin_ListServices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListServicesResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "view",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "structure",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRUCTURE_UNSPECIFIED",
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
+            ],
+            "default": "STRUCTURE_UNSPECIFIED"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_CreateService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Service"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Service"
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/services/{id}": {
+      "delete": {
+        "operationId": "KnownAdmin_DeleteService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/services/{service.id}": {
+      "patch": {
+        "operationId": "KnownAdmin_UpdateService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Service"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "service",
+            "description": "Service 服务字典定义。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "grpc_name": {
+                  "type": "string"
+                },
+                "display_name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "protected": {
+                  "type": "boolean"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "title": "Service 服务字典定义。"
+            }
+          }
         ]
       }
     },
@@ -8773,6 +9560,25 @@
         }
       }
     },
+    "v1ListMenusResponse": {
+      "type": "object",
+      "properties": {
+        "menus": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Menu"
+          }
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "v1ListPermissionsResponse": {
       "type": "object",
       "properties": {
@@ -8842,6 +9648,25 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1PolicyStatement"
+          }
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListResourceTypesResponse": {
+      "type": "object",
+      "properties": {
+        "resource_types": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ResourceType"
           }
         },
         "next_page_token": {
@@ -8985,6 +9810,25 @@
           "type": "integer",
           "format": "int32",
           "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
+        }
+      }
+    },
+    "v1ListServicesResponse": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Service"
+          }
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -9208,6 +10052,85 @@
           "format": "int32"
         }
       }
+    },
+    "v1Menu": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "parent_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "resource_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "route_path": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "surface_mask": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Menu"
+          }
+        },
+        "visibility": {
+          "$ref": "#/definitions/v1Visibility"
+        },
+        "description": {
+          "type": "string"
+        },
+        "protected": {
+          "type": "boolean"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "Menu 菜单业务定义。"
     },
     "v1OAuth2Discovery": {
       "type": "object",
@@ -9949,6 +10872,25 @@
         "updated_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "resource_type_code": {
+          "type": "string",
+          "title": "新资源模型字段"
+        },
+        "service_code": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "resource_path": {
+          "type": "string"
+        },
+        "grn": {
+          "type": "string"
         }
       },
       "title": "Resource 资源定义，如：菜单等"
@@ -10504,6 +11446,47 @@
           "$ref": "#/definitions/v1Authorization"
         }
       }
+    },
+    "v1Service": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "grpc_name": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "protected": {
+          "type": "boolean"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "Service 服务字典定义。"
     },
     "v1ServicesConfig": {
       "type": "object",

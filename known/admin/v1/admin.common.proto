@@ -268,7 +268,7 @@ message Resource {
   // SortOrder 资源排序顺序，用于同级资源的显示顺序
   // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
   // 默认值：100，范围：1-9999
-  int32 sort_order = 5;
+  int32 sort_order = 5 [deprecated = true];
 
   // Type 资源类型
   enum Type {
@@ -302,11 +302,11 @@ message Resource {
   Visibility visibility = 8;
 
   // Locator 资源路径，我怎么找到你
-  string locator = 11;
+  string locator = 11 [deprecated = true];
   // visual 资源图标，我怎么看到你
-  string visual = 12;
+  string visual = 12 [deprecated = true];
   // Manifest 资源描述，我怎么用你
-  string manifest = 13;
+  string manifest = 13 [deprecated = true];
   // Metadata 扩展元数据
   // 用于存储上述三个核心字段无法涵盖的特定平台/业务属性
   map<string, string> metadata = 14;
@@ -328,6 +328,65 @@ message Resource {
 
   google.protobuf.Timestamp created_at = 20;
   google.protobuf.Timestamp updated_at = 21;
+
+  // 新资源模型字段
+  string resource_type_code = 23;
+  string service_code = 24;
+  string tenant_id = 25;
+  string region = 26;
+  string resource_path = 27;
+  string grn = 28;
+}
+
+// Service 服务字典定义。
+message Service {
+  int64 id = 1;
+  string code = 2;
+  string grpc_name = 3;
+  string display_name = 4;
+  string description = 5;
+  bool protected = 6;
+  int64 created_by = 7;
+  int64 updated_by = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// ResourceType 资源类型字典定义。
+message ResourceType {
+  int64 id = 1;
+  string code = 2;
+  string display_name = 3;
+  string service_code = 4;
+  string description = 5;
+  bool protected = 6;
+  int64 created_by = 7;
+  int64 updated_by = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// Menu 菜单业务定义。
+message Menu {
+  int64 id = 1;
+  int64 parent_id = 2;
+  int64 resource_id = 3;
+  string code = 4;
+  string display_name = 5;
+  string route_path = 6;
+  string component = 7;
+  string icon = 8;
+  int32 sort_order = 9;
+  int32 surface_mask = 10;
+  map<string, string> metadata = 11;
+  repeated Menu children = 12;
+  Visibility visibility = 13;
+  string description = 14;
+  bool protected = 15;
+  int64 created_by = 16;
+  int64 updated_by = 17;
+  google.protobuf.Timestamp created_at = 18;
+  google.protobuf.Timestamp updated_at = 19;
 }
 
 // Policy 策略定义，是一组 policy statements 的逻辑容器。
