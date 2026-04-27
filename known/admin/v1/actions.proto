@@ -21,7 +21,7 @@ message ListActionsRequest {
   string filter = 7;
   string order_by = 8;
 
-  int32 resource_type = 9;
+  int64 resource_type_id = 9;
 }
 
 message ListActionsResponse {

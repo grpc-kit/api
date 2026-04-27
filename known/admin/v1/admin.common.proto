@@ -1252,32 +1252,34 @@ message AuthToken {
 // Action 统一动作字典，用于定义“主体可以对资源做什么”。
 // 它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。
 // 推荐约束：
-// 1. action 使用稳定编码，如 read / list / create / update / delete / invoke；
+// 1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；
 // 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
-// 3. resource_type 用于描述该动作主要适配的资源类型范围。
+// 3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。
 message Action {
   int64 id = 1;
-  // 动作唯一编码，建议采用稳定且可治理的命名规范
+  // 动作唯一编码，格式：{service.code}:{RpcMethod}
   string code = 2;
   string display_name = 3;
-  // 动作关联的资源类型；后续建议进一步演进为 resource_type_id 外键化
-  Resource.Type resource_type = 4;
-  // ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式
-  // 支持多协议同时映射，key 为协议标识符，value 为协议特定配置
-  // 示例：
-  // {
-  //   "http": {"method": "GET", "path_pattern": "/api/v1/users"},
-  //   "grpc": {"service": "admin.UserService", "method": "ListUsers"},
-  //   "event": {"topic": "user.created", "operation": "publish"},
-  //   "mcp": {"tool": "list_users"}
-  // }
-  string projection_mapping = 5;
+
+  // 字段 4 (resource_type) 和 5 (projection_mapping) 已在 v5 废弃
+  reserved 4, 5;
+  reserved "resource_type", "projection_mapping";
+
   bool protected = 6;
   string description = 7;
   int64 created_by = 8;
   int64 updated_by = 9;
   google.protobuf.Timestamp created_at = 10;
   google.protobuf.Timestamp updated_at = 11;
+
+  // 关联 lion_resource_types 表 ID，可为空（跨类型动作）
+  int64 resource_type_id = 12;
+  // 风险等级：0=low 1=medium 2=high
+  int32 risk_level = 13;
+  // 动作响应字段全集，JSON 数组，用于字段级权限控制
+  string output_fields = 14;
+  // 执行模式：ENFORCED / SHADOW / DISABLED
+  string enforcement_mode = 15;
 }
 
 // PolicyStatement 策略语句，是授权评估的最小单元。

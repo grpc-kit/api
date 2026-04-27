@@ -115,11 +115,11 @@
             "type": "string"
           },
           {
-            "name": "resource_type",
+            "name": "resource_type_id",
             "in": "query",
             "required": false,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           }
         ]
       },
@@ -190,7 +190,7 @@
           },
           {
             "name": "action",
-            "description": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，如 read / list / create / update / delete / invoke；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type 用于描述该动作主要适配的资源类型范围。",
+            "description": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。",
             "in": "body",
             "required": true,
             "schema": {
@@ -198,18 +198,10 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "title": "动作唯一编码，建议采用稳定且可治理的命名规范"
+                  "title": "动作唯一编码，格式：{service.code}:{RpcMethod}"
                 },
                 "display_name": {
                   "type": "string"
-                },
-                "resource_type": {
-                  "$ref": "#/definitions/v1ResourceType",
-                  "title": "动作关联的资源类型；后续建议进一步演进为 resource_type_id 外键化"
-                },
-                "projection_mapping": {
-                  "type": "string",
-                  "title": "ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式\n支持多协议同时映射，key 为协议标识符，value 为协议特定配置\n示例：\n{\n  \"http\": {\"method\": \"GET\", \"path_pattern\": \"/api/v1/users\"},\n  \"grpc\": {\"service\": \"admin.UserService\", \"method\": \"ListUsers\"},\n  \"event\": {\"topic\": \"user.created\", \"operation\": \"publish\"},\n  \"mcp\": {\"tool\": \"list_users\"}\n}"
                 },
                 "protected": {
                   "type": "boolean"
@@ -232,9 +224,27 @@
                 "updated_at": {
                   "type": "string",
                   "format": "date-time"
+                },
+                "resource_type_id": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "关联 lion_resource_types 表 ID，可为空（跨类型动作）"
+                },
+                "risk_level": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "风险等级：0=low 1=medium 2=high"
+                },
+                "output_fields": {
+                  "type": "string",
+                  "title": "动作响应字段全集，JSON 数组，用于字段级权限控制"
+                },
+                "enforcement_mode": {
+                  "type": "string",
+                  "title": "执行模式：ENFORCED / SHADOW / DISABLED"
                 }
               },
-              "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，如 read / list / create / update / delete / invoke；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type 用于描述该动作主要适配的资源类型范围。"
+              "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。"
             }
           }
         ]
@@ -6806,18 +6816,10 @@
         },
         "code": {
           "type": "string",
-          "title": "动作唯一编码，建议采用稳定且可治理的命名规范"
+          "title": "动作唯一编码，格式：{service.code}:{RpcMethod}"
         },
         "display_name": {
           "type": "string"
-        },
-        "resource_type": {
-          "$ref": "#/definitions/v1ResourceType",
-          "title": "动作关联的资源类型；后续建议进一步演进为 resource_type_id 外键化"
-        },
-        "projection_mapping": {
-          "type": "string",
-          "title": "ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式\n支持多协议同时映射，key 为协议标识符，value 为协议特定配置\n示例：\n{\n  \"http\": {\"method\": \"GET\", \"path_pattern\": \"/api/v1/users\"},\n  \"grpc\": {\"service\": \"admin.UserService\", \"method\": \"ListUsers\"},\n  \"event\": {\"topic\": \"user.created\", \"operation\": \"publish\"},\n  \"mcp\": {\"tool\": \"list_users\"}\n}"
         },
         "protected": {
           "type": "boolean"
@@ -6840,9 +6842,27 @@
         "updated_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "resource_type_id": {
+          "type": "string",
+          "format": "int64",
+          "title": "关联 lion_resource_types 表 ID，可为空（跨类型动作）"
+        },
+        "risk_level": {
+          "type": "integer",
+          "format": "int32",
+          "title": "风险等级：0=low 1=medium 2=high"
+        },
+        "output_fields": {
+          "type": "string",
+          "title": "动作响应字段全集，JSON 数组，用于字段级权限控制"
+        },
+        "enforcement_mode": {
+          "type": "string",
+          "title": "执行模式：ENFORCED / SHADOW / DISABLED"
         }
       },
-      "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，如 read / list / create / update / delete / invoke；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type 用于描述该动作主要适配的资源类型范围。"
+      "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。"
     },
     "v1Address": {
       "type": "object",
