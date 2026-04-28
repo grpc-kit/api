@@ -43,4 +43,5 @@ proto:
 		--openapiv2_out=json_names_for_fields=false:./ \
 		./known/admin/v1/admin.proto
 
-	cp ./known/admin/v1/admin.gateway.yaml ${GOPATH}/src/github.com/grpc-kit/pkg/api/known/admin/v1/admin.gateway.yaml
+	@cp ./known/admin/v1/admin.gateway.yaml ${GOPATH}/src/github.com/grpc-kit/pkg/api/known/admin/v1/openapi/admin.gateway.yaml
+	@cp ./known/admin/v1/admin.openapiv2.yaml ${GOPATH}/src/github.com/grpc-kit/pkg/api/known/admin/v1/openapi/admin.openapiv2.yaml
