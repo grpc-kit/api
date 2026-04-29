@@ -18,7 +18,6 @@ import "known/admin/v1/roles.proto";
 import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
 import "known/admin/v1/policy.proto";
-import "known/admin/v1/actions.proto";
 import "known/admin/v1/policy_statement.proto";
 import "known/admin/v1/policy_attachment.proto";
 import "known/admin/v1/service.proto";
@@ -68,9 +67,7 @@ service KnownAdmin {
 
   // 服务字典管理
   rpc ListServices(ListServicesRequest) returns(ListServicesResponse);
-  rpc CreateService(CreateServiceRequest) returns(Service);
-  rpc UpdateService(UpdateServiceRequest) returns(Service);
-  rpc DeleteService(DeleteServiceRequest) returns(google.protobuf.Empty);
+  rpc ListServiceActions(ListServiceActionsRequest) returns(ListServiceActionsResponse);
 
   // 资源类型字典管理
   rpc ListResourceTypes(ListResourceTypesRequest) returns(ListResourceTypesResponse);
@@ -89,13 +86,6 @@ service KnownAdmin {
   rpc CreatePolicy(CreatePolicyRequest) returns(Policy);
   rpc UpdatePolicy(UpdatePolicyRequest) returns(Policy);
   rpc DeletePolicy(DeletePolicyRequest) returns(google.protobuf.Empty);
-
-  // 动作管理
-  rpc GetAction(GetActionRequest) returns(Action);
-  rpc ListActions(ListActionsRequest) returns(ListActionsResponse);
-  rpc CreateAction(CreateActionRequest) returns(Action);
-  rpc UpdateAction(UpdateActionRequest) returns(Action);
-  rpc DeleteAction(DeleteActionRequest) returns(google.protobuf.Empty);
 
   // 策略语句管理
   rpc GetPolicyStatement(GetPolicyStatementRequest) returns(PolicyStatement);

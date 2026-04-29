@@ -325,7 +325,7 @@ message Resource {
 message Service {
   int64 id = 1;
   string code = 2;
-  string grpc_name = 3;
+  string grpc_service = 3;
   string display_name = 4;
   string description = 5;
   bool protected = 6;
@@ -333,6 +333,26 @@ message Service {
   int64 updated_by = 8;
   google.protobuf.Timestamp created_at = 9;
   google.protobuf.Timestamp updated_at = 10;
+}
+
+// Action 统一动作字典，用于定义“主体可以对资源做什么”。
+// 它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。
+// 推荐约束：
+// 1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；
+// 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
+// 3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。
+message Action {
+  int64 id = 1;
+  // 动作唯一编码，格式：{service.code}:{RpcMethod}
+  string code = 2;
+  string grpc_method = 3;
+  string display_name = 4;
+  bool protected = 6;
+  string description = 7;
+  int64 created_by = 8;
+  int64 updated_by = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
 }
 
 // ResourceType 资源类型字典定义。
@@ -1247,39 +1267,6 @@ message AuthToken {
   string challenge_id = 11;
   // challenge 类型，当前固定为 "TOTP"
   string challenge_type = 12;
-}
-
-// Action 统一动作字典，用于定义“主体可以对资源做什么”。
-// 它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。
-// 推荐约束：
-// 1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；
-// 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
-// 3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。
-message Action {
-  int64 id = 1;
-  // 动作唯一编码，格式：{service.code}:{RpcMethod}
-  string code = 2;
-  string display_name = 3;
-
-  // 字段 4 (resource_type) 和 5 (projection_mapping) 已在 v5 废弃
-  reserved 4, 5;
-  reserved "resource_type", "projection_mapping";
-
-  bool protected = 6;
-  string description = 7;
-  int64 created_by = 8;
-  int64 updated_by = 9;
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
-
-  // 关联 lion_resource_types 表 ID，可为空（跨类型动作）
-  int64 resource_type_id = 12;
-  // 风险等级：0=low 1=medium 2=high
-  int32 risk_level = 13;
-  // 动作响应字段全集，JSON 数组，用于字段级权限控制
-  string output_fields = 14;
-  // 执行模式：ENFORCED / SHADOW / DISABLED
-  string enforcement_mode = 15;
 }
 
 // PolicyStatement 策略语句，是授权评估的最小单元。

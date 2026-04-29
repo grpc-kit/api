@@ -24,300 +24,6 @@
     "application/json"
   ],
   "paths": {
-    "/builtin/admin/api/v1/actions": {
-      "get": {
-        "operationId": "KnownAdmin_ListActions",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ListActionsResponse"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "parent",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "page_size",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "page_token",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "view",
-            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "enum": [
-              "VIEW_UNSPECIFIED",
-              "VIEW_BASIC",
-              "VIEW_STANDARD",
-              "VIEW_FULL"
-            ],
-            "default": "VIEW_UNSPECIFIED"
-          },
-          {
-            "name": "structure",
-            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "enum": [
-              "STRUCTURE_UNSPECIFIED",
-              "STRUCTURE_FLAT",
-              "STRUCTURE_TREE",
-              "STRUCTURE_TREE_EXPANDED"
-            ],
-            "default": "STRUCTURE_UNSPECIFIED"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "order_by",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resource_type_id",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          }
-        ]
-      },
-      "post": {
-        "operationId": "KnownAdmin_CreateAction",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Action"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "action",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1Action"
-            }
-          }
-        ]
-      }
-    },
-    "/builtin/admin/api/v1/actions/{action.id}": {
-      "patch": {
-        "operationId": "KnownAdmin_UpdateAction",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Action"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "action.id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "action",
-            "description": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "string",
-                  "title": "动作唯一编码，格式：{service.code}:{RpcMethod}"
-                },
-                "display_name": {
-                  "type": "string"
-                },
-                "protected": {
-                  "type": "boolean"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "created_by": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "updated_by": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "created_at": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "updated_at": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "resource_type_id": {
-                  "type": "string",
-                  "format": "int64",
-                  "title": "关联 lion_resource_types 表 ID，可为空（跨类型动作）"
-                },
-                "risk_level": {
-                  "type": "integer",
-                  "format": "int32",
-                  "title": "风险等级：0=low 1=medium 2=high"
-                },
-                "output_fields": {
-                  "type": "string",
-                  "title": "动作响应字段全集，JSON 数组，用于字段级权限控制"
-                },
-                "enforcement_mode": {
-                  "type": "string",
-                  "title": "执行模式：ENFORCED / SHADOW / DISABLED"
-                }
-              },
-              "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。"
-            }
-          }
-        ]
-      }
-    },
-    "/builtin/admin/api/v1/actions/{id}": {
-      "get": {
-        "summary": "动作管理",
-        "operationId": "KnownAdmin_GetAction",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Action"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ]
-      },
-      "delete": {
-        "operationId": "KnownAdmin_DeleteAction",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ]
-      }
-    },
     "/builtin/admin/api/v1/auth/callback/{provider_name}": {
       "get": {
         "summary": "第三方认证回调",
@@ -5690,50 +5396,16 @@
             "type": "string"
           }
         ]
-      },
-      "post": {
-        "operationId": "KnownAdmin_CreateService",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Service"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "service",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1Service"
-            }
-          }
-        ]
       }
     },
-    "/builtin/admin/api/v1/services/{id}": {
-      "delete": {
-        "operationId": "KnownAdmin_DeleteService",
+    "/builtin/admin/api/v1/services/{parent}/actions": {
+      "get": {
+        "operationId": "KnownAdmin_ListServiceActions",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1ListServiceActionsResponse"
             }
           },
           "4xx": {
@@ -5751,88 +5423,42 @@
         },
         "parameters": [
           {
-            "name": "id",
+            "name": "parent",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ]
-      }
-    },
-    "/builtin/admin/api/v1/services/{service.id}": {
-      "patch": {
-        "operationId": "KnownAdmin_UpdateService",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Service"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "service.id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
+            "type": "string"
           },
           {
-            "name": "service",
-            "description": "Service 服务字典定义。",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "string"
-                },
-                "grpc_name": {
-                  "type": "string"
-                },
-                "display_name": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "protected": {
-                  "type": "boolean"
-                },
-                "created_by": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "updated_by": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "created_at": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "updated_at": {
-                  "type": "string",
-                  "format": "date-time"
-                }
-              },
-              "title": "Service 服务字典定义。"
-            }
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       }
@@ -6818,6 +6444,9 @@
           "type": "string",
           "title": "动作唯一编码，格式：{service.code}:{RpcMethod}"
         },
+        "grpc_method": {
+          "type": "string"
+        },
         "display_name": {
           "type": "string"
         },
@@ -6842,24 +6471,6 @@
         "updated_at": {
           "type": "string",
           "format": "date-time"
-        },
-        "resource_type_id": {
-          "type": "string",
-          "format": "int64",
-          "title": "关联 lion_resource_types 表 ID，可为空（跨类型动作）"
-        },
-        "risk_level": {
-          "type": "integer",
-          "format": "int32",
-          "title": "风险等级：0=low 1=medium 2=high"
-        },
-        "output_fields": {
-          "type": "string",
-          "title": "动作响应字段全集，JSON 数组，用于字段级权限控制"
-        },
-        "enforcement_mode": {
-          "type": "string",
-          "title": "执行模式：ENFORCED / SHADOW / DISABLED"
         }
       },
       "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。"
@@ -8074,25 +7685,6 @@
       },
       "title": "LdapConfig LDAP 身份提供商配置"
     },
-    "v1ListActionsResponse": {
-      "type": "object",
-      "properties": {
-        "actions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1Action"
-          }
-        },
-        "next_page_token": {
-          "type": "string"
-        },
-        "total_size": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
     "v1ListAuthProvidersResponse": {
       "type": "object",
       "properties": {
@@ -8358,6 +7950,25 @@
           "type": "integer",
           "format": "int32",
           "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
+        }
+      }
+    },
+    "v1ListServiceActionsResponse": {
+      "type": "object",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Action"
+          }
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -9940,7 +9551,7 @@
         "code": {
           "type": "string"
         },
-        "grpc_name": {
+        "grpc_service": {
           "type": "string"
         },
         "display_name": {
