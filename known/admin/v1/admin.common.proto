@@ -208,42 +208,6 @@ message Department {
   Visibility visibility = 24;
 }
 
-// Scope 作用域
-message Scope {
-  // ID 资源 ID
-  int64 id = 1;
-
-  // Type 作用域类型
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    /*
-      admin   后台管理端
-      user    前台用户端
-      app     移动端
-     */
-    PLATFORM = 1; // admin, user, app
-
-    /*
-      readonly
-      readwrite
-     */
-    ACTION = 2;
-  }
-  Type type = 2;
-
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "admin"、"order.read"；自动 "a7k2m3x9b5f1"
-  // 默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）
-  string code = 3;
-  string display_name = 4;
-
-  string description = 5;
-
-  bool protected = 6;
-}
-
 // Resource 资源定义，如：菜单等
 message Resource {
   // ID 资源 ID
@@ -297,8 +261,6 @@ message Resource {
   // Children 子资源列表
   repeated Resource children = 15;
 
-  repeated Scope scopes = 16;
-
   string description = 17;
 
   // CreatedBy 创建者用户ID，记录部门创建人
@@ -342,6 +304,12 @@ message Service {
 // 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
 // 3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。
 message Action {
+  // 关联的资源
+  message ResourceSelector {
+    string resource_type = 1;
+    string pattern = 2;
+  }
+
   int64 id = 1;
   // 动作唯一编码，格式：{service.code}:{RpcMethod}
   string code = 2;
@@ -353,6 +321,8 @@ message Action {
   int64 updated_by = 9;
   google.protobuf.Timestamp created_at = 10;
   google.protobuf.Timestamp updated_at = 11;
+
+  repeated ResourceSelector resource_selectors = 12;
 }
 
 // ResourceType 资源类型字典定义。
@@ -467,39 +437,6 @@ message Policy {
 
   // Attachments 该策略当前已挂载的生效边界
   repeated PolicyAttachment attachments = 12;
-}
-
-message Permission {
-  // ID 资源 ID
-  int64 id = 1;
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  string code = 2;
-  string display_name = 3;
-
-  Policy policy = 4;
-
-  // 废弃，使用 Binding 替代
-  // repeated Resource resources = 5;
-
-  string description = 6;
-
-  message Binding {
-    int64 id = 1;
-
-    // 资源范围
-    int64 resource_scope_id = 2;
-    // 是否递归子资源
-    bool is_recursive = 3;
-    // 可选：允许的 HTTP methods，若为空则按 scope.code 默认映射
-    repeated string allow_methods = 4;
-
-    Resource resource = 5;
-  }
-
-  // 权限绑定资源集合
-  repeated Binding bindings = 7;
 }
 
 // User 用户实体，表示系统中的账号信息

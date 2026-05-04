@@ -4621,13 +4621,6 @@
                   },
                   "title": "Children 子资源列表"
                 },
-                "scopes": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "$ref": "#/definitions/v1Scope"
-                  }
-                },
                 "description": {
                   "type": "string"
                 },
@@ -6116,6 +6109,18 @@
     }
   },
   "definitions": {
+    "ActionResourceSelector": {
+      "type": "object",
+      "properties": {
+        "resource_type": {
+          "type": "string"
+        },
+        "pattern": {
+          "type": "string"
+        }
+      },
+      "title": "关联的资源"
+    },
     "CredentialAlgorithm": {
       "type": "string",
       "enum": [
@@ -6471,6 +6476,13 @@
         "updated_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "resource_selectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/ActionResourceSelector"
+          }
         }
       },
       "title": "Action 统一动作字典，用于定义“主体可以对资源做什么”。\n它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。\n推荐约束：\n1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；\n2. action 本身不直接授予权限，必须与 policy statements 组合使用；\n3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。"
@@ -8952,13 +8964,6 @@
           },
           "title": "Children 子资源列表"
         },
-        "scopes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1Scope"
-          }
-        },
         "description": {
           "type": "string"
         },
@@ -9485,44 +9490,6 @@
           "type": "boolean"
         }
       }
-    },
-    "v1Scope": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64",
-          "title": "ID 资源 ID"
-        },
-        "type": {
-          "$ref": "#/definitions/v1ScopeType"
-        },
-        "code": {
-          "type": "string",
-          "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"admin\"、\"order.read\"；自动 \"a7k2m3x9b5f1\"\n默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）"
-        },
-        "display_name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "protected": {
-          "type": "boolean"
-        }
-      },
-      "title": "Scope 作用域"
-    },
-    "v1ScopeType": {
-      "type": "string",
-      "enum": [
-        "TYPE_UNSPECIFIED",
-        "PLATFORM",
-        "ACTION"
-      ],
-      "default": "TYPE_UNSPECIFIED",
-      "description": "- PLATFORM: admin   后台管理端\nuser    前台用户端\napp     移动端\n\nadmin, user, app\n - ACTION: readonly\nreadwrite",
-      "title": "Type 作用域类型"
     },
     "v1SecurityConfig": {
       "type": "object",
