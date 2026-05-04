@@ -6477,6 +6477,12 @@
           "type": "string",
           "format": "date-time"
         },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "resource_selectors": {
           "type": "array",
           "items": {

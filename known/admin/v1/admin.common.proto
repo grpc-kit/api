@@ -322,7 +322,8 @@ message Action {
   google.protobuf.Timestamp created_at = 10;
   google.protobuf.Timestamp updated_at = 11;
 
-  repeated ResourceSelector resource_selectors = 12;
+  repeated string tags = 12;
+  repeated ResourceSelector resource_selectors = 13;
 }
 
 // ResourceType 资源类型字典定义。
