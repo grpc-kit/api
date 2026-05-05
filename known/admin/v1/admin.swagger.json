@@ -3125,56 +3125,6 @@
         "tags": [
           "策略管理"
         ]
-      },
-      "post": {
-        "summary": "创建策略",
-        "description": "接口格式：/builtin/admin/api/v1/policies。根据 policy 字段创建策略。请求体示例：{\"policy\":{\"code\":\"auditor-policy\",\"display_name\":\"审计策略\",\"type\":\"ROLE\",\"status\":\"DRAFT\",\"value\":\"role:auditor\"}}。",
-        "operationId": "KnownAdmin_CreatePolicy",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Policy"
-            },
-            "examples": {
-              "application/json": {
-                "id": "2",
-                "code": "auditor-policy",
-                "display_name": "审计策略",
-                "type": "ROLE",
-                "status": "DRAFT",
-                "value": "role:auditor",
-                "description": "审计角色的读权限策略"
-              }
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "policy",
-            "description": "{\n\"code\": \"admin-policy\",\n\"display_name\": \"管理员策略\",\n\"type\": \"ROLE\",\n\"status\": \"ENABLED\",\n\"value\": \"admin\",\n\"description\": \"管理员权限策略\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1Policy"
-            }
-          }
-        ],
-        "tags": [
-          "策略管理"
-        ]
       }
     },
     "/builtin/admin/api/v1/policies/{id}": {
@@ -3213,6 +3163,113 @@
             "required": true,
             "type": "string",
             "format": "int64"
+          }
+        ],
+        "tags": [
+          "策略管理"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/policies/{policy.code}": {
+      "put": {
+        "summary": "创建策略",
+        "description": "接口格式：/builtin/admin/api/v1/policies。根据 policy 字段创建策略。请求体示例：{\"policy\":{\"code\":\"auditor-policy\",\"display_name\":\"审计策略\",\"type\":\"ROLE\",\"status\":\"DRAFT\",\"value\":\"role:auditor\"}}。",
+        "operationId": "KnownAdmin_CreatePolicy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Policy"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2",
+                "code": "auditor-policy",
+                "display_name": "审计策略",
+                "type": "ROLE",
+                "status": "DRAFT",
+                "value": "role:auditor",
+                "description": "审计角色的读权限策略"
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy.code",
+            "description": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow.read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\"",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "policy",
+            "description": "{\n\"code\": \"admin-policy\",\n\"display_name\": \"管理员策略\",\n\"type\": \"ROLE\",\n\"status\": \"ENABLED\",\n\"value\": \"admin\",\n\"description\": \"管理员权限策略\"\n}\n\n注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "int64",
+                  "title": "ID 策略唯一标识"
+                },
+                "display_name": {
+                  "type": "string",
+                  "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明"
+                },
+                "status": {
+                  "$ref": "#/definitions/v1PolicyStatus"
+                },
+                "protected": {
+                  "type": "boolean",
+                  "title": "Protected 是否为系统内置/受保护的策略，受保护的策略不可删除"
+                },
+                "statements": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/v1PolicyStatement"
+                  },
+                  "title": "Statements 该策略下挂载的语句集合"
+                },
+                "description": {
+                  "type": "string",
+                  "title": "Description 策略描述，详细说明策略职责和业务范围"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "description": "注意：code 为可选字段，如客户端未提供，服务端将自动生成 12 位随机编码。\n如提供，需符合 code 规范：以小写字母开头，仅 [a-z0-9.:-]，长度 2-32，不允许连续分隔符（如 \"--\"、\"..\"、\"::\"）。",
+              "title": "{\n\"code\": \"admin-policy\",\n\"display_name\": \"管理员策略\",\n\"type\": \"ROLE\",\n\"status\": \"ENABLED\",\n\"value\": \"admin\",\n\"description\": \"管理员权限策略\"\n}"
+            }
           }
         ],
         "tags": [
@@ -3273,12 +3330,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "type": {
-                  "$ref": "#/definitions/v1PolicyType"
-                },
-                "status": {
-                  "$ref": "#/definitions/v1PolicyStatus"
-                },
                 "code": {
                   "type": "string",
                   "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow.read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
@@ -3287,21 +3338,8 @@
                   "type": "string",
                   "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明"
                 },
-                "value": {
-                  "type": "string",
-                  "title": "Value 策略原始内容或编译前载荷。\n对于 statement 驱动模型，一期建议仅作为扩展字段保留，不作为主授权事实来源。"
-                },
-                "description": {
-                  "type": "string",
-                  "title": "Description 策略描述，详细说明策略职责和业务范围"
-                },
-                "engine_mode": {
-                  "$ref": "#/definitions/PolicyEngineMode"
-                },
-                "version_no": {
-                  "type": "string",
-                  "format": "int64",
-                  "title": "VersionNo 策略版本号，用于发布、灰度与回滚"
+                "status": {
+                  "$ref": "#/definitions/v1PolicyStatus"
                 },
                 "protected": {
                   "type": "boolean",
@@ -3315,13 +3353,25 @@
                   },
                   "title": "Statements 该策略下挂载的语句集合"
                 },
-                "attachments": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "$ref": "#/definitions/v1PolicyAttachment"
-                  },
-                  "title": "Attachments 该策略当前已挂载的生效边界"
+                "description": {
+                  "type": "string",
+                  "title": "Description 策略描述，详细说明策略职责和业务范围"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
                 }
               },
               "title": "Policy 策略定义，是一组 policy statements 的逻辑容器。\n它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。\n推荐约束：\n1. allow / deny 语义放在 statements；\n2. policy 负责聚合、复用、审计、发布与回滚；\n3. attachment 负责把 policy 挂到具体主体上。"
@@ -3899,31 +3949,30 @@
                   "type": "string",
                   "format": "int64"
                 },
-                "sid": {
-                  "type": "string"
-                },
                 "effect": {
                   "$ref": "#/definitions/PolicyStatementEffect"
                 },
-                "action_selector": {
-                  "type": "string",
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
                   "title": "动作选择器，建议使用标准动作编码、通配符或 JSON 数组表达"
                 },
-                "resource_selector": {
-                  "type": "string",
+                "resources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
                   "title": "资源选择器，建议作为资源匹配的主入口，如资源名、资源树路径、资源标签、GRN 模式等"
                 },
-                "condition_json": {
-                  "type": "string",
+                "conditions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/PolicyStatementCondition"
+                  },
                   "title": "结构化条件表达式，建议承载鉴权判断条件，而不是挂载关系状态"
-                },
-                "priority": {
-                  "type": "integer",
-                  "format": "int32",
-                  "title": "优先级，数值越小优先级越高"
-                },
-                "description": {
-                  "type": "string"
                 },
                 "created_by": {
                   "type": "string",
@@ -6307,17 +6356,25 @@
       ],
       "default": "PRINCIPAL_TYPE_UNSPECIFIED"
     },
-    "PolicyEngineMode": {
-      "type": "string",
-      "enum": [
-        "ENGINE_MODE_UNSPECIFIED",
-        "CANONICAL",
-        "OPA",
-        "ENVOY_RBAC",
-        "HYBRID"
-      ],
-      "default": "ENGINE_MODE_UNSPECIFIED",
-      "title": "EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式。\n建议以 CANONICAL 为事实源，再向 OPA / Envoy 做投影编译。"
+    "PolicyStatementCondition": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "title": "条件键，如 \"ip\", \"time\", \"user_role\""
+        },
+        "operator": {
+          "type": "string",
+          "title": "操作符，如 \"equals\", \"in\", \"starts_with\""
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "条件值，具体格式根据 operator 定义"
+        }
+      }
     },
     "PolicyStatementEffect": {
       "type": "string",
@@ -8669,12 +8726,6 @@
           "format": "int64",
           "title": "ID 策略唯一标识"
         },
-        "type": {
-          "$ref": "#/definitions/v1PolicyType"
-        },
-        "status": {
-          "$ref": "#/definitions/v1PolicyStatus"
-        },
         "code": {
           "type": "string",
           "title": "Code 系统标识符，创建后不可修改\n规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾\n长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码\n示例：手动 \"allow.read\"、\"deny-delete\"；自动 \"a7k2m3x9b5f1\""
@@ -8683,21 +8734,8 @@
           "type": "string",
           "title": "DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明"
         },
-        "value": {
-          "type": "string",
-          "title": "Value 策略原始内容或编译前载荷。\n对于 statement 驱动模型，一期建议仅作为扩展字段保留，不作为主授权事实来源。"
-        },
-        "description": {
-          "type": "string",
-          "title": "Description 策略描述，详细说明策略职责和业务范围"
-        },
-        "engine_mode": {
-          "$ref": "#/definitions/PolicyEngineMode"
-        },
-        "version_no": {
-          "type": "string",
-          "format": "int64",
-          "title": "VersionNo 策略版本号，用于发布、灰度与回滚"
+        "status": {
+          "$ref": "#/definitions/v1PolicyStatus"
         },
         "protected": {
           "type": "boolean",
@@ -8711,13 +8749,25 @@
           },
           "title": "Statements 该策略下挂载的语句集合"
         },
-        "attachments": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1PolicyAttachment"
-          },
-          "title": "Attachments 该策略当前已挂载的生效边界"
+        "description": {
+          "type": "string",
+          "title": "Description 策略描述，详细说明策略职责和业务范围"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
         }
       },
       "title": "Policy 策略定义，是一组 policy statements 的逻辑容器。\n它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。\n推荐约束：\n1. allow / deny 语义放在 statements；\n2. policy 负责聚合、复用、审计、发布与回滚；\n3. attachment 负责把 policy 挂到具体主体上。"
@@ -8804,31 +8854,30 @@
           "type": "string",
           "format": "int64"
         },
-        "sid": {
-          "type": "string"
-        },
         "effect": {
           "$ref": "#/definitions/PolicyStatementEffect"
         },
-        "action_selector": {
-          "type": "string",
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
           "title": "动作选择器，建议使用标准动作编码、通配符或 JSON 数组表达"
         },
-        "resource_selector": {
-          "type": "string",
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
           "title": "资源选择器，建议作为资源匹配的主入口，如资源名、资源树路径、资源标签、GRN 模式等"
         },
-        "condition_json": {
-          "type": "string",
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/PolicyStatementCondition"
+          },
           "title": "结构化条件表达式，建议承载鉴权判断条件，而不是挂载关系状态"
-        },
-        "priority": {
-          "type": "integer",
-          "format": "int32",
-          "title": "优先级，数值越小优先级越高"
-        },
-        "description": {
-          "type": "string"
         },
         "created_by": {
           "type": "string",
@@ -8864,16 +8913,6 @@
       "default": "STATUS_UNSPECIFIED",
       "description": "- STATUS_UNSPECIFIED: 未指定状态（系统默认值）\n - DRAFT: ===== 正常生命周期 =====\n\n草稿：未生效，仅用于编辑/评审\n - ENABLED: 已启用：正在参与授权决策\n - DISABLED: 已禁用：保留配置，但不参与决策\n - PENDING: ===== 变更 / 风险控制 =====\n\n待生效：已配置，等待审批或时间触发\n - SUSPENDED: 已挂起：紧急风控临时冻结（可自动/人工）\n - DEPRECATED: ===== 生命周期结束 =====\n\n已废弃：不推荐使用，允许已有绑定\n - ARCHIVED: 已归档：只读，仅审计/历史查询",
       "title": "Status 策略状态，用于生命周期管理"
-    },
-    "v1PolicyType": {
-      "type": "string",
-      "enum": [
-        "TYPE_UNSPECIFIED",
-        "ROLE",
-        "OPEN_POLICY_AGENT"
-      ],
-      "default": "TYPE_UNSPECIFIED",
-      "title": "Type 策略类型"
     },
     "v1PrometheusExporterConfig": {
       "type": "object",

@@ -363,83 +363,6 @@ message Menu {
   google.protobuf.Timestamp updated_at = 19;
 }
 
-// Policy 策略定义，是一组 policy statements 的逻辑容器。
-// 它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。
-// 推荐约束：
-// 1. allow / deny 语义放在 statements；
-// 2. policy 负责聚合、复用、审计、发布与回滚；
-// 3. attachment 负责把 policy 挂到具体主体上。
-message Policy {
-  // ID 策略唯一标识
-  int64 id = 1;
-
-  // Type 策略类型
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    ROLE = 1;
-    OPEN_POLICY_AGENT = 2;
-  }
-  Type type = 2;
-
-  // Status 策略状态，用于生命周期管理
-  enum Status {
-    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
-
-    // ===== 正常生命周期 =====
-    DRAFT = 1;        // 草稿：未生效，仅用于编辑/评审
-    ENABLED = 2;      // 已启用：正在参与授权决策
-    DISABLED = 3;     // 已禁用：保留配置，但不参与决策
-
-    // ===== 变更 / 风险控制 =====
-    PENDING = 4;     // 待生效：已配置，等待审批或时间触发
-    SUSPENDED = 5;   // 已挂起：紧急风控临时冻结（可自动/人工）
-
-    // ===== 生命周期结束 =====
-    DEPRECATED = 6;  // 已废弃：不推荐使用，允许已有绑定
-    ARCHIVED = 7;    // 已归档：只读，仅审计/历史查询
-  }
-  Status status = 3;
-
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "allow.read"、"deny-delete"；自动 "a7k2m3x9b5f1"
-  string code = 4;
-
-  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
-  string display_name = 5;
-
-  // Value 策略原始内容或编译前载荷。
-  // 对于 statement 驱动模型，一期建议仅作为扩展字段保留，不作为主授权事实来源。
-  string value = 6;
-
-  // Description 策略描述，详细说明策略职责和业务范围
-  string description = 7;
-
-  // EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式。
-  // 建议以 CANONICAL 为事实源，再向 OPA / Envoy 做投影编译。
-  enum EngineMode {
-    ENGINE_MODE_UNSPECIFIED = 0;
-    CANONICAL = 1;
-    OPA = 2;
-    ENVOY_RBAC = 3;
-    HYBRID = 4;
-  }
-  EngineMode engine_mode = 8;
-
-  // VersionNo 策略版本号，用于发布、灰度与回滚
-  int64 version_no = 9;
-
-  // Protected 是否为系统内置/受保护的策略，受保护的策略不可删除
-  bool protected = 10;
-
-  // Statements 该策略下挂载的语句集合
-  repeated PolicyStatement statements = 11;
-
-  // Attachments 该策略当前已挂载的生效边界
-  repeated PolicyAttachment attachments = 12;
-}
-
 // User 用户实体，表示系统中的账号信息
 message User {
   // 以下字段为非敏感/可直接输出（适合公开展示或普通资料页）
@@ -1207,6 +1130,59 @@ message AuthToken {
   string challenge_type = 12;
 }
 
+// Policy 策略定义，是一组 policy statements 的逻辑容器。
+// 它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。
+// 推荐约束：
+// 1. allow / deny 语义放在 statements；
+// 2. policy 负责聚合、复用、审计、发布与回滚；
+// 3. attachment 负责把 policy 挂到具体主体上。
+message Policy {
+  // ID 策略唯一标识
+  int64 id = 1;
+
+  // Code 系统标识符，创建后不可修改
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
+  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
+  // 示例：手动 "allow.read"、"deny-delete"；自动 "a7k2m3x9b5f1"
+  string code = 2;
+
+  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
+  string display_name = 3;
+
+  // Status 策略状态，用于生命周期管理
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
+
+    // ===== 正常生命周期 =====
+    DRAFT = 1;        // 草稿：未生效，仅用于编辑/评审
+    ENABLED = 2;      // 已启用：正在参与授权决策
+    DISABLED = 3;     // 已禁用：保留配置，但不参与决策
+
+    // ===== 变更 / 风险控制 =====
+    PENDING = 4;     // 待生效：已配置，等待审批或时间触发
+    SUSPENDED = 5;   // 已挂起：紧急风控临时冻结（可自动/人工）
+
+    // ===== 生命周期结束 =====
+    DEPRECATED = 6;  // 已废弃：不推荐使用，允许已有绑定
+    ARCHIVED = 7;    // 已归档：只读，仅审计/历史查询
+  }
+  Status status = 4;
+
+  // Protected 是否为系统内置/受保护的策略，受保护的策略不可删除
+  bool protected = 5;
+
+  // Statements 该策略下挂载的语句集合
+  repeated PolicyStatement statements = 6;
+
+  // Description 策略描述，详细说明策略职责和业务范围
+  string description = 7;
+
+  int64 created_by = 10;
+  int64 updated_by = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
 // PolicyStatement 策略语句，是授权评估的最小单元。
 // 一条 statement 负责定义：对哪些 action、哪些 resource，在什么 condition 下，产生 allow / deny。
 // 约束建议：
@@ -1214,9 +1190,14 @@ message AuthToken {
 // 2. 条件判断主逻辑放在 condition_json，用于表达上下文、属性、时间窗等命中条件；
 // 3. priority 数值越小优先级越高，且显式 DENY 优先于 ALLOW。
 message PolicyStatement {
+  message Condition {
+    string key = 1;       // 条件键，如 "ip", "time", "user_role"
+    string operator = 2;  // 操作符，如 "equals", "in", "starts_with"
+    repeated string values = 3;     // 条件值，具体格式根据 operator 定义
+  }
+
   int64 id = 1;
   int64 policy_id = 2;
-  string sid = 3;
 
   enum Effect {
     EFFECT_UNSPECIFIED = 0;
@@ -1226,14 +1207,12 @@ message PolicyStatement {
   Effect effect = 4;
 
   // 动作选择器，建议使用标准动作编码、通配符或 JSON 数组表达
-  string action_selector = 5;
+  repeated string actions = 5;
   // 资源选择器，建议作为资源匹配的主入口，如资源名、资源树路径、资源标签、GRN 模式等
-  string resource_selector = 6;
+  repeated string resources = 6;
   // 结构化条件表达式，建议承载鉴权判断条件，而不是挂载关系状态
-  string condition_json = 7;
-  // 优先级，数值越小优先级越高
-  int32 priority = 8;
-  string description = 9;
+  repeated Condition conditions = 7;
+
   int64 created_by = 10;
   int64 updated_by = 11;
   google.protobuf.Timestamp created_at = 12;
