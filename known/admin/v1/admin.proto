@@ -9,7 +9,6 @@ import "google/protobuf/empty.proto";
 
 import "known/admin/v1/admin.common.proto";
 import "known/admin/v1/auth.proto";
-import "known/admin/v1/resource.proto";
 import "known/admin/v1/config.proto";
 import "known/admin/v1/department.proto";
 import "known/admin/v1/security.proto";
@@ -18,10 +17,7 @@ import "known/admin/v1/roles.proto";
 import "known/admin/v1/group.proto";
 import "known/admin/v1/database.proto";
 import "known/admin/v1/policy.proto";
-import "known/admin/v1/policy_statement.proto";
-import "known/admin/v1/policy_attachment.proto";
 import "known/admin/v1/service.proto";
-import "known/admin/v1/resource_type.proto";
 import "known/admin/v1/menu.proto";
 
 service KnownAdmin {
@@ -46,10 +42,12 @@ service KnownAdmin {
   rpc GetAuthProvider(GetAuthProviderRequest) returns(AuthProvider);
   rpc DeleteAuthProvider(DeleteAuthProviderRequest) returns(google.protobuf.Empty);
   rpc UpdateAuthProvider(UpdateAuthProviderRequest) returns(AuthProvider);
+
   // 登录认证
   rpc CreateAuthLogin(CreateAuthLoginRequest) returns (AuthToken);
   rpc CreateAuthToken(CreateAuthTokenRequest) returns (AuthToken);
   rpc GetAuthCallback(GetAuthCallbackRequest) returns(GetAuthCallbackResponse);
+
   // MFA 多因素认证
   rpc VerifyAuthMFA(VerifyAuthMFARequest) returns (AuthToken);
   rpc StartAuthMFASetup(StartAuthMFASetupRequest) returns (StartAuthMFASetupResponse);
@@ -58,22 +56,9 @@ service KnownAdmin {
   rpc ConfirmUserMFA(ConfirmUserMFARequest) returns (ConfirmUserMFAResponse);
   rpc DisableUserMFA(DisableUserMFARequest) returns (google.protobuf.Empty);
 
-  // 资源管理
-  rpc GetResource(GetResourceRequest) returns(Resource);
-  rpc ListResources(ListResourcesRequest) returns(ListResourcesResponse);
-  rpc CreateResource(CreateResourceRequest) returns(Resource);
-  rpc UpdateResource(UpdateResourceRequest) returns(Resource);
-  rpc DeleteResource(DeleteResourceRequest) returns(google.protobuf.Empty);
-
   // 服务字典管理
   rpc ListServices(ListServicesRequest) returns(ListServicesResponse);
   rpc ListServiceActions(ListServiceActionsRequest) returns(ListServiceActionsResponse);
-
-  // 资源类型字典管理
-  rpc ListResourceTypes(ListResourceTypesRequest) returns(ListResourceTypesResponse);
-  rpc CreateResourceType(CreateResourceTypeRequest) returns(ResourceType);
-  rpc UpdateResourceType(UpdateResourceTypeRequest) returns(ResourceType);
-  rpc DeleteResourceType(DeleteResourceTypeRequest) returns(google.protobuf.Empty);
 
   // 菜单管理
   rpc ListMenus(ListMenusRequest) returns(ListMenusResponse);
@@ -86,20 +71,6 @@ service KnownAdmin {
   rpc CreatePolicy(CreatePolicyRequest) returns(Policy);
   rpc UpdatePolicy(UpdatePolicyRequest) returns(Policy);
   rpc DeletePolicy(DeletePolicyRequest) returns(google.protobuf.Empty);
-
-  // 策略语句管理
-  rpc GetPolicyStatement(GetPolicyStatementRequest) returns(PolicyStatement);
-  rpc ListPolicyStatements(ListPolicyStatementsRequest) returns(ListPolicyStatementsResponse);
-  rpc CreatePolicyStatement(CreatePolicyStatementRequest) returns(PolicyStatement);
-  rpc UpdatePolicyStatement(UpdatePolicyStatementRequest) returns(PolicyStatement);
-  rpc DeletePolicyStatement(DeletePolicyStatementRequest) returns(google.protobuf.Empty);
-
-  // 策略挂载管理
-  rpc GetPolicyAttachment(GetPolicyAttachmentRequest) returns(PolicyAttachment);
-  rpc ListPolicyAttachments(ListPolicyAttachmentsRequest) returns(ListPolicyAttachmentsResponse);
-  rpc CreatePolicyAttachment(CreatePolicyAttachmentRequest) returns(PolicyAttachment);
-  rpc UpdatePolicyAttachment(UpdatePolicyAttachmentRequest) returns(PolicyAttachment);
-  rpc DeletePolicyAttachment(DeletePolicyAttachmentRequest) returns(google.protobuf.Empty);
 
   // 角色相关
   rpc CreateRole(CreateRoleRequest) returns(Role);

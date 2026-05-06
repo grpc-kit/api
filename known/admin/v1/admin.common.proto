@@ -208,81 +208,6 @@ message Department {
   Visibility visibility = 24;
 }
 
-// Resource 资源定义，如：菜单等
-message Resource {
-  // ID 资源 ID
-  int64 id = 1;
-  // ParentID 父资源 ID，为 0 表示顶级资源
-  int64 parent_id = 2;
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "user.management"、"system-config"；自动 "a7k2m3x9b5f1"
-  string code = 3;
-  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
-  // 用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化
-  string display_name = 4;
-
-  // Type 资源类型
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    MENU    = 1; // 菜单（页面入口，会在菜单栏中显示）
-    DOMAIN  = 2; // 领域资源（业务实体/页面域对象等）
-    LLM     = 3; // LLM 资源（模型/网关/Agent/Tool 等）
-    API     = 4; // 后端接口（包含 grpc、http 等）
-    DATA    = 5; // 数据级资源（行 / 字段）
-    SYSTEM  = 6; // 系统级 / 非 UI 资源（如：系统设置、系统日志等）
-  }
-  Type type = 6;
-  
-  // Status 资源状态
-  enum Status {
-    STATUS_UNSPECIFIED = 0;
-
-    ENABLED = 1; // 启用
-    DISABLED = 2; // 禁用
-  }
-  Status status = 7;
-
-  // Enabled 资源是否启用
-  // bool enabled = 8;
-  // Hidden 是否在资源列表中隐藏
-  // bool hidden = 9;
-  // HideChildren 是否在资源列表中隐藏子项
-  // bool hide_children = 10;
-
-  // Visibility 资源可见性/展示策略（使用公共枚举 Visibility）
-  Visibility visibility = 8;
-
-  // Metadata 扩展元数据
-  // 用于存储上述三个核心字段无法涵盖的特定平台/业务属性
-  map<string, string> metadata = 14;
-
-  // Children 子资源列表
-  repeated Resource children = 15;
-
-  string description = 17;
-
-  // CreatedBy 创建者用户ID，记录部门创建人
-  // 用于审计追踪和权限验证
-  int64 created_by = 18;
-  
-  // UpdatedBy 最后更新者用户ID，记录最近修改人
-  // 用于变更追踪和责任确认
-  int64 updated_by = 19;
-
-  google.protobuf.Timestamp created_at = 20;
-  google.protobuf.Timestamp updated_at = 21;
-
-  // 新资源模型字段
-  string resource_type_code = 23;
-  string service_code = 24;
-  string tenant_id = 25;
-  string region = 26;
-  string resource_path = 27;
-  string grn = 28;
-}
-
 // Service 服务字典定义。
 message Service {
   int64 id = 1;
@@ -326,25 +251,10 @@ message Action {
   repeated ResourceSelector resource_selectors = 13;
 }
 
-// ResourceType 资源类型字典定义。
-message ResourceType {
-  int64 id = 1;
-  string code = 2;
-  string display_name = 3;
-  string service_code = 4;
-  string description = 5;
-  bool protected = 6;
-  int64 created_by = 7;
-  int64 updated_by = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
-}
-
 // Menu 菜单业务定义。
 message Menu {
   int64 id = 1;
   int64 parent_id = 2;
-  int64 resource_id = 3;
   string code = 4;
   string display_name = 5;
   string route_path = 6;
@@ -1217,52 +1127,4 @@ message PolicyStatement {
   int64 updated_by = 11;
   google.protobuf.Timestamp created_at = 12;
   google.protobuf.Timestamp updated_at = 13;
-}
-
-// PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体。
-// 该结构只负责表达“把哪个 policy 挂给谁、何时生效”，不负责承载主资源匹配逻辑。
-// 推荐约束：
-// 1. principal_* 表示挂载目标主体；
-// 2. resource_id 如保留，仅表示挂载边界资源，0 表示全局挂载；
-// 3. is_recursive 只有在 resource_id > 0 时才有意义；
-// 4. 具体 allow / deny 与资源命中，仍应由 policy_statements 负责。
-message PolicyAttachment {
-  int64 id = 1;
-  int64 policy_id = 2;
-
-  enum PrincipalType {
-    PRINCIPAL_TYPE_UNSPECIFIED = 0;
-    USER = 1;
-    ROLE = 2;
-    GROUP = 3;
-    DEPARTMENT = 4;
-    SERVICE_ACCOUNT = 5;
-    CLIENT_APP = 6;
-    TENANT = 7;
-  }
-  PrincipalType principal_type = 3;
-
-  int64 principal_id = 4;
-  // 可选：挂载边界资源。用于表达“该策略仅在某个资源根节点/资源子树下生效”，0 表示不限定资源边界
-  int64 resource_id = 5;
-  // 是否递归到 resource_id 对应资源的子树；若 resource_id = 0，建议固定为 false
-  bool is_recursive = 6;
-
-  enum Status {
-    STATUS_UNSPECIFIED = 0;
-    ACTIVE = 1;
-    DISABLED = 2;
-    EXPIRED = 3;
-  }
-  Status status = 7;
-
-  // 可选：挂载层附加条件，仅用于控制挂载关系是否生效；不建议承载主授权逻辑
-  string condition_json = 8;
-  // 到期时间，超时后该挂载关系失效
-  google.protobuf.Timestamp expires_at = 9;
-  string description = 10;
-  int64 created_by = 11;
-  int64 updated_by = 12;
-  google.protobuf.Timestamp created_at = 13;
-  google.protobuf.Timestamp updated_at = 14;
 }
