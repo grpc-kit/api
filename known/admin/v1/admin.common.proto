@@ -206,6 +206,8 @@ message Department {
 
   // Visibility 部门及成员列表的可见性策略（使用公共枚举 Visibility）
   Visibility visibility = 24;
+
+  bool protected = 25;
 }
 
 // Service 服务字典定义。

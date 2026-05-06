@@ -1508,6 +1508,9 @@
                 "visibility": {
                   "$ref": "#/definitions/v1Visibility",
                   "title": "Visibility 部门及成员列表的可见性策略（使用公共枚举 Visibility）"
+                },
+                "protected": {
+                  "type": "boolean"
                 }
               },
               "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
@@ -5944,6 +5947,9 @@
         "visibility": {
           "$ref": "#/definitions/v1Visibility",
           "title": "Visibility 部门及成员列表的可见性策略（使用公共枚举 Visibility）"
+        },
+        "protected": {
+          "type": "boolean"
         }
       },
       "title": "Department 组织部门实体，支持树形层级结构的企业组织架构管理\n设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理\n支持国际化、状态管理、财务集成等企业级功能"
