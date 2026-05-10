@@ -3126,6 +3126,54 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/policies/{code}": {
+      "get": {
+        "operationId": "KnownAdmin_GetPolicy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Policy"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "code",
+            "description": "策略编码，优先用于查询。",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "view",
+            "description": "详情视图级别。\n- 默认（VIEW_UNSPECIFIED / VIEW_STANDARD / VIEW_FULL）返回完整策略，包含 statements。\n- VIEW_BASIC 返回精简策略，不包含 statements。\n\n - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/policies/{id}": {
       "delete": {
         "summary": "删除策略",

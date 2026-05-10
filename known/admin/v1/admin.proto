@@ -68,6 +68,7 @@ service KnownAdmin {
 
   // 策略管理
   rpc ListPolicies(ListPoliciesRequest) returns(ListPoliciesResponse);
+  rpc GetPolicy(GetPolicyRequest) returns(Policy);
   rpc CreatePolicy(CreatePolicyRequest) returns(Policy);
   rpc UpdatePolicy(UpdatePolicyRequest) returns(Policy);
   rpc DeletePolicy(DeletePolicyRequest) returns(google.protobuf.Empty);
