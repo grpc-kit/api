@@ -82,6 +82,10 @@ service KnownAdmin {
   rpc CreateRoleMembers(CreateRoleMembersRequest) returns(CreateRoleMembersResponse);
   rpc UpdateRoleMembers(UpdateRoleMembersRequest) returns(UpdateRoleMembersResponse);
   rpc DeleteRoleMember(DeleteRoleMemberRequest) returns(google.protobuf.Empty);
+  rpc ListRoleMenus(ListRoleMenusRequest) returns(ListRoleMenusResponse);
+  rpc CreateRoleMenus(CreateRoleMenusRequest) returns(CreateRoleMenusResponse);
+  rpc UpdateRoleMenus(UpdateRoleMenusRequest) returns(UpdateRoleMenusResponse);
+  rpc DeleteRoleMenu(DeleteRoleMenuRequest) returns(google.protobuf.Empty);
   //rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);
   //rpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);
   //rpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);

@@ -3886,6 +3886,231 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/roles/{parent}/menus": {
+      "get": {
+        "operationId": "KnownAdmin_ListRoleMenus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRoleMenusResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "view",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "structure",
+            "description": " - STRUCTURE_FLAT: 平铺列表（默认），支持分页\n - STRUCTURE_TREE: 层级结构（父子），不支持分页\n - STRUCTURE_TREE_EXPANDED: 层级结构 + 全展开，不支持分页",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRUCTURE_UNSPECIFIED",
+              "STRUCTURE_FLAT",
+              "STRUCTURE_TREE",
+              "STRUCTURE_TREE_EXPANDED"
+            ],
+            "default": "STRUCTURE_UNSPECIFIED"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_CreateRoleMenus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateRoleMenusResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "menus",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1RoleMenu"
+              }
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "KnownAdmin_UpdateRoleMenus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateRoleMenusResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "menus",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1RoleMenu"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/roles/{parent}/menus/{menu_id}": {
+      "delete": {
+        "summary": "rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);\nrpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);\nrpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);",
+        "operationId": "KnownAdmin_DeleteRoleMenu",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "menu_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/roles/{role.id}": {
       "patch": {
         "summary": "更新角色",
@@ -5633,6 +5858,9 @@
     "v1CreateRoleMembersResponse": {
       "type": "object"
     },
+    "v1CreateRoleMenusResponse": {
+      "type": "object"
+    },
     "v1Credential": {
       "type": "object",
       "properties": {
@@ -6580,6 +6808,25 @@
         }
       }
     },
+    "v1ListRoleMenusResponse": {
+      "type": "object",
+      "properties": {
+        "menus": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1RoleMenu"
+          }
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "v1ListRolesResponse": {
       "type": "object",
       "properties": {
@@ -7461,6 +7708,39 @@
         }
       }
     },
+    "v1RoleMenu": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "role_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "menu_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "permission_scope": {
+          "type": "integer",
+          "format": "int32",
+          "title": "权限范围：1=可见，2=可操作"
+        },
+        "description": {
+          "type": "string"
+        },
+        "menu": {
+          "$ref": "#/definitions/v1Menu",
+          "title": "冗余菜单详情，便于前端直接渲染"
+        },
+        "is_recursive": {
+          "type": "boolean",
+          "title": "是否递归包含子菜单，为 true 时授权逻辑自动涵盖所有后代菜单"
+        }
+      }
+    },
     "v1RoleStatus": {
       "type": "string",
       "enum": [
@@ -8204,6 +8484,9 @@
       "type": "object"
     },
     "v1UpdateRoleMembersResponse": {
+      "type": "object"
+    },
+    "v1UpdateRoleMenusResponse": {
       "type": "object"
     },
     "v1UpdateUserPasswordResponse": {

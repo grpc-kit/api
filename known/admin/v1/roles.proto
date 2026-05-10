@@ -144,6 +144,65 @@ message UpdateRoleMembersResponse {
 
 }
 
+message RoleMenu {
+  int64 id = 1;
+  int64 role_id = 2;
+  int64 menu_id = 3;
+  // 权限范围：1=可见，2=可操作
+  int32 permission_scope = 4;
+  string description = 5;
+  // 冗余菜单详情，便于前端直接渲染
+  Menu menu = 6;
+  // 是否递归包含子菜单，为 true 时授权逻辑自动涵盖所有后代菜单
+  bool is_recursive = 7;
+}
+
+message ListRoleMenusRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int32 page_size = 2;
+
+  oneof pagination {
+    string page_token = 3;
+    int32 offset = 8;
+  }
+
+  View view = 4;
+  Structure structure = 5;
+  string filter = 6;
+  string order_by = 7;
+}
+
+message ListRoleMenusResponse {
+  repeated RoleMenu menus = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateRoleMenusRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RoleMenu menus = 2;
+}
+
+message CreateRoleMenusResponse {
+}
+
+message UpdateRoleMenusRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RoleMenu menus = 2;
+}
+
+message UpdateRoleMenusResponse {
+}
+
+message DeleteRoleMenuRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int64 menu_id = 2;
+}
+
 // message CreateRoleDataRangesRequest {
 //   int32 role_id = 1;
 //   repeated RoleDataRange data_ranges = 2;
