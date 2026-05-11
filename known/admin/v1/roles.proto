@@ -102,7 +102,7 @@ message ListRoleMembersRequest {
 }
 
 message ListRoleMembersResponse {
-  // 角色成员关系列表（与 ListGroupMembersResponse 结构一致）。
+  // 角色 membership 关系列表，沿用统一 Membership 结构。
   repeated Membership members = 1;
 
   // 用于获取下一页结果的 token。

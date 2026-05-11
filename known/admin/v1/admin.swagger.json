@@ -1553,6 +1553,7 @@
         "parameters": [
           {
             "name": "department_id",
+            "description": "部门 ID，目标侧固定为 department。",
             "in": "path",
             "required": true,
             "type": "string",
@@ -1560,6 +1561,7 @@
           },
           {
             "name": "members",
+            "description": "要写入的用户到部门 membership 关系。",
             "in": "body",
             "required": true,
             "schema": {
@@ -1605,6 +1607,7 @@
         "parameters": [
           {
             "name": "department_id",
+            "description": "部门 ID，目标侧固定为 department。",
             "in": "path",
             "required": true,
             "type": "string",
@@ -1612,6 +1615,7 @@
           },
           {
             "name": "members",
+            "description": "要更新的用户到部门 membership 关系。",
             "in": "body",
             "required": true,
             "schema": {
@@ -1660,6 +1664,7 @@
         "parameters": [
           {
             "name": "department_id",
+            "description": "部门 ID，目标侧固定为 department。",
             "in": "path",
             "required": true,
             "type": "string",
@@ -1667,6 +1672,7 @@
           },
           {
             "name": "user_id",
+            "description": "用户 ID，表示删除该用户在指定部门下的 membership 关系。",
             "in": "path",
             "required": true,
             "type": "string",
@@ -2439,13 +2445,14 @@
         "parameters": [
           {
             "name": "parent",
-            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "description": "群组 ID，字段名沿用既有 parent 命名以兼容历史接口。",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "members",
+            "description": "要写入的用户到群组 membership 关系。",
             "in": "body",
             "required": true,
             "schema": {
@@ -2494,13 +2501,14 @@
         "parameters": [
           {
             "name": "parent",
-            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "description": "群组 ID，字段名沿用既有 parent 命名以兼容历史接口。",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "user_id",
+            "description": "用户 ID，表示删除该用户在指定群组下的 membership 关系。",
             "in": "path",
             "required": true,
             "type": "string",
@@ -2552,7 +2560,7 @@
         "parameters": [
           {
             "name": "parent",
-            "description": "父资源名称，用于限定范围。\n格式示例: \"organizations/123\" 或 \"projects/456\"。",
+            "description": "群组 ID，字段名沿用既有 parent 命名以兼容历史接口。",
             "in": "path",
             "required": true,
             "type": "string"
@@ -2566,6 +2574,7 @@
           },
           {
             "name": "member",
+            "description": "用户到群组的 membership 关系变更内容。",
             "in": "body",
             "required": true,
             "schema": {
@@ -4891,7 +4900,7 @@
                     "type": "object",
                     "$ref": "#/definitions/v1Membership"
                   },
-                  "title": "用户所属部门成员关系，详情视图或完整视图时返回"
+                  "title": "用户所属部门 membership 关系，字段名为兼容历史接口保留"
                 },
                 "group_members": {
                   "type": "array",
@@ -4899,7 +4908,7 @@
                     "type": "object",
                     "$ref": "#/definitions/v1Membership"
                   },
-                  "title": "用户所属群组成员关系，详情视图或完整视图时返回"
+                  "title": "用户所属群组 membership 关系，字段名为兼容历史接口保留"
                 }
               },
               "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
@@ -6717,7 +6726,7 @@
             "type": "object",
             "$ref": "#/definitions/v1Membership"
           },
-          "title": "符合查询条件的用户资源。"
+          "title": "符合查询条件的部门 membership 关系。"
         },
         "next_page_token": {
           "type": "string",
@@ -6760,7 +6769,7 @@
             "type": "object",
             "$ref": "#/definitions/v1Membership"
           },
-          "title": "群组成员关系列表"
+          "title": "群组 membership 关系列表。"
         },
         "next_page_token": {
           "type": "string",
@@ -6843,7 +6852,7 @@
             "type": "object",
             "$ref": "#/definitions/v1Membership"
           },
-          "title": "角色成员关系列表（与 ListGroupMembersResponse 结构一致）。"
+          "title": "角色 membership 关系列表，沿用统一 Membership 结构。"
         },
         "next_page_token": {
           "type": "string",
@@ -8672,7 +8681,7 @@
             "type": "object",
             "$ref": "#/definitions/v1Membership"
           },
-          "title": "用户所属部门成员关系，详情视图或完整视图时返回"
+          "title": "用户所属部门 membership 关系，字段名为兼容历史接口保留"
         },
         "group_members": {
           "type": "array",
@@ -8680,7 +8689,7 @@
             "type": "object",
             "$ref": "#/definitions/v1Membership"
           },
-          "title": "用户所属群组成员关系，详情视图或完整视图时返回"
+          "title": "用户所属群组 membership 关系，字段名为兼容历史接口保留"
         }
       },
       "description": "以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
