@@ -6,8 +6,39 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
 
 import "known/admin/v1/admin.common.proto";
+
+enum PrincipalType {
+  PRINCIPAL_TYPE_UNSPECIFIED = 0;
+  USER = 1;
+  GROUP = 2;
+  DEPARTMENT = 3;
+}
+
+enum BindingStatus {
+  BINDING_STATUS_UNSPECIFIED = 0;
+  ACTIVE = 1;
+  DISABLED = 2;
+}
+
+message PrincipalRoleBinding {
+  int64 id = 1;
+  PrincipalType principal_type = 2;
+  int64 principal_id = 3;
+  string principal_name = 4;
+  string principal_code = 5;
+  int64 role_id = 6;
+  BindingStatus binding_status = 7;
+  google.protobuf.Timestamp expired_at = 8;
+  map<string, string> metadata = 9;
+  string description = 10;
+  int64 created_by = 11;
+  int64 updated_by = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+}
 
 message CreateRoleRequest {
   Role role = 1;
@@ -99,10 +130,16 @@ message ListRoleMembersRequest {
   // 示例: "create_time desc, name asc"
   // AIP-132: order_by 是可选字段。
   string order_by = 5;
+
+  // 返回视图：基础绑定视图或展开后的用户视图。
+  View view = 6;
+
+  // 可选主体类型过滤，不传则返回全部类型。
+  PrincipalType principal_type = 7;
 }
 
 message ListRoleMembersResponse {
-  // 角色 membership 关系列表，沿用统一 Membership 结构。
+  // VIEW_FULL 下展开后的用户 membership 结果。
   repeated Membership members = 1;
 
   // 用于获取下一页结果的 token。
@@ -116,19 +153,23 @@ message ListRoleMembersResponse {
   // - 注意：可能会因性能原因而近似。
   // AIP-132: total_size 是可选字段。
   int32 total_size = 3;
+
+  // 第一层主体绑定视图。
+  repeated PrincipalRoleBinding bindings = 4;
 }
 
 message DeleteRoleMemberRequest {
   // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers / CreateRoleMembers）
   string parent = 1;
 
-  int64 user_id = 2;
+  PrincipalType principal_type = 2;
+  int64 principal_id = 3;
 }
 
 message CreateRoleMembersRequest {
   // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）
   string parent = 1;
-  repeated Membership members = 2;
+  repeated PrincipalRoleBinding bindings = 2;
 }
 
 message CreateRoleMembersResponse {
@@ -137,7 +178,7 @@ message CreateRoleMembersResponse {
 message UpdateRoleMembersRequest {
   // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）
   string parent = 1;
-  repeated Membership members = 2;
+  repeated PrincipalRoleBinding bindings = 2;
 }
 
 message UpdateRoleMembersResponse {
