@@ -244,6 +244,65 @@ message DeleteRoleMenuRequest {
   int64 menu_id = 2;
 }
 
+message RolePolicyBinding {
+  int64 id = 1;
+  int64 role_id = 2;
+  int64 policy_id = 3;
+  // 冗余策略详情，便于前端直接渲染
+  Policy policy = 4;
+  map<string, string> metadata = 5;
+  string description = 6;
+  int64 created_by = 10;
+  int64 updated_by = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
+message ListRolePoliciesRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int32 page_size = 2;
+
+  oneof pagination {
+    string page_token = 3;
+    int32 offset = 8;
+  }
+
+  View view = 4;
+  string filter = 5;
+  string order_by = 6;
+}
+
+message ListRolePoliciesResponse {
+  repeated RolePolicyBinding policies = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateRolePoliciesRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RolePolicyBinding policies = 2;
+}
+
+message CreateRolePoliciesResponse {
+}
+
+message UpdateRolePoliciesRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RolePolicyBinding policies = 2;
+}
+
+message UpdateRolePoliciesResponse {
+}
+
+message DeleteRolePolicyRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int64 policy_id = 2;
+}
+
 // message CreateRoleDataRangesRequest {
 //   int32 role_id = 1;
 //   repeated RoleDataRange data_ranges = 2;

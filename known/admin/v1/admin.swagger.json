@@ -4175,7 +4175,6 @@
     },
     "/builtin/admin/api/v1/roles/{parent}/menus/{menu_id}": {
       "delete": {
-        "summary": "rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);\nrpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);\nrpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);",
         "operationId": "KnownAdmin_DeleteRoleMenu",
         "responses": {
           "200": {
@@ -4208,6 +4207,217 @@
           },
           {
             "name": "menu_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/roles/{parent}/policies": {
+      "get": {
+        "operationId": "KnownAdmin_ListRolePolicies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRolePoliciesResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "view",
+            "description": " - VIEW_BASIC: List 默认\n - VIEW_STANDARD: 常规详情\n - VIEW_FULL: 全量",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VIEW_UNSPECIFIED",
+              "VIEW_BASIC",
+              "VIEW_STANDARD",
+              "VIEW_FULL"
+            ],
+            "default": "VIEW_UNSPECIFIED"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_CreateRolePolicies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateRolePoliciesResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "policies",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1RolePolicyBinding"
+              }
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "KnownAdmin_UpdateRolePolicies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateRolePoliciesResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "policies",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1RolePolicyBinding"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/roles/{parent}/policies/{policy_id}": {
+      "delete": {
+        "summary": "rpc CreateRoleDataRanges(CreateRoleDataRangesRequest) returns(CreateRoleDataRangesResponse);\nrpc DeleteRoleDataRanges(DeleteRoleDataRangesRequest) returns(google.protobuf.Empty);\nrpc ListRoleDataRanges(ListRoleDataRangesRequest) returns(ListRoleDataRangesResponse);",
+        "operationId": "KnownAdmin_DeleteRolePolicy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "父资源：角色 ID（与路径 {parent} 一致）",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "policy_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -5975,6 +6185,9 @@
     "v1CreateRoleMenusResponse": {
       "type": "object"
     },
+    "v1CreateRolePoliciesResponse": {
+      "type": "object"
+    },
     "v1Credential": {
       "type": "object",
       "properties": {
@@ -6938,6 +7151,25 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1RoleMenu"
+          }
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "total_size": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListRolePoliciesResponse": {
+      "type": "object",
+      "properties": {
+        "policies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1RolePolicyBinding"
           }
         },
         "next_page_token": {
@@ -7931,6 +8163,52 @@
         }
       }
     },
+    "v1RolePolicyBinding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "role_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "policy_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "policy": {
+          "$ref": "#/definitions/v1Policy",
+          "title": "冗余策略详情，便于前端直接渲染"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "v1RoleStatus": {
       "type": "string",
       "enum": [
@@ -8677,6 +8955,9 @@
       "type": "object"
     },
     "v1UpdateRoleMenusResponse": {
+      "type": "object"
+    },
+    "v1UpdateRolePoliciesResponse": {
       "type": "object"
     },
     "v1UpdateUserPasswordResponse": {
