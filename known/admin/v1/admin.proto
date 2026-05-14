@@ -11,6 +11,7 @@ import "known/admin/v1/admin.common.proto";
 import "known/admin/v1/auth.proto";
 import "known/admin/v1/config.proto";
 import "known/admin/v1/department.proto";
+import "known/admin/v1/global_settings.proto";
 import "known/admin/v1/security.proto";
 import "known/admin/v1/user.proto";
 import "known/admin/v1/roles.proto";
@@ -34,6 +35,11 @@ service KnownAdmin {
   rpc GetConfigObservables(GetConfigObservablesRequest) returns (ObservablesConfig);
   rpc GetConfigCloudEvents(GetConfigCloudEventsRequest) returns (CloudEventsConfig);
   rpc GetConfigAutomations(GetConfigAutomationsRequest) returns (AutomationsConfig);
+
+  // 全局设置
+  rpc GetGlobalSettings(GetGlobalSettingsRequest) returns (GlobalSettingCategory);
+  rpc ListGlobalSettings(ListGlobalSettingsRequest) returns (ListGlobalSettingsResponse);
+  rpc UpdateGlobalSettings(UpdateGlobalSettingsRequest) returns (UpdateGlobalSettingsResponse);
 
   // 认证鉴权
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);

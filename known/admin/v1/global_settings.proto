@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/timestamp.proto";
+
+message GlobalSetting {
+  int64 id = 1;
+  string category = 2;
+  string setting_key = 3;
+  string setting_value = 4;
+  string value_type = 5;
+  string description = 6;
+  bool protected = 7;
+  int64 created_by = 8;
+  int64 updated_by = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message GlobalSettingCategory {
+  string category = 1;
+  repeated GlobalSetting settings = 2;
+}
+
+message GetGlobalSettingsRequest {
+  string category = 1;
+}
+
+message ListGlobalSettingsRequest {}
+
+message ListGlobalSettingsResponse {
+  repeated GlobalSettingCategory categories = 1;
+}
+
+message UpdateGlobalSetting {
+  string setting_key = 1;
+  string setting_value = 2;
+}
+
+message UpdateGlobalSettingsRequest {
+  string category = 1;
+  repeated UpdateGlobalSetting updates = 2;
+}
+
+message UpdateGlobalSettingsResponse {
+  GlobalSettingCategory category = 1;
+}

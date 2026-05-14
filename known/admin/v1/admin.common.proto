@@ -710,8 +710,6 @@ message AuthProvider {
     // OAuth2 系身份提供商通用配置
     // 适用于 type=OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT
     OAuthConfig oauth_config = 11;
-    // LOCAL 身份提供商配置，仅 type=LOCAL 时使用
-    LocalAuthConfig local_config = 12;
   }
 
   bool protected = 13;
@@ -727,14 +725,6 @@ message AuthProvider {
   google.protobuf.Timestamp updated_at = 23;
   // DeletedAt 软删除时间戳，非空表示已删除
   google.protobuf.Timestamp deleted_at = 24;
-}
-
-// LocalAuthConfig LOCAL 身份提供商配置
-message LocalAuthConfig {
-  // EnforceMfaForAllUsers 是否对所有用户强制启用 MFA
-  // 开启后，无论用户通过 LOCAL/LDAP/OIDC/OAUTH2 等何种方式完成一阶认证，
-  // 都必须先完成 LOCAL MFA（首次绑定或验证）后才能签发最终 access_token。
-  bool enforce_mfa_for_all_users = 1;
 }
 
 // LdapConfig LDAP 身份提供商配置

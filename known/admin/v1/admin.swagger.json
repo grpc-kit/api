@@ -1843,6 +1843,108 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/global-settings": {
+      "get": {
+        "operationId": "KnownAdmin_ListGlobalSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListGlobalSettingsResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/builtin/admin/api/v1/global-settings/{category}": {
+      "get": {
+        "summary": "全局设置",
+        "operationId": "KnownAdmin_GetGlobalSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GlobalSettingCategory"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "KnownAdmin_UpdateGlobalSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateGlobalSettingsResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "updates",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1UpdateGlobalSetting"
+              }
+            }
+          }
+        ]
+      }
+    },
     "/builtin/admin/api/v1/groups": {
       "get": {
         "summary": "群组列表",
@@ -5827,10 +5929,6 @@
           "$ref": "#/definitions/v1OAuthConfig",
           "title": "OAuth2 系身份提供商通用配置\n适用于 type=OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT"
         },
-        "local_config": {
-          "$ref": "#/definitions/v1LocalAuthConfig",
-          "title": "LOCAL 身份提供商配置，仅 type=LOCAL 时使用"
-        },
         "protected": {
           "type": "boolean",
           "title": "======== 审计区（20-24） ========"
@@ -6664,6 +6762,64 @@
         }
       }
     },
+    "v1GlobalSetting": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "category": {
+          "type": "string"
+        },
+        "setting_key": {
+          "type": "string"
+        },
+        "setting_value": {
+          "type": "string"
+        },
+        "value_type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "protected": {
+          "type": "boolean"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1GlobalSettingCategory": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "settings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1GlobalSetting"
+          }
+        }
+      }
+    },
     "v1Group": {
       "type": "object",
       "properties": {
@@ -7030,6 +7186,18 @@
         }
       }
     },
+    "v1ListGlobalSettingsResponse": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1GlobalSettingCategory"
+          }
+        }
+      }
+    },
     "v1ListGroupMembersResponse": {
       "type": "object",
       "properties": {
@@ -7261,16 +7429,6 @@
           "title": "符合条件的资源总数。\n- 常用于前端分页控件。\n- 注意：可能会因性能原因而近似。\nAIP-132: total_size 是可选字段。"
         }
       }
-    },
-    "v1LocalAuthConfig": {
-      "type": "object",
-      "properties": {
-        "enforce_mfa_for_all_users": {
-          "type": "boolean",
-          "title": "EnforceMfaForAllUsers 是否对所有用户强制启用 MFA\n开启后，无论用户通过 LOCAL/LDAP/OIDC/OAUTH2 等何种方式完成一阶认证，\n都必须先完成 LOCAL MFA（首次绑定或验证）后才能签发最终 access_token。"
-        }
-      },
-      "title": "LocalAuthConfig LOCAL 身份提供商配置"
     },
     "v1LocalConfig": {
       "type": "object",
@@ -8950,6 +9108,25 @@
     },
     "v1UpdateDepartmentMembersResponse": {
       "type": "object"
+    },
+    "v1UpdateGlobalSetting": {
+      "type": "object",
+      "properties": {
+        "setting_key": {
+          "type": "string"
+        },
+        "setting_value": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateGlobalSettingsResponse": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "$ref": "#/definitions/v1GlobalSettingCategory"
+        }
+      }
     },
     "v1UpdateRoleMembersResponse": {
       "type": "object"
