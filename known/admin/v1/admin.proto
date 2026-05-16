@@ -23,18 +23,8 @@ import "known/admin/v1/menu.proto";
 
 service KnownAdmin {
   // 本地配置
-  rpc GetConfig(GetConfigRequest) returns (LocalConfig);
-  rpc GetConfigServices(GetConfigServicesRequest) returns (ServicesConfig);
-  rpc GetConfigDiscover(GetConfigDiscoverRequest) returns (DiscoverConfig);
-  rpc GetConfigSecurity(GetConfigSecurityRequest) returns (SecurityConfig);
-  rpc GetConfigDatabase(GetConfigDatabaseRequest) returns (DatabaseConfig);
-  rpc GetConfigCachebox(GetConfigCacheboxRequest) returns (CacheboxConfig);
-  rpc GetConfigDebugger(GetConfigDebuggerRequest) returns (DebuggerConfig);
-  rpc GetConfigObjstore(GetConfigObjstoreRequest) returns (ObjstoreConfig);
-  rpc GetConfigFrontend(GetConfigFrontendRequest) returns (FrontendConfig);
-  rpc GetConfigObservables(GetConfigObservablesRequest) returns (ObservablesConfig);
-  rpc GetConfigCloudEvents(GetConfigCloudEventsRequest) returns (CloudEventsConfig);
-  rpc GetConfigAutomations(GetConfigAutomationsRequest) returns (AutomationsConfig);
+  rpc ListLocalConfigs(ListLocalConfigsRequest) returns (ListLocalConfigsResponse);
+  rpc GetLocalConfigs(GetLocalConfigsRequest) returns (LocalConfigs);
 
   // 全局设置
   rpc GetGlobalSettings(GetGlobalSettingsRequest) returns (GlobalSettingCategory);

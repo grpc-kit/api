@@ -677,361 +677,6 @@
         ]
       }
     },
-    "/builtin/admin/api/v1/config": {
-      "get": {
-        "summary": "获取本地配置",
-        "description": "接口格式：/builtin/admin/api/v1/config。返回本地运行配置快照。",
-        "operationId": "KnownAdmin_GetConfig",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1LocalConfig"
-            },
-            "examples": {
-              "application/json": {
-                "services": {
-                  "name": "known-admin",
-                  "enabled": true
-                },
-                "discover": {
-                  "name": "nacos",
-                  "enabled": true
-                },
-                "security": {
-                  "name": "security",
-                  "enabled": true
-                },
-                "database": {
-                  "name": "postgres",
-                  "enabled": true
-                },
-                "frontend": {
-                  "name": "builtin-admin",
-                  "enabled": true
-                }
-              }
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "tags": [
-          "本地配置"
-        ]
-      }
-    },
-    "/builtin/admin/api/v1/config/automations": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigAutomations",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1AutomationsConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/cachebox": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigCachebox",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CacheboxConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/cloudevents": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigCloudEvents",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CloudEventsConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/database": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigDatabase",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1DatabaseConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/debugger": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigDebugger",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1DebuggerConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/discover": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigDiscover",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1DiscoverConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/frontend": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigFrontend",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1FrontendConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/objstore": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigObjstore",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ObjstoreConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/observables": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigObservables",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ObservablesConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/builtin/admin/api/v1/config/security": {
-      "get": {
-        "summary": "获取安全配置",
-        "description": "接口格式：/builtin/admin/api/v1/config/security。返回安全配置快照，敏感字段可能被脱敏。",
-        "operationId": "KnownAdmin_GetConfigSecurity",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SecurityConfig"
-            },
-            "examples": {
-              "application/json": {
-                "name": "security",
-                "enabled": true,
-                "authentication": {
-                  "insecure_rpcs": [
-                    "grpc.health.v1.Health/Check"
-                  ],
-                  "http_users": [
-                    {
-                      "user_id": "1",
-                      "username": "admin",
-                      "groups": [
-                        "root"
-                      ],
-                      "tenant": "default"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        },
-        "tags": [
-          "本地配置"
-        ]
-      }
-    },
-    "/builtin/admin/api/v1/config/services": {
-      "get": {
-        "operationId": "KnownAdmin_GetConfigServices",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ServicesConfig"
-            }
-          },
-          "4xx": {
-            "description": "客户端参数异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          },
-          "5xx": {
-            "description": "服务端处理异常",
-            "schema": {
-              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/builtin/admin/api/v1/credentials": {
       "post": {
         "summary": "创建凭证",
@@ -1843,7 +1488,7 @@
         ]
       }
     },
-    "/builtin/admin/api/v1/global-settings": {
+    "/builtin/admin/api/v1/global/settings": {
       "get": {
         "operationId": "KnownAdmin_ListGlobalSettings",
         "responses": {
@@ -1868,7 +1513,7 @@
         }
       }
     },
-    "/builtin/admin/api/v1/global-settings/{category}": {
+    "/builtin/admin/api/v1/global/settings/{category}": {
       "get": {
         "summary": "全局设置",
         "operationId": "KnownAdmin_GetGlobalSettings",
@@ -1901,7 +1546,7 @@
           }
         ]
       },
-      "post": {
+      "patch": {
         "operationId": "KnownAdmin_UpdateGlobalSettings",
         "responses": {
           "200": {
@@ -2686,6 +2331,115 @@
         ],
         "tags": [
           "群组管理"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/local/configs": {
+      "get": {
+        "summary": "本地配置模块列表",
+        "description": "接口格式：/builtin/admin/api/v1/local/configs。返回可查询模块及其启用状态。",
+        "operationId": "KnownAdmin_ListLocalConfigs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListLocalConfigsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "configs": [
+                  {
+                    "name": "services",
+                    "enabled": true
+                  },
+                  {
+                    "name": "security",
+                    "enabled": true
+                  },
+                  {
+                    "name": "database",
+                    "enabled": false
+                  }
+                ]
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "tags": [
+          "本地配置"
+        ]
+      }
+    },
+    "/builtin/admin/api/v1/local/configs/{name}": {
+      "get": {
+        "summary": "按模块获取本地配置",
+        "description": "接口格式：/builtin/admin/api/v1/local/configs/{name}。按模块返回对应配置快照。",
+        "operationId": "KnownAdmin_GetLocalConfigs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LocalConfigs"
+            },
+            "examples": {
+              "application/json": {
+                "security": {
+                  "name": "security",
+                  "enabled": true,
+                  "authentication": {
+                    "insecure_rpcs": [
+                      "grpc.health.v1.Health/Check"
+                    ],
+                    "http_users": [
+                      {
+                        "user_id": "1",
+                        "username": "admin",
+                        "groups": [
+                          "root"
+                        ],
+                        "tenant": "default"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": ".grpc_kit.api.known.status.v1.ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "本地配置"
         ]
       }
     },
@@ -7241,6 +6995,18 @@
         }
       }
     },
+    "v1ListLocalConfigsResponse": {
+      "type": "object",
+      "properties": {
+        "configs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1LocalConfigEntry"
+          }
+        }
+      }
+    },
     "v1ListMenusResponse": {
       "type": "object",
       "properties": {
@@ -7430,7 +7196,18 @@
         }
       }
     },
-    "v1LocalConfig": {
+    "v1LocalConfigEntry": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1LocalConfigs": {
       "type": "object",
       "properties": {
         "services": {
