@@ -263,7 +263,6 @@ message Menu {
   string component = 7;
   string icon = 8;
   int32 sort_order = 9;
-  int32 surface_mask = 10;
   map<string, string> metadata = 11;
   repeated Menu children = 12;
   Visibility visibility = 13;

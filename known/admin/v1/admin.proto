@@ -11,7 +11,7 @@ import "known/admin/v1/admin.common.proto";
 import "known/admin/v1/auth.proto";
 import "known/admin/v1/config.proto";
 import "known/admin/v1/department.proto";
-import "known/admin/v1/global_settings.proto";
+import "known/admin/v1/setting.proto";
 import "known/admin/v1/security.proto";
 import "known/admin/v1/user.proto";
 import "known/admin/v1/roles.proto";

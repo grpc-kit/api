@@ -2540,6 +2540,12 @@
             "required": false,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       },
@@ -2671,10 +2677,6 @@
                   "type": "string"
                 },
                 "sort_order": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "surface_mask": {
                   "type": "integer",
                   "format": "int32"
                 },
@@ -7423,10 +7425,6 @@
           "type": "string"
         },
         "sort_order": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "surface_mask": {
           "type": "integer",
           "format": "int32"
         },

@@ -21,6 +21,7 @@ message ListMenusRequest {
 	string filter = 7;
 	string order_by = 8;
 	int64 resource_id = 9;
+	string code = 10;
 }
 
 message ListMenusResponse {
