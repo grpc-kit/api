@@ -2694,7 +2694,8 @@
                   }
                 },
                 "visibility": {
-                  "$ref": "#/definitions/v1Visibility"
+                  "$ref": "#/definitions/v1Visibility",
+                  "title": "Visibility 菜单可见性，作为 role_menus 授权之后的附加过滤条件。\n当前菜单场景优先使用 GLOBAL 与 RESTRICTED 两档明确语义；\nSUBTREE / LOCAL / SPECIFIC 先保留枚举定义，待菜单补齐组织归属或白名单模型后再扩展运行时语义。"
                 },
                 "description": {
                   "type": "string"
@@ -7442,7 +7443,8 @@
           }
         },
         "visibility": {
-          "$ref": "#/definitions/v1Visibility"
+          "$ref": "#/definitions/v1Visibility",
+          "title": "Visibility 菜单可见性，作为 role_menus 授权之后的附加过滤条件。\n当前菜单场景优先使用 GLOBAL 与 RESTRICTED 两档明确语义；\nSUBTREE / LOCAL / SPECIFIC 先保留枚举定义，待菜单补齐组织归属或白名单模型后再扩展运行时语义。"
         },
         "description": {
           "type": "string"
@@ -9130,7 +9132,7 @@
       ],
       "default": "VISIBILITY_UNSPECIFIED",
       "description": "- VISIBILITY_GLOBAL: 全开：跨部门、跨层级全局可见\n资源/部门：系统中所有合法用户均可检索/看到\n - VISIBILITY_SUBTREE: 组织架构树可见：本部门及下属部门可见（向下递归）\n部门：成员处于相同节点或上级节点可见其下属节点（不管下级节点设置的可见性）\n资源：同部门及子部门成员可见\n - VISIBILITY_LOCAL: 仅本级可见：仅限本部门成员，不包含子部门\n部门：仅同级成员可见，不向下扩散\n资源：仅本节点成员可见\n - VISIBILITY_RESTRICTED: 私有：仅创建者/负责人及系统内部可见（最严限制）\n部门：同级成员也不可见，仅管理员或特定负责人可见\n资源：仅创建者或指定授权人可见\n - VISIBILITY_SPECIFIC: 特定受众：基于白名单（如特定团队、特定角色）\n如果逻辑复杂，通常此项作为占位，具体配置存入关联表",
-      "title": "可见性是“前置过滤”，权限是“后置校验”\n通用：部门/资源/凭证的可见性策略"
+      "title": "可见性与权限是不同维度：可见性用于资源发现范围控制，权限用于最终访问或操作校验。\n具体实体可以按自身模型决定可见性在链路中的生效阶段。\n通用：部门/资源/凭证的可见性策略"
     },
     "v1WebInterfaceConfig": {
       "type": "object",
