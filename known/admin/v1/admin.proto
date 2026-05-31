@@ -6,6 +6,7 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/empty.proto";
+import "known/status/v1/response.proto";
 
 import "known/admin/v1/admin.common.proto";
 import "known/admin/v1/auth.proto";
