@@ -232,10 +232,6 @@ message Service {
   string display_name = 4;
   string description = 5;
   bool protected = 6;
-  int64 created_by = 7;
-  int64 updated_by = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
 }
 
 // Action 统一动作字典，用于定义"主体可以对资源做什么"。
@@ -245,7 +241,8 @@ message Service {
 // 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
 // 3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。
 //
-// 字段布局约定：标识区 → 扩展区(description/protected) → 业务属性区(tags/selectors) → 审计区
+// 字段布局约定：标识区 → 扩展区(description/protected) → 业务属性区(tags/selectors)。
+// 注意：Action 由 gateway/openapi 配置在运行时派生，不入库，无独立生命周期，因此不带审计字段。
 message Action {
   message ResourceSelector {
     string resource_type = 1;
@@ -260,10 +257,6 @@ message Action {
   bool protected = 6;
   repeated string tags = 7;
   repeated ResourceSelector resource_selectors = 8;
-  int64 created_by = 9;
-  int64 updated_by = 10;
-  google.protobuf.Timestamp created_at = 11;
-  google.protobuf.Timestamp updated_at = 12;
 }
 
 // Menu 菜单业务定义。
@@ -1042,9 +1035,4 @@ message PolicyStatement {
   repeated string actions = 4;
   repeated string resources = 5;
   repeated Condition conditions = 6;
-
-  int64 created_by = 7;
-  int64 updated_by = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
 }
