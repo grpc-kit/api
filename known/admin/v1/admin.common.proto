@@ -581,7 +581,7 @@ message Membership {
   MemberType member_type = 9;
 
   google.protobuf.Timestamp joined_at = 10;
-  google.protobuf.Timestamp expired_at = 11;
+  google.protobuf.Timestamp expires_at = 11;
 
   map<string, string> metadata = 12;
   string description = 13;

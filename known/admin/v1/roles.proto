@@ -31,7 +31,7 @@ message PrincipalRoleBinding {
   string principal_code = 5;
   int64 role_id = 6;
   BindingStatus binding_status = 7;
-  google.protobuf.Timestamp expired_at = 8;
+  google.protobuf.Timestamp expires_at = 8;
   map<string, string> metadata = 9;
   string description = 10;
   int64 created_by = 11;
