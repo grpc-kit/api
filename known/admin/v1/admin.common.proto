@@ -431,6 +431,68 @@ message Role {
   google.protobuf.Timestamp updated_at = 14;
 }
 
+// PrincipalType 主体类型，用于角色绑定关系
+enum PrincipalType {
+  PRINCIPAL_TYPE_UNSPECIFIED = 0;
+  USER = 1;
+  GROUP = 2;
+  DEPARTMENT = 3;
+}
+
+// BindingStatus 绑定状态
+enum BindingStatus {
+  BINDING_STATUS_UNSPECIFIED = 0;
+  ACTIVE = 1;
+  DISABLED = 2;
+}
+
+// PrincipalRoleBinding 主体-角色绑定关系实体
+message PrincipalRoleBinding {
+  int64 id = 1;
+  PrincipalType principal_type = 2;
+  int64 principal_id = 3;
+  string principal_name = 4;
+  string principal_code = 5;
+  int64 role_id = 6;
+  BindingStatus binding_status = 7;
+  google.protobuf.Timestamp expires_at = 8;
+  map<string, string> metadata = 9;
+  string description = 10;
+  int64 created_by = 11;
+  int64 updated_by = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+}
+
+// RoleMenu 角色-菜单授权关系实体
+message RoleMenu {
+  int64 id = 1;
+  int64 role_id = 2;
+  int64 menu_id = 3;
+  // 权限范围：1=可见，2=可操作
+  int32 permission_scope = 4;
+  string description = 5;
+  // 冗余菜单详情，便于前端直接渲染
+  Menu menu = 6;
+  // 是否递归包含子菜单，为 true 时授权逻辑自动涵盖所有后代菜单
+  bool is_recursive = 7;
+}
+
+// RolePolicyBinding 角色-策略绑定关系实体
+message RolePolicyBinding {
+  int64 id = 1;
+  int64 role_id = 2;
+  int64 policy_id = 3;
+  // 冗余策略详情，便于前端直接渲染
+  Policy policy = 4;
+  map<string, string> metadata = 5;
+  string description = 6;
+  int64 created_by = 10;
+  int64 updated_by = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
 // Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形
 // 该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理
 message Group {
@@ -911,6 +973,57 @@ message Credential {
   google.protobuf.Timestamp updated_at = 23;
 }
 
+// OAuth2Client OAuth2 客户端实体，用于管理接入 OAuth2/OIDC 的三方应用
+message OAuth2Client {
+  // ======== 标识区（1-4） ========
+
+  // ID 全局唯一标识
+  int64 id = 1;
+
+  // ClientID 系统标识符，创建后不可修改
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号
+  // 长度：2-64 字符；如客户端未提供，服务端自动生成 12 位随机编码
+  // 示例："web-app"、"mobile.ios"、"api:gateway"
+  string client_id = 2;
+
+  // ClientStatus 客户端状态
+  enum ClientStatus {
+    CLIENT_STATUS_UNSPECIFIED = 0;
+    ACTIVE = 1;             // 启用中 - 可正常发起 OAuth2 授权流程
+    DISABLED = 2;           // 已禁用 - 暂停授权，可重新启用
+    REVOKED = 3;            // 已吊销 - 永久失效，不可恢复
+  }
+  ClientStatus client_status = 5;
+
+  // ======== 展示区（6-9） ========
+
+  // DisplayName 客户端展示名称
+  string display_name = 3;
+  // Description 客户端描述信息
+  string description = 9;
+  // LogoURL 客户端图标地址
+  string logo_url = 8;
+
+  // ======== 配置区 ========
+
+  // RedirectUris 允许的回调地址列表
+  repeated string redirect_uris = 4;
+  // GrantTypes 允许的授权类型
+  // 示例：authorization_code, refresh_token, client_credentials
+  repeated string grant_types = 6;
+  // Scopes 允许申请的权限范围
+  // 示例：openid, profile, email
+  repeated string scopes = 7;
+
+  // ======== 审计区 ========
+
+  int64 created_by = 10;
+  int64 updated_by = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  google.protobuf.Timestamp deleted_at = 14;
+}
+
 message OAuth2JSONWebKeys {
   message Key {
     string kty = 1;
@@ -941,6 +1054,46 @@ message OAuth2Userinfo {
   string timezone = 7;
   // 用户偏好的语言与地区（例如 "zh-CN"、"en-US"）
   string locale = 8;  
+}
+
+// OAuth2Discovery 提供内置 oidc 服务
+// https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+message OAuth2Discovery {
+  string issuer = 1;
+  string authorization_endpoint = 2;
+  string token_endpoint = 3;
+  // string userinfo_endpoint = 4;
+  string jwks_uri = 5;
+  // string registration_endpoint = 6;
+  // string scopes_supported = 7;
+  repeated string response_types_supported = 8;
+  // string response_modes_supported = 9;
+  // string grant_types_supported = 10;
+  // string acr_values_supported = 11;
+  repeated string subject_types_supported = 12;
+  repeated string id_token_signing_alg_values_supported = 13;
+  // string id_token_encryption_alg_values_supported = 14;
+  // string id_token_encryption_enc_values_supported = 15;
+  // string userinfo_signing_alg_values_supported = 16;
+  // string userinfo_encryption_alg_values_supported = 17;
+  // string userinfo_encryption_enc_values_supported = 18;
+  // string request_object_signing_alg_values_supported = 19;
+  // string request_object_encryption_alg_values_supported = 20;
+  // string request_object_encryption_enc_values_supported = 21;
+  // string token_endpoint_auth_methods_supported = 22;
+  // string token_endpoint_auth_signing_alg_values_supported = 23;
+  // string display_values_supported = 24;
+  // string claim_types_supported = 25;
+  // string claims_supported = 26;
+  // string service_documentation = 27;
+  // string claims_locales_supported = 28;
+  // string ui_locales_supported = 29;
+  // string claims_parameter_supported = 30;
+  // string request_parameter_supported = 31;
+  // string request_uri_parameter_supported = 32;
+  // string require_request_uri_registration = 33;
+  // string op_policy_uri = 34;
+  // string op_tos_uri = 35;
 }
 
 // AuthToken 登录成功响应
@@ -1035,4 +1188,33 @@ message PolicyStatement {
   repeated string actions = 4;
   repeated string resources = 5;
   repeated Condition conditions = 6;
+}
+
+// ======== 全局设置区 ========
+
+// GlobalSetting 全局设置项实体
+message GlobalSetting {
+  int64 id = 1;
+  string category = 2;
+  string setting_key = 3;
+  string setting_value = 4;
+  string value_type = 5;
+  string description = 6;
+  bool protected = 7;
+  int64 created_by = 8;
+  int64 updated_by = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+// GlobalSettingCategory 全局设置分类，聚合同一 category 下的设置项
+message GlobalSettingCategory {
+  string category = 1;
+  repeated GlobalSetting settings = 2;
+}
+
+// UpdateGlobalSetting 单项更新载荷
+message UpdateGlobalSetting {
+  string setting_key = 1;
+  string setting_value = 2;
 }

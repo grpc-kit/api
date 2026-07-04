@@ -6,39 +6,7 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/field_mask.proto";
-import "google/protobuf/timestamp.proto";
-
 import "known/admin/v1/admin.common.proto";
-
-enum PrincipalType {
-  PRINCIPAL_TYPE_UNSPECIFIED = 0;
-  USER = 1;
-  GROUP = 2;
-  DEPARTMENT = 3;
-}
-
-enum BindingStatus {
-  BINDING_STATUS_UNSPECIFIED = 0;
-  ACTIVE = 1;
-  DISABLED = 2;
-}
-
-message PrincipalRoleBinding {
-  int64 id = 1;
-  PrincipalType principal_type = 2;
-  int64 principal_id = 3;
-  string principal_name = 4;
-  string principal_code = 5;
-  int64 role_id = 6;
-  BindingStatus binding_status = 7;
-  google.protobuf.Timestamp expires_at = 8;
-  map<string, string> metadata = 9;
-  string description = 10;
-  int64 created_by = 11;
-  int64 updated_by = 12;
-  google.protobuf.Timestamp created_at = 13;
-  google.protobuf.Timestamp updated_at = 14;
-}
 
 message CreateRoleRequest {
   Role role = 1;
@@ -185,19 +153,6 @@ message UpdateRoleMembersResponse {
 
 }
 
-message RoleMenu {
-  int64 id = 1;
-  int64 role_id = 2;
-  int64 menu_id = 3;
-  // 权限范围：1=可见，2=可操作
-  int32 permission_scope = 4;
-  string description = 5;
-  // 冗余菜单详情，便于前端直接渲染
-  Menu menu = 6;
-  // 是否递归包含子菜单，为 true 时授权逻辑自动涵盖所有后代菜单
-  bool is_recursive = 7;
-}
-
 message ListRoleMenusRequest {
   // 父资源：角色 ID（与路径 {parent} 一致）
   string parent = 1;
@@ -242,20 +197,6 @@ message DeleteRoleMenuRequest {
   // 父资源：角色 ID（与路径 {parent} 一致）
   string parent = 1;
   int64 menu_id = 2;
-}
-
-message RolePolicyBinding {
-  int64 id = 1;
-  int64 role_id = 2;
-  int64 policy_id = 3;
-  // 冗余策略详情，便于前端直接渲染
-  Policy policy = 4;
-  map<string, string> metadata = 5;
-  string description = 6;
-  int64 created_by = 10;
-  int64 updated_by = 11;
-  google.protobuf.Timestamp created_at = 12;
-  google.protobuf.Timestamp updated_at = 13;
 }
 
 message ListRolePoliciesRequest {

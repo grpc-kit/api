@@ -14,6 +14,7 @@ import "known/admin/v1/config.proto";
 import "known/admin/v1/department.proto";
 import "known/admin/v1/setting.proto";
 import "known/admin/v1/security.proto";
+import "known/admin/v1/oauth2.proto";
 import "known/admin/v1/user.proto";
 import "known/admin/v1/roles.proto";
 import "known/admin/v1/group.proto";
@@ -126,6 +127,13 @@ service KnownAdmin {
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
   rpc GetOAuth2JSONWebKeys(google.protobuf.Empty) returns(OAuth2JSONWebKeys);
   rpc GetOAuth2Userinfo(google.protobuf.Empty) returns(OAuth2Userinfo);
+
+  // OAuth2 客户端管理
+  rpc ListOAuth2Clients(ListOAuth2ClientsRequest) returns(ListOAuth2ClientsResponse);
+  rpc CreateOAuth2Client(CreateOAuth2ClientRequest) returns(CreateOAuth2ClientResponse);
+  rpc GetOAuth2Client(GetOAuth2ClientRequest) returns(OAuth2Client);
+  rpc UpdateOAuth2Client(UpdateOAuth2ClientRequest) returns(OAuth2Client);
+  rpc DeleteOAuth2Client(DeleteOAuth2ClientRequest) returns(google.protobuf.Empty);
 
   // 数据库相关
   rpc CreateDatabaseInitialize(CreateDatabaseInitializeRequest) returns(google.protobuf.Empty);
