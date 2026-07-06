@@ -36,6 +36,8 @@ service KnownAdmin {
   // 认证鉴权
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
   rpc ListAuthProviders(ListAuthProvidersRequest) returns(ListAuthProvidersResponse);
+  // 获取登录页可用的认证提供方列表（无需认证，仅返回最小字段集）
+  rpc ListLoginOptions(ListLoginOptionsRequest) returns(ListLoginOptionsResponse);
   rpc CreateAuthProvider(CreateAuthProviderRequest) returns(AuthProvider);
   rpc GetAuthProvider(GetAuthProviderRequest) returns(AuthProvider);
   rpc DeleteAuthProvider(DeleteAuthProviderRequest) returns(google.protobuf.Empty);
