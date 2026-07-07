@@ -1037,23 +1037,43 @@ message OAuth2JSONWebKeys {
   repeated Key keys = 1;
 }
 
+// OAuth2Userinfo 对应 OIDC Standard Claims 规范
+// https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
 message OAuth2Userinfo {
-  // ID 用户 ID，全局唯一标识，使用 int64 序列化为 json 为 string 类型
-  int64 user_id = 1;
-  // 用户名，系统登录凭证，必须唯一
-  string username = 2;
+  // Subject Identifier — OIDC MUST 返回的 Subject 标识
+  string sub = 1;
+  // 用户 ID，全局唯一标识
+  int64 user_id = 2;
+  // 首选用户名
+  string preferred_username = 3;
+  // End-User 全名
+  string name = 4;
   // 昵称，用于社交或前端展示
-  string nickname = 3;
+  string nickname = 5;
   // 个人简介或签名
-  string profile = 4;
+  string profile = 6;
   // 用户头像 URL
-  string picture = 5;
-  // 个人网站地址
-  string website = 6;
+  string picture = 7;
+  // 邮箱地址
+  string email = 8;
+  // 邮箱是否已验证
+  bool email_verified = 9;
+  // 性别（OIDC 规范值为 "male"/"female"/"other"，PRIVATE 不返回）
+  string gender = 10;
+  // 生日（ISO 8601: YYYY-MM-DD）
+  string birthdate = 11;
   // 时区信息（IANA 时区标识，例如 "Asia/Shanghai"）
-  string timezone = 7;
+  string zoneinfo = 12;
   // 用户偏好的语言与地区（例如 "zh-CN"、"en-US"）
-  string locale = 8;  
+  string locale = 13;
+  // 电话号码（E.164 格式）
+  string phone_number = 14;
+  // 电话号码是否已验证
+  bool phone_number_verified = 15;
+  // 信息最后更新时间（Unix 时间戳，秒）
+  int64 updated_at = 16;
+  // 个人网站地址
+  string website = 17;
 }
 
 // OAuth2Discovery 提供内置 oidc 服务
