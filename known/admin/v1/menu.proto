@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/field_mask.proto";
+import "known/admin/v1/admin.common.proto";
+
+message ListMenusRequest {
+	string parent = 1;
+	int32 page_size = 2;
+
+	oneof pagination {
+		string page_token = 3;
+		int32 offset = 4;
+	}
+
+	View view = 5;
+	Structure structure = 6;
+	string filter = 7;
+	string order_by = 8;
+	int64 resource_id = 9;
+	string code = 10;
+}
+
+message ListMenusResponse {
+	repeated Menu menus = 1;
+	string next_page_token = 2;
+	int32 total_size = 3;
+}
+
+message CreateMenuRequest {
+	Menu menu = 1;
+}
+
+message UpdateMenuRequest {
+	Menu menu = 1;
+	google.protobuf.FieldMask update_mask = 2;
+}
+
+message DeleteMenuRequest {
+	int64 id = 1;
+}

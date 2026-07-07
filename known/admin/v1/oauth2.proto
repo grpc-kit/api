@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/field_mask.proto";
+
+import "known/admin/v1/admin.common.proto";
+
+// ListOAuth2ClientsRequest 查询 OAuth2 客户端列表
+message ListOAuth2ClientsRequest {
+  // 每页返回的最大客户端数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 4;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `client_status=ACTIVE AND display_name~="web"`
+  string filter = 7;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "client_status asc, created_at desc"
+  string order_by = 8;
+
+  // ClientStatus 快捷过滤参数。
+  // 示例: 1(ACTIVE)，仅返回启用中的客户端。
+  int32 client_status = 9;
+}
+
+// ListOAuth2ClientsResponse OAuth2 客户端列表响应
+message ListOAuth2ClientsResponse {
+  repeated OAuth2Client clients = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  string next_page_token = 2;
+
+  // 符合条件的客户端总数。
+  int32 total_size = 3;
+}
+
+// CreateOAuth2ClientRequest 创建 OAuth2 客户端
+message CreateOAuth2ClientRequest {
+  // Client 客户端配置
+  OAuth2Client client = 1;
+
+  // ClientSecret 客户端密钥明文（可选）
+  // - 如果提供，服务端将 bcrypt 哈希后存储，明文不会被保存或返回。
+  // - 如果未提供，服务端自动生成 32 位随机密钥，哈希存储，明文一次性返回在响应中。
+  // - 注意：自动生成的明文密钥仅在此响应中返回一次，后续不可再获取。
+  string client_secret = 2;
+}
+
+// CreateOAuth2ClientResponse 创建 OAuth2 客户端响应
+message CreateOAuth2ClientResponse {
+  // Client 创建成功的客户端信息（不含密钥哈希）
+  OAuth2Client client = 1;
+
+  // ClientSecret 明文密钥（仅在服务端自动生成时返回）
+  // - 如果请求中提供了 client_secret，此字段为空。
+  // - 此明文仅返回一次，客户端必须妥善保存。
+  string client_secret = 2;
+}
+
+// GetOAuth2ClientRequest 获取 OAuth2 客户端详情
+message GetOAuth2ClientRequest {
+  int64 id = 1;
+}
+
+// UpdateOAuth2ClientRequest 更新 OAuth2 客户端
+message UpdateOAuth2ClientRequest {
+  int64 id = 1;
+  OAuth2Client client = 2;
+
+  // 指定需要更新的字段列表，未列出的字段不会被修改。
+  // 注意：client_id 不可修改，即使列入 update_mask 也会被忽略。
+  // 示例: paths: ["display_name", "client_status", "redirect_uris"]
+  google.protobuf.FieldMask update_mask = 3;
+
+  // ClientSecret 新的客户端密钥明文（可选）
+  // - 如果提供非空值，服务端将 bcrypt 哈希后覆盖现有密钥。
+  // - 如果未提供或为空，保持现有密钥不变。
+  string client_secret = 4;
+}
+
+// DeleteOAuth2ClientRequest 删除 OAuth2 客户端
+message DeleteOAuth2ClientRequest {
+  int64 id = 1;
+}

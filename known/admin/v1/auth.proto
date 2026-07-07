@@ -208,3 +208,44 @@ message ConfirmAuthMFASetupRequest {
   string setup_challenge_id = 1;
   string totp_code = 2;
 }
+
+// ListLoginOptionsRequest 获取登录页可用的认证提供方列表请求（无需认证）
+// 返回最小字段集，不包含任何敏感配置信息
+message ListLoginOptionsRequest {}
+
+// ListLoginOptionsResponse 登录页认证提供方列表响应
+message ListLoginOptionsResponse {
+  // options 可用的认证提供方列表（已按 sort_order 排序）
+  repeated LoginOption options = 1;
+}
+
+// LoginOption 登录页认证提供方选项（最小字段集，不含敏感信息）
+message LoginOption {
+  // Code 系统标识符，用于 CreateAuthLogin 的 provider_code
+  string code = 1;
+  // Type 身份提供商类型
+  AuthProvider.Type type = 2;
+  // DisplayName 展示名称
+  string display_name = 3;
+  // IconURL 图标地址
+  string icon_url = 4;
+
+  // 仅 OAuth2 系提供商（OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT）填充此字段
+  // LOCAL/LDAP 不填充
+  oneof config {
+    OAuth2LoginConfig oauth_config = 5;
+  }
+}
+
+// OAuth2LoginConfig OAuth2 系登录跳转所需的最小配置
+// 仅包含前端发起授权码流程所需的 4 个字段，不包含 token_endpoint/userinfo_endpoint 等服务端字段
+message OAuth2LoginConfig {
+  // authorization_endpoint 授权端点 URL
+  string authorization_endpoint = 1;
+  // client_id OAuth2 客户端 ID
+  string client_id = 2;
+  // redirect_uri 回调地址
+  string redirect_uri = 3;
+  // scopes 请求的权限范围
+  repeated string scopes = 4;
+}

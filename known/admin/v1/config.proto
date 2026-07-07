@@ -7,21 +7,6 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/struct.proto";
 
-message LocalConfig {
-  ServicesConfig services = 1;
-  DiscoverConfig discover = 2;
-  SecurityConfig security = 3;
-  DatabaseConfig database = 4;
-  CacheboxConfig cachebox = 5;
-  DebuggerConfig debugger = 6;
-  ObjstoreConfig objstore = 7;
-  FrontendConfig frontend = 8;
-  ObservablesConfig observables = 9;
-  CloudEventsConfig cloudevents = 10;
-  AutomationsConfig automations = 11;
-  google.protobuf.Struct independent = 12;
-}
-
 message ServicesConfig {
   string name = 1;
   bool enabled = 2;
@@ -159,33 +144,37 @@ message AuthorizationConfig {
 
 }
 
-message GetConfigRequest {
+message ListLocalConfigsRequest {}
 
+message ListLocalConfigsResponse {
+  repeated LocalConfigEntry configs = 1;
 }
 
-message GetConfigSecurityRequest {
-
+message LocalConfigEntry {
+  string name = 1;
+  bool enabled = 2;
 }
 
-message GetConfigServicesRequest {}
+message GetLocalConfigsRequest {
+  string name = 1;
+}
 
-message GetConfigDiscoverRequest {}
-
-message GetConfigDatabaseRequest {}
-
-message GetConfigCacheboxRequest {}
-
-message GetConfigDebuggerRequest {}
-
-message GetConfigObjstoreRequest {}
-
-message GetConfigFrontendRequest {}
-
-message GetConfigObservablesRequest {}
-
-message GetConfigCloudEventsRequest {}
-
-message GetConfigAutomationsRequest {}
+message LocalConfigs {
+  oneof config {
+    ServicesConfig services = 1;
+    DiscoverConfig discover = 2;
+    SecurityConfig security = 3;
+    DatabaseConfig database = 4;
+    CacheboxConfig cachebox = 5;
+    DebuggerConfig debugger = 6;
+    ObjstoreConfig objstore = 7;
+    FrontendConfig frontend = 8;
+    ObservablesConfig observables = 9;
+    CloudEventsConfig cloudevents = 10;
+    AutomationsConfig automations = 11;
+    google.protobuf.Struct independent = 12;
+  }
+}
 
 message GRPCServiceConfig {
   bool enabled = 1;

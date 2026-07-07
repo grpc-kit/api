@@ -105,7 +105,7 @@ message ListDepartmentMembersRequest {
 }
 
 message ListDepartmentMembersResponse {
-  // 符合查询条件的用户资源。
+  // 符合查询条件的部门 membership 关系。
   repeated Membership members = 1;
 
   // 用于获取下一页结果的 token。
@@ -122,8 +122,10 @@ message ListDepartmentMembersResponse {
 }
 
 message CreateDepartmentMembersRequest {
+  // 部门 ID，目标侧固定为 department。
   int64 department_id = 1;
 
+  // 要写入的用户到部门 membership 关系。
   repeated Membership members = 2;
 }
 
@@ -132,8 +134,10 @@ message CreateDepartmentMembersResponse {
 }
 
 message UpdateDepartmentMembersRequest {
+  // 部门 ID，目标侧固定为 department。
   int64 department_id = 1;
 
+  // 要更新的用户到部门 membership 关系。
   repeated Membership members = 2;
 }
 
@@ -142,6 +146,8 @@ message UpdateDepartmentMembersResponse {
 }
 
 message DeleteDepartmentMemberRequest {
+  // 部门 ID，目标侧固定为 department。
   int64 department_id = 1;
+  // 用户 ID，表示删除该用户在指定部门下的 membership 关系。
   int64 user_id = 2;
 }

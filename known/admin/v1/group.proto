@@ -114,7 +114,7 @@ message ListGroupMembersRequest {
 }
 
 message ListGroupMembersResponse {
-  // 群组成员关系列表
+  // 群组 membership 关系列表。
   repeated Membership members = 1;
 
   // 用于获取下一页结果的 token。
@@ -131,10 +131,10 @@ message ListGroupMembersResponse {
 }
 
 message CreateGroupMembersRequest {
-  // 父资源名称，用于限定范围。
-  // 格式示例: "organizations/123" 或 "projects/456"。
+  // 群组 ID，字段名沿用既有 parent 命名以兼容历史接口。
   string parent = 1;
 
+  // 要写入的用户到群组 membership 关系。
   repeated Membership members = 2;
 }
 
@@ -142,20 +142,20 @@ message CreateGroupMembersResponse {
 }
 
 message DeleteGroupMemberRequest {
-  // 父资源名称，用于限定范围。
-  // 格式示例: "organizations/123" 或 "projects/456"。
+  // 群组 ID，字段名沿用既有 parent 命名以兼容历史接口。
   string parent = 1;
   
+  // 用户 ID，表示删除该用户在指定群组下的 membership 关系。
   int64 user_id = 2;
 }
 
 message UpdateGroupMemberRequest {
-  // 父资源名称，用于限定范围。
-  // 格式示例: "organizations/123" 或 "projects/456"。
+  // 群组 ID，字段名沿用既有 parent 命名以兼容历史接口。
   string parent = 1;
   
   int64 user_id = 2;
 
+  // 用户到群组的 membership 关系变更内容。
   Membership member = 3;
 
   google.protobuf.FieldMask update_mask = 4;

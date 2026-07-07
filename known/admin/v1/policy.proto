@@ -61,6 +61,16 @@ message ListPoliciesResponse {
   int32 total_size = 3;
 }
 
+message GetPolicyRequest {
+  // 策略编码，优先用于查询。
+  string code = 1;
+
+  // 详情视图级别。
+  // - 默认（VIEW_UNSPECIFIED / VIEW_STANDARD / VIEW_FULL）返回完整策略，包含 statements。
+  // - VIEW_BASIC 返回精简策略，不包含 statements。
+  View view = 2;
+}
+
 message CreatePolicyRequest {
   /*
   {

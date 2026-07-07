@@ -33,7 +33,8 @@ enum Structure {
   STRUCTURE_TREE_EXPANDED = 3;
 }
 
-// 可见性是“前置过滤”，权限是“后置校验”
+// 可见性与权限是不同维度：可见性用于资源发现范围控制，权限用于最终访问或操作校验。
+// 具体实体可以按自身模型决定可见性在链路中的生效阶段。
 // 通用：部门/资源/凭证的可见性策略
 enum Visibility {
   VISIBILITY_UNSPECIFIED = 0;
@@ -83,26 +84,30 @@ message PhoneNumber {
 // Department 组织部门实体，支持树形层级结构的企业组织架构管理
 // 设计原则：一个用户仅可归属于一个主部门，但可通过角色关系参与多个部门的管理
 // 支持国际化、状态管理、财务集成等企业级功能
+//
+// 字段布局约定：标识区 → 业务属性区 → 扩展区(description/visibility/protected) → 关系区 → 审计区
 message Department {
+  // ======== 标识区 ========
+
   // ID 部门唯一标识符，系统自动生成
   // 用于数据库主键和跨系统引用，建议使用自增整型
   int64 id = 1;
-  
+
   // ParentID 父部门ID，构建树形组织结构
   // 值为 0 表示顶级部门（如：总公司、集团总部）
   // 支持多级嵌套，建议层级深度不超过 6 级以保证查询性能
   int64 parent_id = 2;
-  
+
   // Code 系统标识符，创建后不可修改
   // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "tech.dept"、"hr"；自动 "a7k2m3x9b5f1"
   string code = 3;
-  
+
   // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   // 用于部门名称的多语言显示，提升用户体验和国际化支持
   string display_name = 4;
-  
+
   // Type 部门类型分类，用于业务逻辑和权限控制
   enum Type {
     TYPE_UNSPECIFIED = 0;  // 未指定类型
@@ -127,320 +132,158 @@ message Department {
   // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
   // 默认值：100，范围：1-9999
   int32 sort_order = 7;
-  
-  // Members 部门成员列表
-  repeated Membership members = 8;
 
-  // Children 直接子部门列表，用于构建完整的组织树
-  // 仅包含直接下级，避免深度递归查询
-  // 建议在需要完整树结构时通过专门的服务接口获取
-  repeated Department children = 9;
+  // ======== 业务属性区 ========
 
   // Email 部门公共邮箱地址，用于对外联系和内部通知
   // 格式：标准邮箱格式，如 "tech@company.com"
   // 用途：部门公告、外部合作、客户联系等
-  string email = 10;
+  string email = 8;
 
   // PhoneNumber 部门联系电话，支持国际化电话号码格式
   // 包含国家代码、区号、号码等完整信息
   // 用于紧急联系、业务咨询等场景
-  PhoneNumber phone_number = 11;
+  PhoneNumber phone_number = 9;
 
   // Address 部门办公地址，支持结构化地址信息
   // 包含国家、省市、详细地址等信息
   // 用于邮寄、拜访、资产管理等业务场景
-  Address address = 12;
+  Address address = 10;
 
   // CostCenterCode 成本中心编码，用于财务核算和成本控制
   // 格式：企业自定义编码规则，如 "CC-TECH-001"
   // 用途：预算分配、成本归集、财务报表等
   // 与 ERP 系统集成时的重要标识字段
-  string cost_center_code = 13;
-  
+  string cost_center_code = 11;
+
   // BudgetCode 预算编码，用于预算管理和费用控制
   // 格式：与财务系统对应的预算科目编码
   // 用途：年度预算、费用审批、财务分析等
   // 支持多维度预算管理（如：人员预算、设备预算等）
-  string budget_item_code = 14;
+  string budget_item_code = 12;
 
   // MaxMembers 部门最大成员数限制，用于人员规模控制
   // 值为 0 表示无限制，正整数表示具体限制
   // 用途：组织规模控制、人力成本管理、办公空间规划
-  int32 max_members = 15;
-  
+  int32 max_members = 13;
+
   // ExternalID 外部系统标识符，用于第三方系统集成
   // 如：ERP 系统部门编码、OA 系统部门 ID 等
   // 支持数据同步和跨系统业务流程
-  string external_id = 16;
-  
+  string external_id = 14;
+
+  // ======== 扩展区 ========
+
   // Metadata 扩展元数据，存储自定义业务属性
   // 键值对格式，支持灵活的业务扩展需求
   // 示例：{"location": "北京", "floor": "15F", "capacity": "50"}
-  map<string, string> metadata = 17;
-
-  // CreatedBy 创建者用户ID，记录部门创建人
-  // 用于审计追踪和权限验证
-  int64 created_by = 18;
-  
-  // UpdatedBy 最后更新者用户ID，记录最近修改人
-  // 用于变更追踪和责任确认
-  int64 updated_by = 19;
-  
-  // CreatedAt 创建时间戳，记录部门建立时间
-  // 使用 UTC 时间，精确到毫秒级别
-  google.protobuf.Timestamp created_at = 20;
-  
-  // UpdatedAt 最后更新时间戳，记录最近修改时间
-  // 用于数据同步和缓存失效判断
-  google.protobuf.Timestamp updated_at = 21;
-  
-  // DeletedAt 软删除时间戳，支持数据恢复
-  // 非空表示已删除，空值表示正常状态
-  // 实现软删除机制，保护重要组织数据
-  google.protobuf.Timestamp deleted_at = 22;
+  map<string, string> metadata = 15;
 
   // Description 部门描述信息，详细说明部门职责和业务范围
   // 用于组织介绍、职责说明、业务范围描述等
   // 建议长度：500 字符以内，支持富文本格式
-  string description = 23;
+  string description = 16;
 
   // Visibility 部门及成员列表的可见性策略（使用公共枚举 Visibility）
-  Visibility visibility = 24;
-}
+  Visibility visibility = 17;
 
-// Scope 作用域
-message Scope {
-  // ID 资源 ID
-  int64 id = 1;
+  // Protected 是否为系统内置/受保护的部门，受保护的部门不可删除
+  bool protected = 18;
 
-  // Type 作用域类型
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    /*
-      admin   后台管理端
-      user    前台用户端
-      app     移动端
-     */
-    PLATFORM = 1; // admin, user, app
+  // ======== 关系区 ========
 
-    /*
-      readonly
-      readwrite
-     */
-    ACTION = 2;
-  }
-  Type type = 2;
+  // Members 部门成员列表
+  repeated Membership members = 19;
 
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "admin"、"order.read"；自动 "a7k2m3x9b5f1"
-  // 默认存在以下内部作用域：admin（后台用户菜单查看权限）、user（前端用户菜单查看权限）
-  string code = 3;
-  string display_name = 4;
+  // Children 直接子部门列表，用于构建完整的组织树
+  // 仅包含直接下级，避免深度递归查询
+  // 建议在需要完整树结构时通过专门的服务接口获取
+  repeated Department children = 20;
 
-  string description = 5;
-
-  bool protected = 6;
-}
-
-// Resource 资源定义，如：菜单等
-message Resource {
-  // ID 资源 ID
-  int64 id = 1;
-  // ParentID 父资源 ID，为 0 表示顶级资源
-  int64 parent_id = 2;
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "user.management"、"system-config"；自动 "a7k2m3x9b5f1"
-  string code = 3;
-  // Name 稳定资源名（GRN），全局唯一
-  // 格式模板：grn:{service}:{tenant}:{region}:{resource_type}:{resource_path}
-  // 示例：
-  // - grn:admin:default:global:menu:system.user.list
-  // - grn:admin:default:global:api:/builtin/admin/api/v1/users
-  // - grn:llm:tenant-a:cn-hz:model:gpt-4o
-  string name = 22;
-  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
-  // 用于资源名称的多语言显示，支持菜单、领域对象、LLM 资源等元素的国际化
-  string display_name = 4;
-  // SortOrder 资源排序顺序，用于同级资源的显示顺序
-  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
-  // 默认值：100，范围：1-9999
-  int32 sort_order = 5;
-
-  // Type 资源类型
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    MENU    = 1; // 菜单（页面入口，会在菜单栏中显示）
-    DOMAIN  = 2; // 领域资源（业务实体/页面域对象等）
-    LLM     = 3; // LLM 资源（模型/网关/Agent/Tool 等）
-    API     = 4; // 后端接口（包含 grpc、http 等）
-    DATA    = 5; // 数据级资源（行 / 字段）
-    SYSTEM  = 6; // 系统级 / 非 UI 资源（如：系统设置、系统日志等）
-  }
-  Type type = 6;
-  
-  // Status 资源状态
-  enum Status {
-    STATUS_UNSPECIFIED = 0;
-
-    ENABLED = 1; // 启用
-    DISABLED = 2; // 禁用
-  }
-  Status status = 7;
-
-  // Enabled 资源是否启用
-  // bool enabled = 8;
-  // Hidden 是否在资源列表中隐藏
-  // bool hidden = 9;
-  // HideChildren 是否在资源列表中隐藏子项
-  // bool hide_children = 10;
-
-  // Visibility 资源可见性/展示策略（使用公共枚举 Visibility）
-  Visibility visibility = 8;
-
-  // Locator 资源路径，我怎么找到你
-  string locator = 11;
-  // visual 资源图标，我怎么看到你
-  string visual = 12;
-  // Manifest 资源描述，我怎么用你
-  string manifest = 13;
-  // Metadata 扩展元数据
-  // 用于存储上述三个核心字段无法涵盖的特定平台/业务属性
-  map<string, string> metadata = 14;
-
-  // Children 子资源列表
-  repeated Resource children = 15;
-
-  repeated Scope scopes = 16;
-
-  string description = 17;
+  // ======== 审计区 ========
 
   // CreatedBy 创建者用户ID，记录部门创建人
   // 用于审计追踪和权限验证
-  int64 created_by = 18;
-  
+  int64 created_by = 21;
+
   // UpdatedBy 最后更新者用户ID，记录最近修改人
   // 用于变更追踪和责任确认
-  int64 updated_by = 19;
+  int64 updated_by = 22;
 
-  google.protobuf.Timestamp created_at = 20;
-  google.protobuf.Timestamp updated_at = 21;
+  // CreatedAt 创建时间戳，记录部门建立时间
+  // 使用 UTC 时间，精确到毫秒级别
+  google.protobuf.Timestamp created_at = 23;
+
+  // UpdatedAt 最后更新时间戳，记录最近修改时间
+  // 用于数据同步和缓存失效判断
+  google.protobuf.Timestamp updated_at = 24;
+
+  // DeletedAt 软删除时间戳，支持数据恢复
+  // 非空表示已删除，空值表示正常状态
+  // 实现软删除机制，保护重要组织数据
+  google.protobuf.Timestamp deleted_at = 25;
 }
 
-// Policy 策略定义，是一组 policy statements 的逻辑容器。
-// 它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。
-// 推荐约束：
-// 1. allow / deny 语义放在 statements；
-// 2. policy 负责聚合、复用、审计、发布与回滚；
-// 3. attachment 负责把 policy 挂到具体主体上。
-message Policy {
-  // ID 策略唯一标识
+// Service 服务字典定义。
+message Service {
   int64 id = 1;
-
-  // Type 策略类型
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    ROLE = 1;
-    OPEN_POLICY_AGENT = 2;
-  }
-  Type type = 2;
-
-  // Status 策略状态，用于生命周期管理
-  enum Status {
-    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
-
-    // ===== 正常生命周期 =====
-    DRAFT = 1;        // 草稿：未生效，仅用于编辑/评审
-    ENABLED = 2;      // 已启用：正在参与授权决策
-    DISABLED = 3;     // 已禁用：保留配置，但不参与决策
-
-    // ===== 变更 / 风险控制 =====
-    PENDING = 4;     // 待生效：已配置，等待审批或时间触发
-    SUSPENDED = 5;   // 已挂起：紧急风控临时冻结（可自动/人工）
-
-    // ===== 生命周期结束 =====
-    DEPRECATED = 6;  // 已废弃：不推荐使用，允许已有绑定
-    ARCHIVED = 7;    // 已归档：只读，仅审计/历史查询
-  }
-  Status status = 3;
-
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "allow.read"、"deny-delete"；自动 "a7k2m3x9b5f1"
-  string code = 4;
-
-  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
-  string display_name = 5;
-
-  // Value 策略原始内容或编译前载荷。
-  // 对于 statement 驱动模型，一期建议仅作为扩展字段保留，不作为主授权事实来源。
-  string value = 6;
-
-  // Description 策略描述，详细说明策略职责和业务范围
-  string description = 7;
-
-  // EngineMode 执行模式，用于控制 canonical / OPA / Envoy 的投影方式。
-  // 建议以 CANONICAL 为事实源，再向 OPA / Envoy 做投影编译。
-  enum EngineMode {
-    ENGINE_MODE_UNSPECIFIED = 0;
-    CANONICAL = 1;
-    OPA = 2;
-    ENVOY_RBAC = 3;
-    HYBRID = 4;
-  }
-  EngineMode engine_mode = 8;
-
-  // VersionNo 策略版本号，用于发布、灰度与回滚
-  int64 version_no = 9;
-
-  // Protected 是否为系统内置/受保护的策略，受保护的策略不可删除
-  bool protected = 10;
-
-  // Statements 该策略下挂载的语句集合
-  repeated PolicyStatement statements = 11;
-
-  // Attachments 该策略当前已挂载的生效边界
-  repeated PolicyAttachment attachments = 12;
-}
-
-message Permission {
-  // ID 资源 ID
-  int64 id = 1;
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   string code = 2;
-  string display_name = 3;
+  string grpc_service = 3;
+  string display_name = 4;
+  string description = 5;
+  bool protected = 6;
+}
 
-  Policy policy = 4;
-
-  // 废弃，使用 Binding 替代
-  // repeated Resource resources = 5;
-
-  string description = 6;
-
-  message Binding {
-    int64 id = 1;
-
-    // 资源范围
-    int64 resource_scope_id = 2;
-    // 是否递归子资源
-    bool is_recursive = 3;
-    // 可选：允许的 HTTP methods，若为空则按 scope.code 默认映射
-    repeated string allow_methods = 4;
-
-    Resource resource = 5;
+// Action 统一动作字典，用于定义"主体可以对资源做什么"。
+// 它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。
+// 推荐约束：
+// 1. action 使用稳定编码，格式为 {service.code}:{RpcMethod}，如 admin.iam:ListUsers；
+// 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
+// 3. resource_type_id 关联 lion_resource_types 表，可为空（跨类型动作）。
+//
+// 字段布局约定：标识区 → 扩展区(description/protected) → 业务属性区(tags/selectors)。
+// 注意：Action 由 gateway/openapi 配置在运行时派生，不入库，无独立生命周期，因此不带审计字段。
+message Action {
+  message ResourceSelector {
+    string resource_type = 1;
+    string pattern = 2;
   }
 
-  // 权限绑定资源集合
-  repeated Binding bindings = 7;
+  int64 id = 1;
+  string code = 2;
+  string grpc_method = 3;
+  string display_name = 4;
+  string description = 5;
+  bool protected = 6;
+  repeated string tags = 7;
+  repeated ResourceSelector resource_selectors = 8;
+}
+
+// Menu 菜单业务定义。
+message Menu {
+  int64 id = 1;
+  int64 parent_id = 2;
+  string code = 3;
+  string display_name = 4;
+  string route_path = 5;
+  string component = 6;
+  string icon = 7;
+  int32 sort_order = 8;
+  map<string, string> metadata = 9;
+  repeated Menu children = 10;
+  Visibility visibility = 11;
+  string description = 12;
+  bool protected = 13;
+  int64 created_by = 14;
+  int64 updated_by = 15;
+  google.protobuf.Timestamp created_at = 16;
+  google.protobuf.Timestamp updated_at = 17;
 }
 
 // User 用户实体，表示系统中的账号信息
+//
+// 字段布局约定：标识区 → 基础属性区 → 审计区(时间+操作人连续) → 敏感字段区 → 扩展区 → 关系区
+// 注意：审计区放在敏感字段之前，保持审计字段的连续性
 message User {
   // 以下字段为非敏感/可直接输出（适合公开展示或普通资料页）
 
@@ -464,6 +307,7 @@ message User {
   // 以下字段受限输出（仅本人或具备权限的管理员可见，外部或公共接口谨慎返回）
 
   // 用户的基础身份类型，后端自动维护更新，非人为更新
+  // 编号规则：外部用户 1-9，内部用户 10-49，系统账户 99
   enum Type {
     TYPE_UNSPECIFIED = 0;  // 默认值
 
@@ -490,18 +334,18 @@ message User {
     LOCKED = 3;       // 被锁定（如连续密码错误、账号风控等）
     DISABLED = 4;     // 禁用（人工停用）
     EXPIRED = 5;      // 过期等（订阅过期、账号注销等）
-    SUSPENDED = 6;   // 暂时冻结（如风控触发、投诉处理中）
-    DELETED = 7;     // 已注销（区别软删除）
+    SUSPENDED = 6;    // 暂时冻结（如风控触发、投诉处理中）
+    DELETED = 7;      // 已注销（区别软删除）
   }
   Status status = 10;
 
   // Gender 用户性别
   enum Gender {
     GENDER_UNSPECIFIED = 0;
-    MALE = 1;        // 男性
-    FEMALE = 2;      // 女性
-    OTHER = 3;       // 其他
-    PRIVATE = 4;     // 保密，不愿透露
+    MALE = 1;         // 男性
+    FEMALE = 2;       // 女性
+    OTHER = 3;        // 其他
+    PRIVATE = 4;      // 保密，不愿透露
   }
   Gender gender = 11;
 
@@ -510,14 +354,20 @@ message User {
   // 手机号码是否已验证
   bool phone_number_verified = 13;
 
-  // 创建时间
-  google.protobuf.Timestamp created_at = 15;
-  // 更新时间
-  google.protobuf.Timestamp updated_at = 16;
-  // 删除时间
-  google.protobuf.Timestamp deleted_at = 17;
+  // ======== 审计区（时间 + 操作人连续排列） ========
 
-  // 敏感字段（默认不直接对外输出，需权限并建议脱敏）
+  // 创建时间
+  google.protobuf.Timestamp created_at = 14;
+  // 更新时间
+  google.protobuf.Timestamp updated_at = 15;
+  // 删除时间
+  google.protobuf.Timestamp deleted_at = 16;
+  // CreatedBy 创建者用户ID，记录部门创建人
+  int64 created_by = 17;
+  // UpdatedBy 最后更新者用户ID，记录最近修改人
+  int64 updated_by = 18;
+
+  // ======== 敏感字段区（默认不直接对外输出，需权限并建议脱敏） ========
 
   // 真实姓名，用于实名认证或后台展示
   string realname = 19;
@@ -532,84 +382,115 @@ message User {
   // 地址信息
   Address address = 24;
 
-    // CreatedBy 创建者用户ID，记录部门创建人
-  // 用于审计追踪和权限验证
-  int64 created_by = 25;
-  
-  // UpdatedBy 最后更新者用户ID，记录最近修改人
-  // 用于变更追踪和责任确认
-  int64 updated_by = 26;
+  // ======== 扩展区 ========
 
   // 自定义元数据，用于存储额外的用户信息（如 JSON 字符串）
-  map<string, string> metadata = 27;
+  map<string, string> metadata = 25;
   // 是否启用 MFA（TOTP）
-  bool mfa_enabled = 28;
-  // 用户所属部门成员关系，详情视图或完整视图时返回
-  repeated Membership department_members = 29;
-  // 用户所属群组成员关系，详情视图或完整视图时返回
-  repeated Membership group_members = 30;
+  bool mfa_enabled = 26;
+
+  // ======== 关系区 ========
+
+  // 用户所属部门 membership 关系
+  repeated Membership department_members = 27;
+  // 用户所属群组 membership 关系
+  repeated Membership group_members = 28;
 }
 
 // Role 角色实体，表示用户在系统上的权限和功能
 message Role {
   // ID 角色 ID，全局唯一标识
   int64 id = 1;
-  // ParentID 父角色ID，构建树形组织结构
-  // 值为 0 表示顶级角色（如：系统内置角色）
-  // 支持多级嵌套，建议层级深度不超过 3 级以保证查询性能
   int64 parent_id = 2;
-
-  // Code 系统标识符，创建后不可修改
-  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
-  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
-  // 示例：手动 "admin"、"user.manager"；自动 "a7k2m3x9b5f1"
   string code = 3;
-  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
-  // 用于角色名称的多语言显示，便于不同地区用户理解角色含义
   string display_name = 4;
-  // SortOrder 角色排序顺序，用于同级角色的显示顺序
-  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
-  // 默认值：100，范围：1-9999
   int32 sort_order = 5;
 
-  // Type 角色类型枚举，定义角色的来源和管理方式
-  // 用于区分不同类型的角色，影响角色的可编辑性和权限管理策略
   enum Type {
-    TYPE_UNSPECIFIED = 0;  // 默认值／未指定类型：系统默认值，通常不直接使用
-    SYSTEM = 1;       // 系统内置角色：由系统预定义，不可删除，权限固定
-    CUSTOM = 2;       // 自定义角色：用户创建的角色，可完全自定义权限
-    TEMPLATE = 3;     // 模板角色：预设的角色模板，可基于此创建新角色
+    TYPE_UNSPECIFIED = 0;
+    SYSTEM = 1;
+    CUSTOM = 2;
+    TEMPLATE = 3;
   }
-  // type 角色类型，决定角色的管理策略和可操作性
   Type type = 6;
 
-  // Status 角色状态枚举，控制角色的可用性和生命周期
-  // 用于角色的启用/禁用管理，影响用户权限的实际生效
   enum Status {
-    STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
-    ACTIVE = 1;       // 正常启用状态：角色正常可用，权限生效
-    DISABLED = 2;     // 禁用状态：角色被停用，权限不生效
+    STATUS_UNSPECIFIED = 0;
+    ACTIVE = 1;
+    DISABLED = 2;
   }
-  // status 角色状态，控制角色是否可用和权限是否生效
   Status status = 7;
 
-  // CreatedBy 创建者用户ID，记录部门创建人
-  // 用于审计追踪和权限验证
-  int64 created_by = 8;
-  
-  // UpdatedBy 最后更新者用户ID，记录最近修改人
-  // 用于变更追踪和责任确认
-  int64 updated_by = 9;
+  string description = 8;
+  bool protected = 9;
+  repeated Role children = 10;
 
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
+  int64 created_by = 11;
+  int64 updated_by = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+}
 
-  string description = 12;
+// PrincipalType 主体类型，用于角色绑定关系
+enum PrincipalType {
+  PRINCIPAL_TYPE_UNSPECIFIED = 0;
+  USER = 1;
+  GROUP = 2;
+  DEPARTMENT = 3;
+}
 
-  // Children 直接子角色列表，用于构建完整的角色树
-  repeated Role children = 13;
+// BindingStatus 绑定状态
+enum BindingStatus {
+  BINDING_STATUS_UNSPECIFIED = 0;
+  ACTIVE = 1;
+  DISABLED = 2;
+}
 
-  bool protected = 14;
+// PrincipalRoleBinding 主体-角色绑定关系实体
+message PrincipalRoleBinding {
+  int64 id = 1;
+  PrincipalType principal_type = 2;
+  int64 principal_id = 3;
+  string principal_name = 4;
+  string principal_code = 5;
+  int64 role_id = 6;
+  BindingStatus binding_status = 7;
+  google.protobuf.Timestamp expires_at = 8;
+  map<string, string> metadata = 9;
+  string description = 10;
+  int64 created_by = 11;
+  int64 updated_by = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+}
+
+// RoleMenu 角色-菜单授权关系实体
+message RoleMenu {
+  int64 id = 1;
+  int64 role_id = 2;
+  int64 menu_id = 3;
+  // 权限范围：1=可见，2=可操作
+  int32 permission_scope = 4;
+  string description = 5;
+  // 冗余菜单详情，便于前端直接渲染
+  Menu menu = 6;
+  // 是否递归包含子菜单，为 true 时授权逻辑自动涵盖所有后代菜单
+  bool is_recursive = 7;
+}
+
+// RolePolicyBinding 角色-策略绑定关系实体
+message RolePolicyBinding {
+  int64 id = 1;
+  int64 role_id = 2;
+  int64 policy_id = 3;
+  // 冗余策略详情，便于前端直接渲染
+  Policy policy = 4;
+  map<string, string> metadata = 5;
+  string description = 6;
+  int64 created_by = 10;
+  int64 updated_by = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
 }
 
 // Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形
@@ -659,57 +540,28 @@ message Group {
   }
   Type type = 3;
 
-  // Status 群组状态，控制群组的可用状态
-  // 群组状态（枚举值预计不会太频繁变化）
-  // 可以根据业务再增加状态
   enum Status {
-    STATUS_UNSPECIFIED = 0;  // 默认值／未知状态：系统默认值，通常不直接使用
-    PENDING = 1;      // 待激活／待验证：创建后等待审核或激活的状态
-    ACTIVE = 2;       // 正常启用状态：群组正常运行中，可以进行成员管理和权限分配
-    ARCHIVED = 3;     // 被归档，但可查询：群组不再活跃但保留历史数据，成员不允许变更
-    DISABLED = 4;     // 禁用，不可查询：群组被临时停用，通常为人工操作结果
+    STATUS_UNSPECIFIED = 0;
+    PENDING = 1;
+    ACTIVE = 2;
+    ARCHIVED = 3;
+    DISABLED = 4;
   }
   Status status = 4;
 
-  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
-  // 用于群组名称的多语言显示，提升群组管理的用户体验和可读性
   string display_name = 5;
-  // SortOrder 群组排序顺序，用于群组在列表中的显示顺序（扁平结构）
-  // 数值越小排序越靠前，建议使用 10 的倍数便于后续插入
-  // 默认值：100，范围：1-9999
   int32 sort_order = 6;
-  // MaxMembers 群组最大成员数量限制，0表示不限制
-  int32 max_members = 8;
-  // Metadata 元数据，用于存储自定义属性，支持业务扩展
-  map<string, string> metadata = 9;
-  // Description 群组描述，详细说明群组的目的和用途
-  string description = 12;
-  // CreatedBy 群组创建者/所有者ID，记录创建该群组的用户
+  int32 max_members = 7;
+  map<string, string> metadata = 8;
+  string description = 9;
+  Visibility visibility = 10;
+  int64 ref_id = 11;
+  string ref_expr = 12;
   int64 created_by = 13;
-  // UpdatedBy 群组最后更新者，记录最后修改该群组的用户
   int64 updated_by = 14;
-  // CreatedAt 创建时间，记录群组的创建时间戳
   google.protobuf.Timestamp created_at = 15;
-  // UpdatedAt 更新时间，记录群组的最后修改时间戳
   google.protobuf.Timestamp updated_at = 16;
-  // DeletedAt 软删除时间戳，非空表示已删除，空值表示正常状态
   google.protobuf.Timestamp deleted_at = 17;
-
-  // Visibility 群组可见性，控制群组是否对外可见
-  Visibility visibility = 18;
-
-  // RefID 类型关联引用ID，根据 type 赋予不同语义：
-  //   DEPARTMENT → 关联部门ID (departments.id)
-  //   ROLE       → 关联角色ID (roles.id)
-  //   其他类型   → 0
-  int64 ref_id = 20;
-
-  // RefExpr 类型关联表达式，根据 type 赋予不同语义：
-  //   DYNAMIC  → 成员过滤规则，如 "user_type = 10 AND user_status = 3"
-  //   SYSTEM   → 同 DYNAMIC，成员过滤规则（系统内置，创建后不可修改）
-  //   EXTERNAL → 外部源描述(JSON)，如 {"external_id":"ldap-001","external_source":"ldap"}
-  //   其他类型 → 空字符串
-  string ref_expr = 21;
 }
 
 // Membership 统一成员关系实体
@@ -790,32 +642,17 @@ message Membership {
   }
   MemberType member_type = 9;
 
-  // JoinedAt 用户加入的时间
   google.protobuf.Timestamp joined_at = 10;
+  google.protobuf.Timestamp expires_at = 11;
 
-  // ExpiredAt 关系有效期，用于临时成员管理，空表示永久有效
-  google.protobuf.Timestamp expired_at = 11;
+  map<string, string> metadata = 12;
+  string description = 13;
+  string target_name = 14;
 
-  // CreatedBy 创建者用户ID
-  int64 created_by = 12;
-
-  // UpdatedBy 最后更新者用户ID
-  int64 updated_by = 13;
-
-  // CreatedAt 关系创建时间
-  google.protobuf.Timestamp created_at = 14;
-
-  // UpdatedAt 关系最后更新时间
-  google.protobuf.Timestamp updated_at = 15;
-
-  // Metadata 扩展元数据，键值对格式，支持灵活的业务扩展
-  map<string, string> metadata = 16;
-
-  // Description 详细说明信息
-  string description = 17;
-
-  // TargetName 关联目标的展示名称，用于前端直接显示部门名、群组名或角色名
-  string target_name = 18;
+  int64 created_by = 15;
+  int64 updated_by = 16;
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
 }
 
 // AuthProvider 身份提供商实体，验证用户登录时使用的第三方服务
@@ -866,40 +703,23 @@ message AuthProvider {
   // IconURL 提供商图标地址，用于登录页面展示
   string icon_url = 8;
 
-  // ======== 类型特有配置区（10-19） ========
-  // LOCAL 类型无需额外配置，不设置 config 即可
+  // ======== 配置区 ========
+  // LOCAL 类型无需额外配置
 
   oneof config {
-    // LDAP 身份提供商配置，仅 type=LDAP 时使用
-    LdapConfig  ldap_config  = 10;
-    // OAuth2 系身份提供商通用配置
-    // 适用于 type=OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT
-    OAuthConfig oauth_config = 11;
-    // LOCAL 身份提供商配置，仅 type=LOCAL 时使用
-    LocalAuthConfig local_config = 12;
+    LdapConfig  ldap_config  = 9;
+    OAuthConfig oauth_config = 10;
   }
 
-  bool protected = 13;
-  // ======== 审计区（20-24） ========
+  bool protected = 11;
 
-  // CreatedBy 创建者用户ID，记录该提供商的创建人
-  int64 created_by = 20;
-  // UpdatedBy 最后更新者用户ID，记录最近修改人
-  int64 updated_by = 21;
-  // CreatedAt 创建时间戳
-  google.protobuf.Timestamp created_at = 22;
-  // UpdatedAt 最后更新时间戳
-  google.protobuf.Timestamp updated_at = 23;
-  // DeletedAt 软删除时间戳，非空表示已删除
-  google.protobuf.Timestamp deleted_at = 24;
-}
+  // ======== 审计区 ========
 
-// LocalAuthConfig LOCAL 身份提供商配置
-message LocalAuthConfig {
-  // EnforceMfaForAllUsers 是否对所有用户强制启用 MFA
-  // 开启后，无论用户通过 LOCAL/LDAP/OIDC/OAUTH2 等何种方式完成一阶认证，
-  // 都必须先完成 LOCAL MFA（首次绑定或验证）后才能签发最终 access_token。
-  bool enforce_mfa_for_all_users = 1;
+  int64 created_by = 12;
+  int64 updated_by = 13;
+  google.protobuf.Timestamp created_at = 14;
+  google.protobuf.Timestamp updated_at = 15;
+  google.protobuf.Timestamp deleted_at = 16;
 }
 
 // LdapConfig LDAP 身份提供商配置
@@ -1123,38 +943,85 @@ message Credential {
   // 示例：手动 "api.signing-key"、"tls-cert"；自动 "a7k2m3x9b5f1"
   string code = 2;
 
-  Type type = 3;             // 凭证类型
-  Algorithm algorithm = 4;   // 技术算法
-  Usage usage = 5;           // 业务用途
-  Visibility visibility = 6; // 可见性
-  Status status = 7;         // 当前状态
-  Source source = 8;         // 凭证来源
+  Type type = 3;
+  Algorithm algorithm = 4;
+  Usage usage = 5;
+  Visibility visibility = 6;
+  Status status = 7;
+  Source source = 8;
 
-  string key_id = 9;         // 外部系统 Key ID / JWKS ID / HSM ID
+  string key_id = 9;
 
-  // oneof: 核心密钥材料（互斥存储）
   oneof key_material {
-    ApiKeyData api_key = 10;                // API Key
-    KeyPairData key_pair = 11;              // 公私钥对
-    X509Data x509_data = 12;   // X.509 证书数据
-    LicenseData license = 13;                // 软件许可证
-    bytes symmetric_key = 14;              // 对称密钥 / HMAC / JWT
-    string jwks_uri = 15;                    // JWKS URI
+    ApiKeyData api_key = 10;
+    KeyPairData key_pair = 11;
+    X509Data x509_data = 12;
+    LicenseData license = 13;
+    bytes symmetric_key = 14;
+    string jwks_uri = 15;
   }
 
-  // 时间相关字段
-  google.protobuf.Timestamp not_before = 17; // 生效时间（Not Before）
-  google.protobuf.Timestamp expires_at = 18; // 过期时间
-  google.protobuf.Timestamp created_at = 19; // 创建时间
-  google.protobuf.Timestamp updated_at = 20; // 最后更新时间
+  google.protobuf.Timestamp not_before = 16;
+  google.protobuf.Timestamp expires_at = 17;
 
-  // 审计信息
-  int64 created_by = 21; // 创建者用户 ID
-  int64 updated_by = 22; // 更新者用户 ID
+  map<string, string> metadata = 18;
+  string description = 19;
 
-  // 附加元数据和描述
-  map<string, string> metadata = 23; // 自定义业务属性
-  string description = 24;           // 凭证说明或备注
+  int64 created_by = 20;
+  int64 updated_by = 21;
+  google.protobuf.Timestamp created_at = 22;
+  google.protobuf.Timestamp updated_at = 23;
+}
+
+// OAuth2Client OAuth2 客户端实体，用于管理接入 OAuth2/OIDC 的三方应用
+message OAuth2Client {
+  // ======== 标识区（1-4） ========
+
+  // ID 全局唯一标识
+  int64 id = 1;
+
+  // ClientID 系统标识符，创建后不可修改
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号
+  // 长度：2-64 字符；如客户端未提供，服务端自动生成 12 位随机编码
+  // 示例："web-app"、"mobile.ios"、"api:gateway"
+  string client_id = 2;
+
+  // ClientStatus 客户端状态
+  enum ClientStatus {
+    CLIENT_STATUS_UNSPECIFIED = 0;
+    ACTIVE = 1;             // 启用中 - 可正常发起 OAuth2 授权流程
+    DISABLED = 2;           // 已禁用 - 暂停授权，可重新启用
+    REVOKED = 3;            // 已吊销 - 永久失效，不可恢复
+  }
+  ClientStatus client_status = 5;
+
+  // ======== 展示区（6-9） ========
+
+  // DisplayName 客户端展示名称
+  string display_name = 3;
+  // Description 客户端描述信息
+  string description = 9;
+  // LogoURL 客户端图标地址
+  string logo_url = 8;
+
+  // ======== 配置区 ========
+
+  // RedirectUris 允许的回调地址列表
+  repeated string redirect_uris = 4;
+  // GrantTypes 允许的授权类型
+  // 示例：authorization_code, refresh_token, client_credentials
+  repeated string grant_types = 6;
+  // Scopes 允许申请的权限范围
+  // 示例：openid, profile, email
+  repeated string scopes = 7;
+
+  // ======== 审计区 ========
+
+  int64 created_by = 10;
+  int64 updated_by = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  google.protobuf.Timestamp deleted_at = 14;
 }
 
 message OAuth2JSONWebKeys {
@@ -1189,6 +1056,46 @@ message OAuth2Userinfo {
   string locale = 8;  
 }
 
+// OAuth2Discovery 提供内置 oidc 服务
+// https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+message OAuth2Discovery {
+  string issuer = 1;
+  string authorization_endpoint = 2;
+  string token_endpoint = 3;
+  // string userinfo_endpoint = 4;
+  string jwks_uri = 5;
+  // string registration_endpoint = 6;
+  // string scopes_supported = 7;
+  repeated string response_types_supported = 8;
+  // string response_modes_supported = 9;
+  // string grant_types_supported = 10;
+  // string acr_values_supported = 11;
+  repeated string subject_types_supported = 12;
+  repeated string id_token_signing_alg_values_supported = 13;
+  // string id_token_encryption_alg_values_supported = 14;
+  // string id_token_encryption_enc_values_supported = 15;
+  // string userinfo_signing_alg_values_supported = 16;
+  // string userinfo_encryption_alg_values_supported = 17;
+  // string userinfo_encryption_enc_values_supported = 18;
+  // string request_object_signing_alg_values_supported = 19;
+  // string request_object_encryption_alg_values_supported = 20;
+  // string request_object_encryption_enc_values_supported = 21;
+  // string token_endpoint_auth_methods_supported = 22;
+  // string token_endpoint_auth_signing_alg_values_supported = 23;
+  // string display_values_supported = 24;
+  // string claim_types_supported = 25;
+  // string claims_supported = 26;
+  // string service_documentation = 27;
+  // string claims_locales_supported = 28;
+  // string ui_locales_supported = 29;
+  // string claims_parameter_supported = 30;
+  // string request_parameter_supported = 31;
+  // string request_uri_parameter_supported = 32;
+  // string require_request_uri_registration = 33;
+  // string op_policy_uri = 34;
+  // string op_tos_uri = 35;
+}
+
 // AuthToken 登录成功响应
 // 参考 rfc 规范：https://www.rfc-editor.org/rfc/rfc6749#section-5
 // 当用户启用了 MFA 时，密码校验通过后 access_token 为空，
@@ -1207,31 +1114,48 @@ message AuthToken {
   string challenge_type = 12;
 }
 
-// Action 统一动作字典，用于定义“主体可以对资源做什么”。
-// 它是动作语义的唯一事实来源，应替代旧 scope 中 readonly / readwrite 一类表达。
+// Policy 策略定义，是一组 policy statements 的逻辑容器。
+// 它负责策略命名、生命周期、版本、发布与投影控制，而不是直接承载具体资源匹配规则。
 // 推荐约束：
-// 1. action 使用稳定编码，如 read / list / create / update / delete / invoke；
-// 2. action 本身不直接授予权限，必须与 policy statements 组合使用；
-// 3. resource_type 用于描述该动作主要适配的资源类型范围。
-message Action {
+// 1. allow / deny 语义放在 statements；
+// 2. policy 负责聚合、复用、审计、发布与回滚；
+// 3. attachment 负责把 policy 挂到具体主体上。
+message Policy {
+  // ID 策略唯一标识
   int64 id = 1;
-  // 动作唯一编码，建议采用稳定且可治理的命名规范
+
+  // Code 系统标识符，创建后不可修改
+  // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
+  // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
+  // 示例：手动 "allow.read"、"deny-delete"；自动 "a7k2m3x9b5f1"
   string code = 2;
+
+  // DisplayName 前端展示名称，根据用户的语言环境，自动转换为相应区域的语言说明
   string display_name = 3;
-  // 动作关联的资源类型；后续建议进一步演进为 resource_type_id 外键化
-  Resource.Type resource_type = 4;
-  // ProjectionMapping 协议映射配置（JSON 格式），描述该动作在不同协议下的投影方式
-  // 支持多协议同时映射，key 为协议标识符，value 为协议特定配置
-  // 示例：
-  // {
-  //   "http": {"method": "GET", "path_pattern": "/api/v1/users"},
-  //   "grpc": {"service": "admin.UserService", "method": "ListUsers"},
-  //   "event": {"topic": "user.created", "operation": "publish"},
-  //   "mcp": {"tool": "list_users"}
-  // }
-  string projection_mapping = 5;
+
+  // Status 策略状态，用于生命周期管理
+  enum Status {
+    STATUS_UNSPECIFIED = 0;  // 未指定状态（系统默认值）
+
+    // ===== 正常生命周期 =====
+    DRAFT = 1;        // 草稿：未生效，仅用于编辑/评审
+    ENABLED = 2;      // 已启用：正在参与授权决策
+    DISABLED = 3;     // 已禁用：保留配置，但不参与决策
+
+    // ===== 变更 / 风险控制 =====
+    PENDING = 4;     // 待生效：已配置，等待审批或时间触发
+    SUSPENDED = 5;   // 已挂起：紧急风控临时冻结（可自动/人工）
+
+    // ===== 生命周期结束 =====
+    DEPRECATED = 6;  // 已废弃：不推荐使用，允许已有绑定
+    ARCHIVED = 7;    // 已归档：只读，仅审计/历史查询
+  }
+  Status status = 4;
+
+  string description = 5;
   bool protected = 6;
-  string description = 7;
+  repeated PolicyStatement statements = 7;
+
   int64 created_by = 8;
   int64 updated_by = 9;
   google.protobuf.Timestamp created_at = 10;
@@ -1245,76 +1169,52 @@ message Action {
 // 2. 条件判断主逻辑放在 condition_json，用于表达上下文、属性、时间窗等命中条件；
 // 3. priority 数值越小优先级越高，且显式 DENY 优先于 ALLOW。
 message PolicyStatement {
+  message Condition {
+    string key = 1;       // 条件键，如 "ip", "time", "user_role"
+    string operator = 2;  // 操作符，如 "equals", "in", "starts_with"
+    repeated string values = 3;     // 条件值，具体格式根据 operator 定义
+  }
+
   int64 id = 1;
   int64 policy_id = 2;
-  string sid = 3;
 
   enum Effect {
     EFFECT_UNSPECIFIED = 0;
     ALLOW = 1;
     DENY = 2;
   }
-  Effect effect = 4;
+  Effect effect = 3;
 
-  // 动作选择器，建议使用标准动作编码、通配符或 JSON 数组表达
-  string action_selector = 5;
-  // 资源选择器，建议作为资源匹配的主入口，如资源名、资源树路径、资源标签、GRN 模式等
-  string resource_selector = 6;
-  // 结构化条件表达式，建议承载鉴权判断条件，而不是挂载关系状态
-  string condition_json = 7;
-  // 优先级，数值越小优先级越高
-  int32 priority = 8;
-  string description = 9;
-  int64 created_by = 10;
-  int64 updated_by = 11;
-  google.protobuf.Timestamp created_at = 12;
-  google.protobuf.Timestamp updated_at = 13;
+  repeated string actions = 4;
+  repeated string resources = 5;
+  repeated Condition conditions = 6;
 }
 
-// PolicyAttachment 策略挂载，用于把策略绑定到 user / role / group / department 等主体。
-// 该结构只负责表达“把哪个 policy 挂给谁、何时生效”，不负责承载主资源匹配逻辑。
-// 推荐约束：
-// 1. principal_* 表示挂载目标主体；
-// 2. resource_id 如保留，仅表示挂载边界资源，0 表示全局挂载；
-// 3. is_recursive 只有在 resource_id > 0 时才有意义；
-// 4. 具体 allow / deny 与资源命中，仍应由 policy_statements 负责。
-message PolicyAttachment {
+// ======== 全局设置区 ========
+
+// GlobalSetting 全局设置项实体
+message GlobalSetting {
   int64 id = 1;
-  int64 policy_id = 2;
+  string category = 2;
+  string setting_key = 3;
+  string setting_value = 4;
+  string value_type = 5;
+  string description = 6;
+  bool protected = 7;
+  int64 created_by = 8;
+  int64 updated_by = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
 
-  enum PrincipalType {
-    PRINCIPAL_TYPE_UNSPECIFIED = 0;
-    USER = 1;
-    ROLE = 2;
-    GROUP = 3;
-    DEPARTMENT = 4;
-    SERVICE_ACCOUNT = 5;
-    CLIENT_APP = 6;
-    TENANT = 7;
-  }
-  PrincipalType principal_type = 3;
+// GlobalSettingCategory 全局设置分类，聚合同一 category 下的设置项
+message GlobalSettingCategory {
+  string category = 1;
+  repeated GlobalSetting settings = 2;
+}
 
-  int64 principal_id = 4;
-  // 可选：挂载边界资源。用于表达“该策略仅在某个资源根节点/资源子树下生效”，0 表示不限定资源边界
-  int64 resource_id = 5;
-  // 是否递归到 resource_id 对应资源的子树；若 resource_id = 0，建议固定为 false
-  bool is_recursive = 6;
-
-  enum Status {
-    STATUS_UNSPECIFIED = 0;
-    ACTIVE = 1;
-    DISABLED = 2;
-    EXPIRED = 3;
-  }
-  Status status = 7;
-
-  // 可选：挂载层附加条件，仅用于控制挂载关系是否生效；不建议承载主授权逻辑
-  string condition_json = 8;
-  // 到期时间，超时后该挂载关系失效
-  google.protobuf.Timestamp expires_at = 9;
-  string description = 10;
-  int64 created_by = 11;
-  int64 updated_by = 12;
-  google.protobuf.Timestamp created_at = 13;
-  google.protobuf.Timestamp updated_at = 14;
+// UpdateGlobalSetting 单项更新载荷
+message UpdateGlobalSetting {
+  string setting_key = 1;
+  string setting_value = 2;
 }
