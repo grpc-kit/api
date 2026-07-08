@@ -1,0 +1,305 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/field_mask.proto";
+import "known/admin/v1/admin.common.proto";
+
+message CreateRoleRequest {
+  Role role = 1;
+}
+
+message GetRoleRequest {
+  int64 id = 1;
+}
+
+message UpdateRoleRequest {
+  Role role = 1;
+
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message DeleteRoleRequest {
+  int64 id = 1;
+}
+
+message ListRolesRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  // 每页返回的最大用户数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 8;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 4;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "create_time desc, name asc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 5;
+}
+
+message ListRolesResponse {
+  repeated Role roles = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+}
+
+message ListRoleMembersRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  // 每页返回的最大成员数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 8;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 4;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "create_time desc, name asc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 5;
+
+  // 返回视图：基础绑定视图或展开后的用户视图。
+  View view = 6;
+
+  // 可选主体类型过滤，不传则返回全部类型。
+  PrincipalType principal_type = 7;
+}
+
+message ListRoleMembersResponse {
+  // VIEW_FULL 下展开后的用户 membership 结果。
+  repeated Membership members = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+
+  // 第一层主体绑定视图。
+  repeated PrincipalRoleBinding bindings = 4;
+}
+
+message DeleteRoleMemberRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers / CreateRoleMembers）
+  string parent = 1;
+
+  PrincipalType principal_type = 2;
+  int64 principal_id = 3;
+}
+
+message CreateRoleMembersRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）
+  string parent = 1;
+  repeated PrincipalRoleBinding bindings = 2;
+}
+
+message CreateRoleMembersResponse {
+}
+
+message UpdateRoleMembersRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致，同 ListRoleMembers）
+  string parent = 1;
+  repeated PrincipalRoleBinding bindings = 2;
+}
+
+message UpdateRoleMembersResponse {
+
+}
+
+message ListRoleMenusRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int32 page_size = 2;
+
+  oneof pagination {
+    string page_token = 3;
+    int32 offset = 8;
+  }
+
+  View view = 4;
+  Structure structure = 5;
+  string filter = 6;
+  string order_by = 7;
+}
+
+message ListRoleMenusResponse {
+  repeated RoleMenu menus = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateRoleMenusRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RoleMenu menus = 2;
+}
+
+message CreateRoleMenusResponse {
+}
+
+message UpdateRoleMenusRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RoleMenu menus = 2;
+}
+
+message UpdateRoleMenusResponse {
+}
+
+message DeleteRoleMenuRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int64 menu_id = 2;
+}
+
+message ListRolePoliciesRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int32 page_size = 2;
+
+  oneof pagination {
+    string page_token = 3;
+    int32 offset = 8;
+  }
+
+  View view = 4;
+  string filter = 5;
+  string order_by = 6;
+}
+
+message ListRolePoliciesResponse {
+  repeated RolePolicyBinding policies = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateRolePoliciesRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RolePolicyBinding policies = 2;
+}
+
+message CreateRolePoliciesResponse {
+}
+
+message UpdateRolePoliciesRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  repeated RolePolicyBinding policies = 2;
+}
+
+message UpdateRolePoliciesResponse {
+}
+
+message DeleteRolePolicyRequest {
+  // 父资源：角色 ID（与路径 {parent} 一致）
+  string parent = 1;
+  int64 policy_id = 2;
+}
+
+// message CreateRoleDataRangesRequest {
+//   int32 role_id = 1;
+//   repeated RoleDataRange data_ranges = 2;
+// }
+//
+// message CreateRoleDataRangesResponse {
+//   repeated RoleDataRange data_ranges = 1;
+// }
+//
+// message DeleteRoleDataRangesRequest {
+//   int32 role_id = 1;
+//   int32 data_range_id = 2;
+// }
+//
+// message ListRoleDataRangesRequest {
+//   // 角色 ID，从路径参数中获取
+//   int32 role_id = 1;
+//
+//   // 每页返回的最大权限数。
+//   // - 如果未指定，则使用服务端默认值 (如 20)。
+//   // - 最大不超过 100 (超出时强制截断)。
+//   int32 page_size = 2;
+//
+//   oneof pagination {
+//     // Cursor-based 分页
+//     string page_token = 3;
+//
+//     // Offset-based 分页
+//     int32 offset = 4;
+//   }
+//
+//   View view = 5;
+//
+//   // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+//   // 示例: `code="permission_001"`
+//   string filter = 6;
+//
+//   // 排序规则，指定结果返回顺序。
+//   // 格式: "field_name [asc|desc], ..."。
+//   // 示例: "create_time desc, code asc"
+//   // AIP-132: order_by 是可选字段。
+//   string order_by = 7;
+// }
+//
+// message ListRoleDataRangesResponse {
+//   repeated RoleDataRange data_ranges = 1;
+//
+//   // 用于获取下一页结果的 token。
+//   // - 如果为空，表示没有更多结果。
+//   // - 客户端不需要理解其内容，只需原样传回。
+//   // AIP-132: 必须字段。
+//   string next_page_token = 2;
+//
+//   // 符合条件的权限总数。
+//   // - 常用于前端分页控件。
+//   // - 注意：可能会因性能原因而近似。
+//   // AIP-132: total_size 是可选字段。
+//   int32 total_size = 3;
+// }

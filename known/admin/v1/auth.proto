@@ -1,0 +1,251 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/field_mask.proto";
+
+import "known/admin/v1/admin.common.proto";
+
+// CreateAuthLoginRequest 用于登录请求，所有用户均可
+message CreateAuthLoginRequest {
+  // Username 系统识别的用户名全局唯一
+  string username = 1;
+  // Email 用户邮箱地址
+  string email = 2;
+  // PhoneNumber 用户手机号
+  string phone_number = 3;
+  // ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒
+  int32 expires_in = 7;
+  // PasswordHash 登录口令载荷：
+  // - LOCAL: 传 sha256(password) 字符串
+  // - LDAP: 传 base64(password) 字符串（兼容方案）
+  string password_hash = 9;
+  // ProviderCode 指定认证提供商 code，取值来源于 AuthProvider.code（如 local、corp_ldap）
+  // 为空时默认按 local 处理，以兼容旧客户端。
+  string provider_code = 10;
+}
+
+// CreateAuthTokenRequest 用于创建 token，仅管理员或特定用户可建
+message CreateAuthTokenRequest {
+  // Appid 关联应用标识
+  string appid = 1;
+  // Username 系统识别的用户名全局唯一
+  string username = 2;
+  // Email 用户邮箱地址
+  string email = 3;
+  // PhoneNumber 用户手机号
+  string phone_number = 4;
+  // ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒
+  int32 expires_in = 7;
+  // PasswordHash 用户密码在本地使用 sha256 哈希结果
+  string password_hash = 9;
+}
+
+message ListAuthProvidersRequest {
+  // 每页返回的最大提供商数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 4;
+  }
+
+  // View 控制返回字段的详细程度
+  View view = 5;
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `type=OIDC AND status=ACTIVE`
+  string filter = 7;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "sort_order asc, created_at desc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 8;
+
+  // ProviderStatus 提供商状态快捷过滤参数。
+  // 示例: 1(ACTIVE)，仅返回可用于登录的认证提供方。
+  // 复杂组合过滤请继续使用 filter。
+  int32 provider_status = 9;
+}
+
+message ListAuthProvidersResponse {
+  repeated AuthProvider providers = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的提供商总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+}
+
+message UpsertAuthProvidersRequest {
+  repeated AuthProvider providers = 1;
+}
+
+message UpsertAuthProvidersResponse {
+  repeated AuthProvider providers = 1;
+}
+
+message GetAuthCallbackRequest {
+  string provider_name = 1;
+  string code = 2;
+  string state = 3;
+}
+
+message GetAuthCallbackResponse {
+  string access_token = 1;
+  string token_type = 2;
+  int32 expires_in = 3;
+
+  // MFA challenge（当启用了 LOCAL 全局强制 MFA 时填充）
+  bool mfa_required = 10;
+  string challenge_id = 11;
+  // challenge 类型：TOTP_SETUP 或 TOTP_VERIFY
+  string challenge_type = 12;
+}
+
+message CreateAuthProviderRequest {
+  AuthProvider provider = 1;
+}
+
+message GetAuthProviderRequest {
+  int64 id = 1;
+}
+
+message DeleteAuthProviderRequest {
+  int64 id = 1;
+}
+
+message UpdateAuthProviderRequest {
+  int64 id = 1;
+  AuthProvider provider = 2;
+
+  // 指定需要更新的字段列表，未列出的字段不会被修改。
+  // 如果未提供 update_mask，则更新所有非空字段（不推荐）。
+  // AIP-134: 强烈建议客户端始终提供 update_mask。
+  // 示例: paths: ["display_name", "enabled", "scopes"]
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+// VerifyAuthMFARequest 登录时的 MFA 二步验证请求
+// 在 CreateAuthLogin 返回 mfa_required=true 后，前端携带 challenge_id 和 TOTP 码调用此接口。
+message VerifyAuthMFARequest {
+  // CreateAuthLogin 返回的一次性 challenge 标识
+  string challenge_id = 1;
+  // 用户从验证器应用获取的 6 位 TOTP 验证码
+  string totp_code = 2;
+}
+
+// SetupUserMFARequest 初始化用户 MFA 设置（生成密钥 + 二维码 URI）
+message SetupUserMFARequest {
+  // 目标用户 ID
+  int64 user_id = 1;
+}
+
+// SetupUserMFAResponse 返回 TOTP 密钥和 otpauth URI 供前端展示
+message SetupUserMFAResponse {
+  // Base32 编码的 TOTP 密钥（仅此次返回，后续不再可见）
+  string secret = 1;
+  // otpauth://totp/... 格式的 URI，前端可据此生成二维码
+  string qr_uri = 2;
+  // 确认验证用的 challenge_id，TTL 5 分钟
+  string challenge_id = 3;
+}
+
+// ConfirmUserMFARequest 确认开启 MFA（用户扫码后输入验证码确认）
+message ConfirmUserMFARequest {
+  // SetupUserMFA 返回的 challenge_id
+  string challenge_id = 1;
+  // 用户从验证器应用获取的 6 位 TOTP 验证码
+  string totp_code = 2;
+}
+
+// ConfirmUserMFAResponse 确认成功后返回恢复码
+message ConfirmUserMFAResponse {
+  // 恢复码列表（一次性展示，用户必须安全保存）
+  repeated string recovery_codes = 1;
+}
+
+// DisableUserMFARequest 关闭用户 MFA
+message DisableUserMFARequest {
+  // 目标用户 ID
+  int64 user_id = 1;
+  // 当前有效的 6 位 TOTP 验证码（或恢复码）
+  string totp_code = 2;
+}
+
+// StartAuthMFASetupRequest 登录态首次配置 MFA（不依赖 user_id）
+message StartAuthMFASetupRequest {
+  // CreateAuthLogin/GetAuthCallback 返回的 challenge_id（challenge_type=TOTP_SETUP）
+  string challenge_id = 1;
+}
+
+// StartAuthMFASetupResponse 返回 TOTP 密钥和二维码 URI
+message StartAuthMFASetupResponse {
+  string secret = 1;
+  string qr_uri = 2;
+  // 确认首绑使用的 setup challenge
+  string setup_challenge_id = 3;
+}
+
+// ConfirmAuthMFASetupRequest 确认登录态首绑 MFA
+message ConfirmAuthMFASetupRequest {
+  string setup_challenge_id = 1;
+  string totp_code = 2;
+}
+
+// ListLoginOptionsRequest 获取登录页可用的认证提供方列表请求（无需认证）
+// 返回最小字段集，不包含任何敏感配置信息
+message ListLoginOptionsRequest {}
+
+// ListLoginOptionsResponse 登录页认证提供方列表响应
+message ListLoginOptionsResponse {
+  // options 可用的认证提供方列表（已按 sort_order 排序）
+  repeated LoginOption options = 1;
+}
+
+// LoginOption 登录页认证提供方选项（最小字段集，不含敏感信息）
+message LoginOption {
+  // Code 系统标识符，用于 CreateAuthLogin 的 provider_code
+  string code = 1;
+  // Type 身份提供商类型
+  AuthProvider.Type type = 2;
+  // DisplayName 展示名称
+  string display_name = 3;
+  // IconURL 图标地址
+  string icon_url = 4;
+
+  // 仅 OAuth2 系提供商（OIDC/OAUTH2/GITHUB/GOOGLE/WECHAT）填充此字段
+  // LOCAL/LDAP 不填充
+  oneof config {
+    OAuth2LoginConfig oauth_config = 5;
+  }
+}
+
+// OAuth2LoginConfig OAuth2 系登录跳转所需的最小配置
+// 仅包含前端发起授权码流程所需的 4 个字段，不包含 token_endpoint/userinfo_endpoint 等服务端字段
+message OAuth2LoginConfig {
+  // authorization_endpoint 授权端点 URL
+  string authorization_endpoint = 1;
+  // client_id OAuth2 客户端 ID
+  string client_id = 2;
+  // redirect_uri 回调地址
+  string redirect_uri = 3;
+  // scopes 请求的权限范围
+  repeated string scopes = 4;
+}

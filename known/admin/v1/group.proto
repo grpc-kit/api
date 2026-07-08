@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/field_mask.proto";
+
+import "known/admin/v1/admin.common.proto";
+
+message CreateGroupRequest {
+  Group group = 1;    
+}
+
+message GetGroupRequest {
+  int64 id = 1;
+  View view = 5;
+  Structure structure = 6;
+}
+
+message ListGroupsRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  // 每页返回的最大群组数。
+  // - structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。
+  // - structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 4;
+  }
+
+  View view = 5;
+  Structure structure = 6;
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 7;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "sort_order asc", "created_at desc"
+  // 默认值: "sort_order asc"（按 sort_order 升序排列，数值越小越靠前）
+  // AIP-132: order_by 是可选字段。
+  string order_by = 8;
+
+  // TODO；以下将来会统一使用 filter 参数实现过滤
+  int32 group_type = 9;
+  int32 group_status = 10;
+  string code = 11;
+  string display_name = 12;
+}
+
+message ListGroupsResponse {
+  repeated Group groups = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+}
+
+message UpdateGroupRequest {
+  Group group = 1;
+
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message DeleteGroupRequest {
+  int64 id = 1;
+}
+
+message ListGroupMembersRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  // 每页返回的最大用户数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 8;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 4;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "create_time desc, name asc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 5;  
+}
+
+message ListGroupMembersResponse {
+  // 群组 membership 关系列表。
+  repeated Membership members = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+}
+
+message CreateGroupMembersRequest {
+  // 群组 ID，字段名沿用既有 parent 命名以兼容历史接口。
+  string parent = 1;
+
+  // 要写入的用户到群组 membership 关系。
+  repeated Membership members = 2;
+}
+
+message CreateGroupMembersResponse {
+}
+
+message DeleteGroupMemberRequest {
+  // 群组 ID，字段名沿用既有 parent 命名以兼容历史接口。
+  string parent = 1;
+  
+  // 用户 ID，表示删除该用户在指定群组下的 membership 关系。
+  int64 user_id = 2;
+}
+
+message UpdateGroupMemberRequest {
+  // 群组 ID，字段名沿用既有 parent 命名以兼容历史接口。
+  string parent = 1;
+  
+  int64 user_id = 2;
+
+  // 用户到群组的 membership 关系变更内容。
+  Membership member = 3;
+
+  google.protobuf.FieldMask update_mask = 4;
+}

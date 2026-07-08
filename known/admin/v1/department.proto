@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/field_mask.proto";
+
+import "known/admin/v1/admin.common.proto";
+
+message CreateDepartmentRequest {
+  Department department = 1;
+}
+
+message ListDepartmentsRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "departments/123" 表示仅返回 parent_id=123 的直接子部门；空表示不按父级过滤。
+  string parent = 1;
+
+  // 每页返回的最大部门数。
+  // - structure=STRUCTURE_UNSPECIFIED 或 STRUCTURE_FLAT：默认 20，最大 100。
+  // - structure=STRUCTURE_TREE 或 STRUCTURE_TREE_EXPANDED：默认 1000，最大 5000。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 4;
+  }
+
+  View view = 5;
+  Structure structure = 6;
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 7;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "create_time desc, name asc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 8;
+
+  // TODO；以下将来会统一使用 filter 参数实现过滤
+  int32 department_type = 9;
+  int32 department_status = 10;
+}
+
+message ListDepartmentsResponse {
+  repeated Department departments = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+}
+
+message DeleteDepartmentRequest {
+  int64 id = 1;
+}
+
+message UpdateDepartmentRequest {
+  Department department = 1;
+
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message ListDepartmentMembersRequest {
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  // 每页返回的最大用户数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 8;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 4;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "create_time desc, name asc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 5;
+}
+
+message ListDepartmentMembersResponse {
+  // 符合查询条件的部门 membership 关系。
+  repeated Membership members = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+}
+
+message CreateDepartmentMembersRequest {
+  // 部门 ID，目标侧固定为 department。
+  int64 department_id = 1;
+
+  // 要写入的用户到部门 membership 关系。
+  repeated Membership members = 2;
+}
+
+message CreateDepartmentMembersResponse {
+
+}
+
+message UpdateDepartmentMembersRequest {
+  // 部门 ID，目标侧固定为 department。
+  int64 department_id = 1;
+
+  // 要更新的用户到部门 membership 关系。
+  repeated Membership members = 2;
+}
+
+message UpdateDepartmentMembersResponse {
+
+}
+
+message DeleteDepartmentMemberRequest {
+  // 部门 ID，目标侧固定为 department。
+  int64 department_id = 1;
+  // 用户 ID，表示删除该用户在指定部门下的 membership 关系。
+  int64 user_id = 2;
+}

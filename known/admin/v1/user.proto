@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+// 根据具体的微服务名称做更改
+package grpc_kit.api.known.admin.v1;
+
+option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
+
+import "google/protobuf/field_mask.proto";
+
+import "known/admin/v1/admin.common.proto";
+
+message ListUsersRequest {
+  // 控制资源返回的详细程度。
+  enum UserView {
+    USER_VIEW_UNSPECIFIED = 0;
+    USER_VIEW_BASIC = 1;
+    USER_VIEW_FULL = 2;
+  }
+
+  // 父资源名称，用于限定范围。
+  // 格式示例: "organizations/123" 或 "projects/456"。
+  string parent = 1;
+
+  // 每页返回的最大用户数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  // 上一页返回的 page_token。
+  // 客户端无需理解其内容，只需原样传回。
+  // string page_token = 3;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 8;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  string filter = 4;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "create_time desc, name asc"
+  // AIP-132: order_by 是可选字段。
+  string order_by = 5;
+
+  // 是否包含已删除资源。
+  // - 默认 false，仅返回有效资源。
+  // - 设为 true 可返回软删除的用户。
+  // AIP-132: show_deleted 是可选字段。
+  bool show_deleted = 6;
+
+  // 视图模式，决定返回数据的详细程度。
+  // - BASIC: 基本信息（默认）
+  // - FULL: 详细信息
+  // AIP-157: 建议支持。
+  UserView view = 7;
+
+  // TODO；将来会统一使用 filter 参数实现过滤
+  string filter_id = 11;
+  string filter_username = 12;
+  string filter_nickname = 13;
+  string filter_status = 14;
+}
+
+message ListUsersResponse {
+  // 符合查询条件的用户资源。
+  repeated User users = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  // - 客户端不需要理解其内容，只需原样传回。
+  // AIP-132: 必须字段。
+  string next_page_token = 2;
+
+  // 符合条件的资源总数。
+  // - 常用于前端分页控件。
+  // - 注意：可能会因性能原因而近似。
+  // AIP-132: total_size 是可选字段。
+  int32 total_size = 3;
+}
+
+message CreateUserRequest {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  User user = 1;
+
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message GetUserRequest {
+  // ID 用户 ID，全局唯一标识
+  int64 id = 1;
+  // 用户名，系统登录凭证，通常唯一
+  string username = 2;
+}
+
+//message CreateUserIdentityRequest {
+  // ID 用户 ID，全局唯一标识
+//  int32 id = 1;
+  // 用户名，系统登录凭证，通常唯一
+//  string username = 2;
+  // PasswordHash 用户密码在本地使用 sha256 哈希结果
+//  string password_hash = 3;
+//}
+
+message UpdateUserPasswordRequest {
+  // ID 用户 ID，全局唯一标识
+  int64 user_id = 1;
+  // 用户名，系统登录凭证，通常唯一
+  string username = 2;
+  // PasswordHash 用户密码在本地使用 sha256 哈希结果
+  string new_password_hash = 3;
+  string old_password_hash = 4;
+}
+
+message UpdateUserPasswordResponse {
+
+}
