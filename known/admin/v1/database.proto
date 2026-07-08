@@ -6,4 +6,7 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 message CreateDatabaseInitializeRequest {
+  // PasswordHash 管理员密码在本地使用 sha256 哈希结果
+  // 为空时使用系统默认密码
+  string password_hash = 1;
 }
