@@ -842,6 +842,8 @@ message OAuthConfig {
 // 企业级通用凭证定义
 // 支持 API Key、X.509 证书、非对称密钥对、HMAC/对称密钥、JWKS、软件许可证等多种凭证类型
 // 提供分层管理：类型、算法、用途、可见性、来源、策略、审计和元数据
+//
+// 字段布局约定：标识区 -> 展示区 -> 分类区 -> 管理区 -> 密钥材料区 -> 生命周期区 -> 扩展区 -> 审计区
 message Credential {
   // API 密钥结构
   message ApiKeyData {
@@ -865,8 +867,8 @@ message Credential {
 
   // 软件许可证
   message LicenseData {
-    string license_key = 1;  // 许可证密钥或主体内容
-    string signature = 2;    // 许可证数字签名，用于验证完整性
+    bytes license_key = 1;   // 许可证密钥或主体内容（文本密钥用 UTF-8 编码，二进制许可证直接传入）
+    bytes signature = 2;     // 许可证数字签名，用于验证完整性
   }
 
   // 凭证类型（载体/结构）
@@ -880,7 +882,7 @@ message Credential {
     JWKS = 6;            // JSON Web Key Set URI / 内容
     HSM_REF = 7;         // 外部安全模块 (KMS/HSM) 引用
     FIDO = 8;            // 硬件安全密钥 / 多因素认证设备
-    // OTHER = 99;          // 未来扩展自定义类型
+    SECRET = 9;          // 非密钥类密文（数据库密码、连接串、第三方 API 凭据等），加密存储于 symmetric_key 字段
   }
 
   // 算法类型枚举
@@ -899,8 +901,14 @@ message Credential {
     AES = 5;          // AES 对称加密算法，可在 metadata 指定 key 长度 (128/256) 和模式 (GCM/CBC 等)
     CHACHA20_POLY1305 = 6; // ChaCha20-Poly1305 对称加密 + 完整性验证，高性能
 
-    // 国密 / 自定义算法
-    // OTHER = 99;       // 自定义算法或国密算法（如 SM2/SM3/SM4 或企业自研算法）
+    // 国密算法
+    SM2 = 20;   // SM2 椭圆曲线公钥密码算法（签名/密钥交换）
+    SM3 = 21;   // SM3 密码杂凑算法（256 位哈希）
+    SM4 = 22;   // SM4 分组对称密码算法
+    SM9 = 23;   // SM9 标识密码算法（基于标识的非对称加密）
+
+    // 自定义算法
+    CUSTOM = 99;  // 自定义或企业自研算法，具体算法名写入 metadata["algorithm"]
   }
 
   // 凭证用途
@@ -936,41 +944,90 @@ message Credential {
     EXTERNAL = 4;    // 外部导入
   }
 
-  int64 id = 1;             // 凭证唯一 ID
+  // ======== 标识区（1-2）========
+
+  // ID 凭证唯一标识
+  int64 id = 1;
   // Code 系统标识符，创建后不可修改
   // 规则：以小写字母开头，仅包含小写字母、数字、连字符、点号和冒号，不允许连续分隔符，以字母或数字结尾
   // 长度：2-32 字符；如客户端未提供，服务端自动生成 12 位随机编码
   // 示例：手动 "api.signing-key"、"tls-cert"；自动 "a7k2m3x9b5f1"
   string code = 2;
 
-  Type type = 3;
-  Algorithm algorithm = 4;
-  Usage usage = 5;
-  Visibility visibility = 6;
-  Status status = 7;
-  Source source = 8;
+  // ======== 展示区（3-4）========
 
-  string key_id = 9;
+  // DisplayName 前端展示名称，用于凭证列表、详情页等用户可见场景
+  string display_name = 3;
+  // Description 凭证说明或备注
+  string description = 4;
+
+  // ======== 分类区（5-7）========
+
+  // Type 凭证类型（载体/结构）
+  Type type = 5;
+  // Algorithm 算法类型
+  Algorithm algorithm = 6;
+  // Usage 凭证用途
+  Usage usage = 7;
+
+  // ======== 管理区（8-11）========
+
+  // Visibility 可见性策略（使用公共枚举 Visibility）
+  Visibility visibility = 8;
+  // Status 凭证状态
+  Status status = 9;
+  // Source 凭证来源
+  Source source = 10;
+  // Protected 是否为系统内置/受保护的凭证，受保护的凭证不可删除
+  bool protected = 11;
+
+  // ======== 密钥材料区（12-18）========
+
+  // KeyID 凭证标识，用于查询、幂等与去重
+  // 生成策略因类型而异：
+  // - API_KEY: api_key 的 SHA256 摘要，或直接使用公有标识
+  // - SYMMETRIC_KEY: 对称密钥的 SHA256 摘要
+  // - KEY_PAIR / JWKS: 公钥的 SHA256 摘要（亦可作为 JWKS kid）
+  // - X509: 证书的 SHA256 摘要（即 X.509 标准指纹）
+  // - LICENSE: license_key 的 SHA256 摘要
+  // - HSM_REF: KMS/HSM 返回的 key handle / key ARN
+  // - FIDO: 设备 credentialId
+  // - SECRET: 密文内容的 SHA256 摘要
+  string key_id = 12;
 
   oneof key_material {
-    ApiKeyData api_key = 10;
-    KeyPairData key_pair = 11;
-    X509Data x509_data = 12;
-    LicenseData license = 13;
-    bytes symmetric_key = 14;
-    string jwks_uri = 15;
+    ApiKeyData api_key = 13;
+    KeyPairData key_pair = 14;
+    X509Data x509_data = 15;
+    LicenseData license = 16;
+    bytes symmetric_key = 17;
+    string jwks_uri = 18;
   }
 
-  google.protobuf.Timestamp not_before = 16;
-  google.protobuf.Timestamp expires_at = 17;
+  // ======== 生命周期区（19-20）========
 
-  map<string, string> metadata = 18;
-  string description = 19;
+  // NotBefore 生效时间（Not Before）
+  google.protobuf.Timestamp not_before = 19;
+  // ExpiresAt 过期时间
+  google.protobuf.Timestamp expires_at = 20;
 
-  int64 created_by = 20;
-  int64 updated_by = 21;
-  google.protobuf.Timestamp created_at = 22;
-  google.protobuf.Timestamp updated_at = 23;
+  // ======== 扩展区（21）========
+
+  // Metadata 自定义业务属性，如许可证附加信息（授权范围、用户数、有效期等）
+  map<string, string> metadata = 21;
+
+  // ======== 审计区（22-26）========
+
+  // CreatedBy 创建者用户ID
+  int64 created_by = 22;
+  // UpdatedBy 最后更新者用户ID
+  int64 updated_by = 23;
+  // CreatedAt 创建时间戳
+  google.protobuf.Timestamp created_at = 24;
+  // UpdatedAt 最后更新时间戳
+  google.protobuf.Timestamp updated_at = 25;
+  // DeletedAt 软删除时间戳，非空表示已删除
+  google.protobuf.Timestamp deleted_at = 26;
 }
 
 // OAuth2Client OAuth2 客户端实体，用于管理接入 OAuth2/OIDC 的三方应用
