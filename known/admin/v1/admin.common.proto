@@ -863,6 +863,7 @@ message Credential {
     bytes certificate = 1;       // 主证书（PEM/DER 格式）
     bytes private_key = 2;       // 对应私钥（PEM/DER 格式），敏感数据，可选
     repeated bytes ca_chain = 3; // 可选 CA 证书链（顺序从根到中间证书）
+    bytes passphrase = 4;        // 私钥加密口令，可选，敏感数据
   }
 
   // 软件许可证
