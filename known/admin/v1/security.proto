@@ -82,3 +82,29 @@ message UpdateCredentialRequest {
 message DeleteCredentialRequest {
   int64 id = 1;
 }
+
+// RevealCredentialSecretRequest 揭示凭证密钥
+// 通过当前用户密码二次验证后，返回解密后的敏感字段。
+message RevealCredentialSecretRequest {
+  // 凭证 ID
+  int64 id = 1;
+  // 当前用户密码的 SHA256 hex，用于二次身份验证
+  string password_hash = 2;
+}
+
+// RevealCredentialSecretResponse 揭示凭证密钥响应
+// 按凭证类型仅填充该类型实际拥有的敏感字段，其余字段为零值。
+message RevealCredentialSecretResponse {
+  // 凭证 ID
+  int64 id = 1;
+  // API_KEY 类型的 api_secret
+  bytes api_secret = 2;
+  // KEY_PAIR / X509 类型的 private_key
+  bytes private_key = 3;
+  // KEY_PAIR / X509 类型的 passphrase
+  bytes passphrase = 4;
+  // LICENSE 类型的 license_key
+  bytes license_key = 5;
+  // SYMMETRIC_KEY / SECRET 类型的 symmetric_key
+  bytes symmetric_key = 6;
+}

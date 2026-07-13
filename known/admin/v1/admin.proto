@@ -130,6 +130,7 @@ service KnownAdmin {
   rpc GetCredential(GetCredentialRequest) returns(Credential);
   rpc UpdateCredential(UpdateCredentialRequest) returns(Credential);
   rpc DeleteCredential(DeleteCredentialRequest) returns(google.protobuf.Empty);
+  rpc RevealCredentialSecret(RevealCredentialSecretRequest) returns(RevealCredentialSecretResponse);
   rpc GetOAuth2Discovery(google.protobuf.Empty) returns(OAuth2Discovery);
   rpc GetOAuth2JSONWebKeys(google.protobuf.Empty) returns(OAuth2JSONWebKeys);
   rpc GetOAuth2Userinfo(google.protobuf.Empty) returns(OAuth2Userinfo);
