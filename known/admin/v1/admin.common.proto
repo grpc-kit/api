@@ -997,16 +997,17 @@ message Credential {
     bytes symmetric_key = 16;
   }
 
-  // KeyID 凭证标识，用于查询、幂等与去重
+  // Fingerprint 密钥指纹（SHA-256 摘要，64 字符 hex），用于幂等去重
   // 生成策略因类型而异：
-  // - API_KEY: api_key 的 SHA256 摘要
-  // - SYMMETRIC_KEY: 对称密钥的 SHA256 摘要
-  // - KEY_PAIR: 公钥的 SHA256 摘要（亦可作为 JWKS kid）
-  // - X509: 证书的 SHA256 摘要（即 X.509 标准指纹）
-  // - LICENSE: license_key 的 SHA256 摘要
-  // - SECRET: 密文内容的 SHA256 摘要
-  // 注意：key_id 始终为内容摘要或外部系统返回的唯一标识，不使用随机 UUID。
-  string key_id = 17;
+  // - API_KEY: api_key 的 SHA-256 摘要
+  // - SYMMETRIC_KEY: 对称密钥的 SHA-256 摘要
+  // - KEY_PAIR: 公钥的 SHA-256 摘要
+  // - X509: 证书的 SHA-256 摘要（即 X.509 标准指纹）
+  // - LICENSE: license_key 的 SHA-256 摘要
+  // - SECRET: 密文内容的 SHA-256 摘要
+  // 注意：fingerprint 始终为内容摘要，不使用随机 UUID。
+  // JWKS kid 使用 code 字段，不使用 fingerprint。
+  string fingerprint = 17;
 
   // ======== 生命周期区（18-19）========
 

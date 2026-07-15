@@ -73,7 +73,7 @@ message UpdateCredentialRequest {
   Credential credential = 2;
 
   // 指定需要更新的字段列表，未列出的字段不会被修改。
-  // 注意：code / type / algorithm / key_material / key_id 不可修改，即使列入 update_mask 也会被忽略。
+  // 注意：code / type / algorithm / key_material / fingerprint 不可修改，即使列入 update_mask 也会被忽略。
   // 示例: paths: ["display_name", "status", "expires_at"]
   google.protobuf.FieldMask update_mask = 3;
 }
