@@ -5,8 +5,106 @@ package grpc_kit.api.known.admin.v1;
 
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
+import "google/protobuf/field_mask.proto";
+
 import "known/admin/v1/admin.common.proto";
 
 message CreateCredentialRequest {
   Credential credential = 1;
+}
+
+// ListCredentialsRequest 查询凭证列表
+message ListCredentialsRequest {
+  // 每页返回的最大凭证数。
+  // - 如果未指定，则使用服务端默认值 (如 20)。
+  // - 最大不超过 100 (超出时强制截断)。
+  int32 page_size = 2;
+
+  oneof pagination {
+    // Cursor-based 分页
+    string page_token = 3;
+
+    // Offset-based 分页
+    int32 offset = 4;
+  }
+
+  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
+  // 示例: `credential_status=ACTIVE AND credential_type=KEY_PAIR`
+  string filter = 7;
+
+  // 排序规则，指定结果返回顺序。
+  // 格式: "field_name [asc|desc], ..."。
+  // 示例: "credential_status asc, created_at desc"
+  string order_by = 8;
+
+  // CredentialType 快捷过滤参数。
+  // 示例: 3(KEY_PAIR)，仅返回密钥对类型的凭证。
+  int32 credential_type = 9;
+
+  // CredentialStatus 快捷过滤参数。
+  // 示例: 1(ACTIVE)，仅返回有效凭证。
+  int32 credential_status = 10;
+
+  // CredentialUsage 快捷过滤参数。
+  // 示例: 12(JWKS)，仅返回 JWKS 用途的凭证。
+  int32 credential_usage = 11;
+}
+
+// ListCredentialsResponse 凭证列表响应
+message ListCredentialsResponse {
+  repeated Credential credentials = 1;
+
+  // 用于获取下一页结果的 token。
+  // - 如果为空，表示没有更多结果。
+  string next_page_token = 2;
+
+  // 符合条件的凭证总数。
+  int32 total_size = 3;
+}
+
+// GetCredentialRequest 获取凭证详情
+message GetCredentialRequest {
+  int64 id = 1;
+}
+
+// UpdateCredentialRequest 更新凭证
+message UpdateCredentialRequest {
+  int64 id = 1;
+  Credential credential = 2;
+
+  // 指定需要更新的字段列表，未列出的字段不会被修改。
+  // 注意：code / type / algorithm / key_material / fingerprint 不可修改，即使列入 update_mask 也会被忽略。
+  // 示例: paths: ["display_name", "status", "expires_at"]
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+// DeleteCredentialRequest 删除凭证
+message DeleteCredentialRequest {
+  int64 id = 1;
+}
+
+// RevealCredentialSecretRequest 揭示凭证密钥
+// 通过当前用户密码二次验证后，返回解密后的敏感字段。
+message RevealCredentialSecretRequest {
+  // 凭证 ID
+  int64 id = 1;
+  // 当前用户密码的 SHA256 hex，用于二次身份验证
+  string password_hash = 2;
+}
+
+// RevealCredentialSecretResponse 揭示凭证密钥响应
+// 按凭证类型仅填充该类型实际拥有的敏感字段，其余字段为零值。
+message RevealCredentialSecretResponse {
+  // 凭证 ID
+  int64 id = 1;
+  // API_KEY 类型的 api_secret
+  bytes api_secret = 2;
+  // KEY_PAIR / X509 类型的 private_key
+  bytes private_key = 3;
+  // KEY_PAIR / X509 类型的 passphrase
+  bytes passphrase = 4;
+  // LICENSE 类型的 license_key
+  bytes license_key = 5;
+  // SYMMETRIC_KEY / SECRET 类型的 symmetric_key
+  bytes symmetric_key = 6;
 }

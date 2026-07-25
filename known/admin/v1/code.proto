@@ -27,24 +27,14 @@ enum AuthProviderCode {
   AUTH_PROVIDER_CODE_LOCAL = 1;
 }
 
-enum ResourceSeedCode {
-  RESOURCE_SEED_CODE_UNSPECIFIED = 0;
-  RESOURCE_SEED_CODE_ROOT_MENU = 1;    // "root-menu"
-  RESOURCE_SEED_CODE_ROOT_DOMAIN = 2;  // "root-domain"
-  RESOURCE_SEED_CODE_ROOT_LLM = 3;     // "root-llm"
-  RESOURCE_SEED_CODE_ROOT_API = 4;     // "root-api"
-  RESOURCE_SEED_CODE_ROOT_DATA = 5;    // "root-data"
-  RESOURCE_SEED_CODE_ROOT_SYSTEM = 6;  // "root-system"
-}
-
-enum CredentialSeedCode {
-  CREDENTIAL_SEED_CODE_UNSPECIFIED = 0;
-  // DB code: "key1"
-  CREDENTIAL_SEED_CODE_KEY1 = 1;
-}
-
 enum BootstrapUsername {
   BOOTSTRAP_USERNAME_UNSPECIFIED = 0;
   // lion_users.username: "admin"
   BOOTSTRAP_USERNAME_ADMIN = 1;
+}
+
+enum CredentialCode {
+  CREDENTIAL_CODE_UNSPECIFIED = 0;
+  // DB code: "jwt-signing-v1"
+  CREDENTIAL_CODE_JWT_SIGNING_V1 = 1;
 }
