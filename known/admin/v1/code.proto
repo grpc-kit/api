@@ -27,14 +27,14 @@ enum AuthProviderCode {
   AUTH_PROVIDER_CODE_LOCAL = 1;
 }
 
-enum CredentialSeedCode {
-  CREDENTIAL_SEED_CODE_UNSPECIFIED = 0;
-  // DB code: "jwks-signing-key1"
-  CREDENTIAL_SEED_CODE_JWKS_SIGNING_KEY1 = 1;
-}
-
 enum BootstrapUsername {
   BOOTSTRAP_USERNAME_UNSPECIFIED = 0;
   // lion_users.username: "admin"
   BOOTSTRAP_USERNAME_ADMIN = 1;
+}
+
+enum CredentialCode {
+  CREDENTIAL_CODE_UNSPECIFIED = 0;
+  // DB code: "jwt-signing-v1"
+  CREDENTIAL_CODE_JWT_SIGNING_V1 = 1;
 }
