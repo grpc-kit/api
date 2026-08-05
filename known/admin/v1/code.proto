@@ -11,14 +11,20 @@ enum DepartmentCode {
   DEPARTMENT_CODE_UNSPECIFIED = 0;
   // DB code: "root"
   DEPARTMENT_CODE_ROOT = 1;
-  // DB code: "guest"
-  DEPARTMENT_CODE_GUEST = 2;
+  // DB code: "unassigned"
+  DEPARTMENT_CODE_UNASSIGNED = 2;
 }
 
 enum RoleCode {
   ROLE_CODE_UNSPECIFIED = 0;
   // DB code: "superadmin"
   ROLE_CODE_SUPERADMIN = 1;
+  // DB code: "admin"
+  ROLE_CODE_ADMIN = 2;
+  // DB code: "user"
+  ROLE_CODE_USER = 3;
+  // DB code: "guest"
+  ROLE_CODE_GUEST = 4;
 }
 
 enum AuthProviderCode {
