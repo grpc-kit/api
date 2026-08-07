@@ -6862,6 +6862,32 @@
         "password_hash": {
           "type": "string",
           "title": "PasswordHash 用户密码在本地使用 sha256 哈希结果"
+        },
+        "client_id": {
+          "type": "string",
+          "title": "ClientId OAuth2 客户端标识，作为 access token 的 client_id 声明；\n优先于 appid，留空时回退 appid（向后兼容）。"
+        },
+        "tenant": {
+          "type": "string",
+          "title": "Tenant 租户标识。superadmin 可自由指定；其他角色仅可设为自身 tenant。\n留空时 superadmin 回退静态用户 tenant 再回退 \"default\"，\n非 superadmin 回退调用者自身 tenant。"
+        },
+        "scope": {
+          "type": "string",
+          "title": "Scope 授权范围，空格分隔。留空则不签发 scope 声明。"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Roles 角色 code 列表。superadmin 从 DB 现有条目选择；\n其他角色仅可在自身 roles 子集内选择，留空回退调用者自身 roles。"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Groups 用户组 code 列表。superadmin 从 DB 现有条目选择；\n其他角色仅可在自身 groups 子集内选择，留空回退调用者自身 groups。"
         }
       },
       "title": "CreateAuthTokenRequest 用于创建 token，仅管理员或特定用户可建"

@@ -42,6 +42,21 @@ message CreateAuthTokenRequest {
   int32 expires_in = 7;
   // PasswordHash 用户密码在本地使用 sha256 哈希结果
   string password_hash = 9;
+  // ClientId OAuth2 客户端标识，作为 access token 的 client_id 声明；
+  // 优先于 appid，留空时回退 appid（向后兼容）。
+  string client_id = 5;
+  // Tenant 租户标识。superadmin 可自由指定；其他角色仅可设为自身 tenant。
+  // 留空时 superadmin 回退静态用户 tenant 再回退 "default"，
+  // 非 superadmin 回退调用者自身 tenant。
+  string tenant = 6;
+  // Scope 授权范围，空格分隔。留空则不签发 scope 声明。
+  string scope = 8;
+  // Roles 角色 code 列表。superadmin 从 DB 现有条目选择；
+  // 其他角色仅可在自身 roles 子集内选择，留空回退调用者自身 roles。
+  repeated string roles = 10;
+  // Groups 用户组 code 列表。superadmin 从 DB 现有条目选择；
+  // 其他角色仅可在自身 groups 子集内选择，留空回退调用者自身 groups。
+  repeated string groups = 11;
 }
 
 message ListAuthProvidersRequest {
