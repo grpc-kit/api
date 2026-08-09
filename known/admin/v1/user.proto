@@ -130,6 +130,37 @@ message CurrentUserProfile {
   google.protobuf.Timestamp created_at = 18;
   google.protobuf.Timestamp updated_at = 19;
   string etag = 20;
+  // Whether this account has an active local-password identity that can be
+  // changed from the personal center.
+  bool password_change_supported = 21;
+}
+
+// CurrentUserProfileUpdate contains the editable portion of the current
+// subject's profile. Fields are applied only when named by update_mask.
+message CurrentUserProfileUpdate {
+  string nickname = 1;
+  string profile = 2;
+  string picture = 3;
+  string website = 4;
+  string timezone = 5;
+  string locale = 6;
+  User.Gender gender = 7;
+  google.protobuf.Timestamp birthday = 8;
+}
+
+message UpdateCurrentUserRequest {
+  CurrentUserProfileUpdate profile = 1;
+  google.protobuf.FieldMask update_mask = 2;
+  // The etag returned by GetCurrentUser. A stale value is rejected with 409.
+  string etag = 3;
+}
+
+message ChangeCurrentUserPasswordRequest {
+  // The browser-side SHA-256 value of the current password. This preserves
+  // the existing login protocol; it is never stored directly.
+  string current_password_hash = 1;
+  // The browser-side SHA-256 value of the replacement password.
+  string new_password_hash = 2;
 }
 
 //message CreateUserIdentityRequest {

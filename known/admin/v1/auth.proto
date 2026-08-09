@@ -178,14 +178,12 @@ message VerifyAuthMFARequest {
   string totp_code = 2;
 }
 
-// SetupUserMFARequest 初始化用户 MFA 设置（生成密钥 + 二维码 URI）
-message SetupUserMFARequest {
-  // 目标用户 ID
-  int64 user_id = 1;
-}
+// SetupCurrentUserMFARequest initializes MFA for the authenticated subject.
+// It intentionally has no target-user field.
+message SetupCurrentUserMFARequest {}
 
-// SetupUserMFAResponse 返回 TOTP 密钥和 otpauth URI 供前端展示
-message SetupUserMFAResponse {
+// SetupCurrentUserMFAResponse returns the TOTP secret and QR URI once.
+message SetupCurrentUserMFAResponse {
   // Base32 编码的 TOTP 密钥（仅此次返回，后续不再可见）
   string secret = 1;
   // otpauth://totp/... 格式的 URI，前端可据此生成二维码
@@ -194,24 +192,22 @@ message SetupUserMFAResponse {
   string challenge_id = 3;
 }
 
-// ConfirmUserMFARequest 确认开启 MFA（用户扫码后输入验证码确认）
-message ConfirmUserMFARequest {
-  // SetupUserMFA 返回的 challenge_id
+// ConfirmCurrentUserMFARequest confirms setup for the authenticated subject.
+message ConfirmCurrentUserMFARequest {
+  // SetupCurrentUserMFA returns this challenge_id.
   string challenge_id = 1;
   // 用户从验证器应用获取的 6 位 TOTP 验证码
   string totp_code = 2;
 }
 
-// ConfirmUserMFAResponse 确认成功后返回恢复码
-message ConfirmUserMFAResponse {
+// ConfirmCurrentUserMFAResponse returns recovery codes once after confirmation.
+message ConfirmCurrentUserMFAResponse {
   // 恢复码列表（一次性展示，用户必须安全保存）
   repeated string recovery_codes = 1;
 }
 
-// DisableUserMFARequest 关闭用户 MFA
-message DisableUserMFARequest {
-  // 目标用户 ID
-  int64 user_id = 1;
+// DisableCurrentUserMFARequest disables MFA for the authenticated subject.
+message DisableCurrentUserMFARequest {
   // 当前有效的 6 位 TOTP 验证码（或恢复码）
   string totp_code = 2;
 }

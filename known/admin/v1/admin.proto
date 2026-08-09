@@ -52,9 +52,9 @@ service KnownAdmin {
   rpc VerifyAuthMFA(VerifyAuthMFARequest) returns (AuthToken);
   rpc StartAuthMFASetup(StartAuthMFASetupRequest) returns (StartAuthMFASetupResponse);
   rpc ConfirmAuthMFASetup(ConfirmAuthMFASetupRequest) returns (AuthToken);
-  rpc SetupUserMFA(SetupUserMFARequest) returns (SetupUserMFAResponse);
-  rpc ConfirmUserMFA(ConfirmUserMFARequest) returns (ConfirmUserMFAResponse);
-  rpc DisableUserMFA(DisableUserMFARequest) returns (google.protobuf.Empty);
+  rpc SetupCurrentUserMFA(SetupCurrentUserMFARequest) returns (SetupCurrentUserMFAResponse);
+  rpc ConfirmCurrentUserMFA(ConfirmCurrentUserMFARequest) returns (ConfirmCurrentUserMFAResponse);
+  rpc DisableCurrentUserMFA(DisableCurrentUserMFARequest) returns (google.protobuf.Empty);
 
   // 服务字典管理
   rpc ListServices(ListServicesRequest) returns(ListServicesResponse);
@@ -107,6 +107,8 @@ service KnownAdmin {
 
   // 用户相关
   rpc GetCurrentUser(GetCurrentUserRequest) returns(CurrentUserProfile);
+  rpc UpdateCurrentUser(UpdateCurrentUserRequest) returns(CurrentUserProfile);
+  rpc ChangeCurrentUserPassword(ChangeCurrentUserPasswordRequest) returns(google.protobuf.Empty);
   rpc GetUser(GetUserRequest) returns(User);
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
