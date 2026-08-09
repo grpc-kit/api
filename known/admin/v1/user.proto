@@ -6,6 +6,7 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
 
 import "known/admin/v1/admin.common.proto";
 
@@ -99,6 +100,36 @@ message GetUserRequest {
   int64 id = 1;
   // 用户名，系统登录凭证，通常唯一
   string username = 2;
+}
+
+// GetCurrentUserRequest intentionally has no target-user fields. The
+// authenticated subject in the request context is the only lookup key.
+message GetCurrentUserRequest {}
+
+// CurrentUserProfile is the self-service projection used by the personal
+// center. It deliberately excludes administrator-only audit, identity and
+// membership fields from User.
+message CurrentUserProfile {
+  int64 id = 1;
+  string username = 2;
+  string nickname = 3;
+  string profile = 4;
+  string picture = 5;
+  string website = 6;
+  string timezone = 7;
+  string locale = 8;
+  User.Type type = 9;
+  User.Status status = 10;
+  User.Gender gender = 11;
+  google.protobuf.Timestamp birthday = 12;
+  string email = 13;
+  bool email_verified = 14;
+  PhoneNumber phone_number = 15;
+  bool phone_number_verified = 16;
+  bool mfa_enabled = 17;
+  google.protobuf.Timestamp created_at = 18;
+  google.protobuf.Timestamp updated_at = 19;
+  string etag = 20;
 }
 
 //message CreateUserIdentityRequest {

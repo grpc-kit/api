@@ -106,6 +106,7 @@ service KnownAdmin {
   rpc DeleteDepartmentMember(DeleteDepartmentMemberRequest) returns(google.protobuf.Empty);
 
   // 用户相关
+  rpc GetCurrentUser(GetCurrentUserRequest) returns(CurrentUserProfile);
   rpc GetUser(GetUserRequest) returns(User);
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
