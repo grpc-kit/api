@@ -114,6 +114,7 @@ service KnownAdmin {
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
   rpc UpdateUserPassword(UpdateUserPasswordRequest) returns(UpdateUserPasswordResponse);
+  rpc DeleteUserMFA(DeleteUserMFARequest) returns(google.protobuf.Empty);
 
   // rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);
   // 群组相关

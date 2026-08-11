@@ -102,6 +102,12 @@ message GetUserRequest {
   string username = 2;
 }
 
+// DeleteUserMFARequest removes the MFA enrollment for a managed user.
+// Authorization is enforced by the configured policy layer.
+message DeleteUserMFARequest {
+  int64 user_id = 1;
+}
+
 // GetCurrentUserRequest intentionally has no target-user fields. The
 // authenticated subject in the request context is the only lookup key.
 message GetCurrentUserRequest {}
