@@ -562,6 +562,10 @@ message Group {
   google.protobuf.Timestamp created_at = 15;
   google.protobuf.Timestamp updated_at = 16;
   google.protobuf.Timestamp deleted_at = 17;
+
+  // Protected 是否为系统内置/受保护的群组。受保护群组不可删除或永久删除。
+  // 该字段由系统种子或迁移管理，普通 CreateGroup/UpdateGroup 不可修改。
+  bool protected = 18;
 }
 
 // Membership 统一成员关系实体
