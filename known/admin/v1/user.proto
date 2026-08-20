@@ -39,8 +39,9 @@ message ListUsersRequest {
     int32 offset = 8;
   }
 
-  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
-  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  // 过滤条件。当前最小实现支持 `deleted_at != null`，用于在
+  // show_deleted=true 时请求仅包含软删除用户的回收站列表。
+  // 其他字段过滤继续使用下方兼容字段，后续再统一扩展 AIP-160 语法。
   string filter = 4;
 
   // 排序规则，指定结果返回顺序。
@@ -100,6 +101,23 @@ message GetUserRequest {
   int64 id = 1;
   // 用户名，系统登录凭证，通常唯一
   string username = 2;
+}
+
+// DeleteUser moves a user into the recycle bin. The resource remains
+// recoverable through UndeleteUser until it is explicitly expunged.
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+// UndeleteUser restores a soft-deleted user in DISABLED state.
+message UndeleteUserRequest {
+  int64 id = 1;
+}
+
+// ExpungeUser permanently removes a soft-deleted user and its core
+// dependent data. This operation cannot target an active user.
+message ExpungeUserRequest {
+  int64 id = 1;
 }
 
 // DeleteUserMFARequest removes the MFA enrollment for a managed user.

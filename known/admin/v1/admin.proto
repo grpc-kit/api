@@ -113,6 +113,9 @@ service KnownAdmin {
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
+  rpc DeleteUser(DeleteUserRequest) returns(User);
+  rpc UndeleteUser(UndeleteUserRequest) returns(User);
+  rpc ExpungeUser(ExpungeUserRequest) returns(google.protobuf.Empty);
   rpc UpdateUserPassword(UpdateUserPasswordRequest) returns(UpdateUserPasswordResponse);
   rpc DeleteUserMFA(DeleteUserMFARequest) returns(google.protobuf.Empty);
 
