@@ -47,6 +47,10 @@ message ListDepartmentsRequest {
   // TODO；以下将来会统一使用 filter 参数实现过滤
   int32 department_type = 9;
   int32 department_status = 10;
+
+  // 是否允许结果包含已软删除的部门。默认 false 时仅返回未删除部门。
+  // 回收站查询应同时设置 show_deleted=true 和 filter="deleted_at != null"。
+  bool show_deleted = 11;
 }
 
 message ListDepartmentsResponse {
@@ -66,6 +70,16 @@ message ListDepartmentsResponse {
 }
 
 message DeleteDepartmentRequest {
+  int64 id = 1;
+}
+
+// UndeleteDepartment restores a soft-deleted department in INACTIVE state.
+message UndeleteDepartmentRequest {
+  int64 id = 1;
+}
+
+// ExpungeDepartment permanently removes a soft-deleted department and its core bindings.
+message ExpungeDepartmentRequest {
   int64 id = 1;
 }
 

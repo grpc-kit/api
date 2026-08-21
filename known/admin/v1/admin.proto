@@ -98,7 +98,9 @@ service KnownAdmin {
   // 部门管理
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
-  rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
+  rpc DeleteDepartment(DeleteDepartmentRequest) returns(Department);
+  rpc UndeleteDepartment(UndeleteDepartmentRequest) returns(Department);
+  rpc ExpungeDepartment(ExpungeDepartmentRequest) returns(google.protobuf.Empty);
   rpc UpdateDepartment(UpdateDepartmentRequest) returns(Department);
   rpc ListDepartmentMembers(ListDepartmentMembersRequest) returns(ListDepartmentMembersResponse);
   rpc CreateDepartmentMembers(CreateDepartmentMembersRequest) returns(CreateDepartmentMembersResponse);
