@@ -103,6 +103,42 @@ message GetUserRequest {
   string username = 2;
 }
 
+// ListUserAuthBindingsRequest selects the managed user whose authentication
+// identities should be returned. Authorization is enforced by the method's
+// IAM policy before the handler runs.
+message ListUserAuthBindingsRequest {
+  int64 user_id = 1;
+}
+
+message ListUserAuthBindingsResponse {
+  repeated UserAuthBinding bindings = 1;
+}
+
+// UserAuthBinding is a read-only administrator projection. It deliberately
+// excludes password hashes, MFA secrets, external tokens and provider secrets.
+message UserAuthBinding {
+  int64 id = 1;
+  int64 user_id = 2;
+
+  int64 provider_id = 3;
+  string provider_code = 4;
+  string provider_display_name = 5;
+  AuthProvider.Type provider_type = 6;
+  AuthProvider.Status provider_status = 7;
+  string provider_icon_url = 8;
+
+  string provider_user_id = 9;
+  string provider_union_id = 10;
+
+  bool password_configured = 11;
+  bool mfa_enabled = 12;
+  google.protobuf.Timestamp password_changed_at = 13;
+  google.protobuf.Timestamp password_expires_at = 14;
+  google.protobuf.Timestamp last_login_at = 15;
+  google.protobuf.Timestamp created_at = 16;
+  google.protobuf.Timestamp updated_at = 17;
+}
+
 // DeleteUser moves a user into the recycle bin. The resource remains
 // recoverable through UndeleteUser until it is explicitly expunged.
 message DeleteUserRequest {

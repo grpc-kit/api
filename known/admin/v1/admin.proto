@@ -112,6 +112,7 @@ service KnownAdmin {
   rpc UpdateCurrentUser(UpdateCurrentUserRequest) returns(CurrentUserProfile);
   rpc ChangeCurrentUserPassword(ChangeCurrentUserPasswordRequest) returns(google.protobuf.Empty);
   rpc GetUser(GetUserRequest) returns(User);
+  rpc ListUserAuthBindings(ListUserAuthBindingsRequest) returns(ListUserAuthBindingsResponse);
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);

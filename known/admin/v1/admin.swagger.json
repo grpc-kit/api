@@ -6486,6 +6486,108 @@
         ]
       }
     },
+    "/builtin/admin/api/v1/users/{user_id}/auth-bindings": {
+      "get": {
+        "summary": "获取用户认证身份绑定",
+        "description": "接口格式：GET /builtin/admin/api/v1/users/{user_id}/auth-bindings。IAM action 为 admin.v1.known:ListUserAuthBindings，由方法级 Policy 在 handler 之前授权。返回认证身份和提供方的只读摘要；外部身份标识属于敏感管理信息，响应不会包含密码、MFA、外部令牌或提供方凭据。软删除用户仍可查询；永久不存在的用户返回 404。",
+        "operationId": "KnownAdmin_ListUserAuthBindings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListUserAuthBindingsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "bindings": [
+                  {
+                    "id": "8101",
+                    "user_id": "1001",
+                    "provider_id": "1",
+                    "provider_code": "local",
+                    "provider_display_name": "本地账号密码登录",
+                    "provider_type": "LOCAL",
+                    "provider_status": "ACTIVE",
+                    "provider_icon_url": "",
+                    "provider_user_id": "local-user-1001",
+                    "password_configured": true,
+                    "mfa_enabled": true,
+                    "password_changed_at": "2026-06-01T08:30:00Z",
+                    "last_login_at": "2026-08-20T01:15:00Z",
+                    "created_at": "2025-01-01T00:00:00Z",
+                    "updated_at": "2026-08-20T01:15:00Z"
+                  },
+                  {
+                    "id": "8102",
+                    "user_id": "1001",
+                    "provider_id": "7",
+                    "provider_code": "corp-oidc",
+                    "provider_display_name": "企业统一登录",
+                    "provider_type": "OIDC",
+                    "provider_status": "DISABLED",
+                    "provider_icon_url": "https://cdn.example.test/icons/oidc.svg",
+                    "provider_user_id": "oidc-subject-8f31",
+                    "provider_union_id": "directory-person-52",
+                    "password_configured": false,
+                    "mfa_enabled": false,
+                    "created_at": "2026-02-02T02:00:00Z",
+                    "updated_at": "2026-07-03T03:00:00Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "user_id 不是正整数",
+            "schema": {
+              "$ref": "#/definitions/v1ErrorResponse"
+            }
+          },
+          "403": {
+            "description": "IAM Policy 拒绝调用此方法或目标资源",
+            "schema": {
+              "$ref": "#/definitions/v1ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "用户不存在或已被永久删除",
+            "schema": {
+              "$ref": "#/definitions/v1ErrorResponse"
+            }
+          },
+          "4xx": {
+            "description": "客户端参数异常",
+            "schema": {
+              "$ref": "#/definitions/v1ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "认证身份或提供方摘要查询失败",
+            "schema": {
+              "$ref": "#/definitions/v1ErrorResponse"
+            }
+          },
+          "5xx": {
+            "description": "服务端处理异常",
+            "schema": {
+              "$ref": "#/definitions/v1ErrorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "用户管理"
+        ]
+      }
+    },
     "/builtin/admin/api/v1/users/{user_id}/password": {
       "put": {
         "summary": "更新用户密码",
@@ -8837,6 +8939,18 @@
         }
       }
     },
+    "v1ListUserAuthBindingsResponse": {
+      "type": "object",
+      "properties": {
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1UserAuthBinding"
+          }
+        }
+      }
+    },
     "v1ListUsersResponse": {
       "type": "object",
       "properties": {
@@ -10886,6 +11000,71 @@
       },
       "description": "字段布局约定：标识区 → 基础属性区 → 审计区(时间+操作人连续) → 敏感字段区 → 扩展区 → 关系区\n注意：审计区放在敏感字段之前，保持审计字段的连续性\n\n以下字段为非敏感/可直接输出（适合公开展示或普通资料页）",
       "title": "User 用户实体，表示系统中的账号信息"
+    },
+    "v1UserAuthBinding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "user_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "provider_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "provider_code": {
+          "type": "string"
+        },
+        "provider_display_name": {
+          "type": "string"
+        },
+        "provider_type": {
+          "$ref": "#/definitions/v1AuthProviderType"
+        },
+        "provider_status": {
+          "$ref": "#/definitions/v1AuthProviderStatus"
+        },
+        "provider_icon_url": {
+          "type": "string"
+        },
+        "provider_user_id": {
+          "type": "string"
+        },
+        "provider_union_id": {
+          "type": "string"
+        },
+        "password_configured": {
+          "type": "boolean"
+        },
+        "mfa_enabled": {
+          "type": "boolean"
+        },
+        "password_changed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_login_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "UserAuthBinding is a read-only administrator projection. It deliberately\nexcludes password hashes, MFA secrets, external tokens and provider secrets."
     },
     "v1UserStatus": {
       "type": "string",
