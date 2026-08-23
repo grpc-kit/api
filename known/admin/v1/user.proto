@@ -130,13 +130,12 @@ message UserAuthBinding {
   string provider_user_id = 9;
   string provider_union_id = 10;
 
-  bool password_configured = 11;
-  bool mfa_enabled = 12;
-  google.protobuf.Timestamp password_changed_at = 13;
-  google.protobuf.Timestamp password_expires_at = 14;
-  google.protobuf.Timestamp last_login_at = 15;
-  google.protobuf.Timestamp created_at = 16;
-  google.protobuf.Timestamp updated_at = 17;
+  // Whether the user-level credential required by this provider is configured.
+  // Currently this is populated for LOCAL identities only and is absent for
+  // providers that do not have a user-level credential in this model.
+  optional bool credential_configured = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
 }
 
 // DeleteUser moves a user into the recycle bin. The resource remains
