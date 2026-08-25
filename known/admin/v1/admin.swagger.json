@@ -5452,7 +5452,7 @@
       },
       "patch": {
         "summary": "更新当前用户资料",
-        "description": "接口格式：PATCH /builtin/admin/api/v1/self/user。仅更新 update_mask 指定的个人资料字段，必须携带 GetCurrentUser 返回的 etag；过期 etag 返回 409（reason=CURRENT_USER_ETAG_MISMATCH）。用户名、联系方式、账号状态和身份信息不可由此接口修改。",
+        "description": "接口格式：PATCH /builtin/admin/api/v1/self/user。仅更新 update_mask 指定的个人资料字段，必须携带 GetCurrentUser 返回的 etag；过期 etag 返回 409。用户名、联系方式、账号状态和身份信息不可由此接口修改。",
         "operationId": "KnownAdmin_UpdateCurrentUser",
         "responses": {
           "200": {
