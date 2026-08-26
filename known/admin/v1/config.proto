@@ -172,7 +172,8 @@ message LocalConfigs {
     ObservablesConfig observables = 9;
     CloudEventsConfig cloudevents = 10;
     AutomationsConfig automations = 11;
-    google.protobuf.Struct independent = 12;
+    AIConnectorConfig aiconnector = 12;
+    google.protobuf.Struct independent = 13;
   }
 }
 
@@ -565,4 +566,17 @@ message KubernetesRestConfig {
 
 message KubernetesTLSClientConfig {
   bool insecure = 1;
+}
+
+message AIConnectorConfig {
+  string name = 1;
+  bool enabled = 2;
+  MCPServerConfig mcp_server = 3;
+}
+
+message MCPServerConfig {
+  bool enabled = 1;
+  string path = 2;
+  string transport = 3;
+  repeated string allowed_tags = 4;
 }
