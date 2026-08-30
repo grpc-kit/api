@@ -496,6 +496,24 @@ message RolePolicyBinding {
 // Group 群组实体，表示一类相同维度的用户集合，扁平结构不支持树形
 // 该模型用于描述系统中各类用户分组，支持多维度的用户组织与管理
 message Group {
+  message DepartmentConfig {
+    int64 department_id = 1;
+  }
+
+  message RoleConfig {
+    int64 role_id = 1;
+  }
+
+  message DynamicConfig {
+    // 服务端支持的用户过滤语法。
+    string user_filter = 1;
+  }
+
+  message SystemConfig {
+    // 仅由系统种子写入。
+    string user_filter = 1;
+  }
+
   // ID 群组 ID，全局唯一标识
   int64 id = 1;
   // Code 系统标识符，创建后不可修改
@@ -555,17 +573,24 @@ message Group {
   map<string, string> metadata = 8;
   string description = 9;
   Visibility visibility = 10;
-  int64 ref_id = 11;
-  string ref_expr = 12;
-  int64 created_by = 13;
-  int64 updated_by = 14;
-  google.protobuf.Timestamp created_at = 15;
-  google.protobuf.Timestamp updated_at = 16;
-  google.protobuf.Timestamp deleted_at = 17;
+  // 为后续层级扩展保留；0 表示根 Group，普通 API 当前只能写 0。
+  int64 parent_id = 11;
+
+  oneof config {
+    DepartmentConfig department_config = 12;
+    RoleConfig role_config = 13;
+    DynamicConfig dynamic_config = 14;
+    SystemConfig system_config = 15;
+  }
 
   // Protected 是否为系统内置/受保护的群组。受保护群组不可删除或永久删除。
   // 该字段由系统种子或迁移管理，普通 CreateGroup/UpdateGroup 不可修改。
-  bool protected = 18;
+  bool protected = 16;
+  int64 created_by = 17;
+  int64 updated_by = 18;
+  google.protobuf.Timestamp created_at = 19;
+  google.protobuf.Timestamp updated_at = 20;
+  google.protobuf.Timestamp deleted_at = 21;
 }
 
 // Membership 统一成员关系实体
