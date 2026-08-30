@@ -4598,7 +4598,7 @@
           },
           {
             "name": "principal_type",
-            "description": "可选主体类型过滤，不传则返回全部类型。",
+            "description": "可选主体类型过滤，不传则返回全部类型。\n\n - GROUP: 角色绑定时仅允许 type=SYSTEM 的 Group",
             "in": "query",
             "required": false,
             "type": "string",
@@ -10002,6 +10002,7 @@
         "DEPARTMENT"
       ],
       "default": "PRINCIPAL_TYPE_UNSPECIFIED",
+      "description": "- GROUP: 角色绑定时仅允许 type=SYSTEM 的 Group",
       "title": "PrincipalType 主体类型，用于角色绑定关系"
     },
     "v1PrometheusExporterConfig": {

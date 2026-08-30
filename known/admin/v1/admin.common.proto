@@ -435,7 +435,7 @@ message Role {
 enum PrincipalType {
   PRINCIPAL_TYPE_UNSPECIFIED = 0;
   USER = 1;
-  GROUP = 2;
+  GROUP = 2; // 角色绑定时仅允许 type=SYSTEM 的 Group
   DEPARTMENT = 3;
 }
 
