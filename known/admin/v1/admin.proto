@@ -29,9 +29,11 @@ service KnownAdmin {
   rpc GetLocalConfigs(GetLocalConfigsRequest) returns (LocalConfigs);
 
   // 全局设置
+  rpc CreateGlobalSetting(CreateGlobalSettingRequest) returns (GlobalSetting);
   rpc GetGlobalSettings(GetGlobalSettingsRequest) returns (GlobalSettingCategory);
   rpc ListGlobalSettings(ListGlobalSettingsRequest) returns (ListGlobalSettingsResponse);
   rpc UpdateGlobalSettings(UpdateGlobalSettingsRequest) returns (UpdateGlobalSettingsResponse);
+  rpc DeleteGlobalSetting(DeleteGlobalSettingRequest) returns (google.protobuf.Empty);
 
   // 认证鉴权
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);

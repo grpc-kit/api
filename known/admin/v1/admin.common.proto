@@ -6,6 +6,7 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 // 引入 google 公共类型
+import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
 // enum 参考以下规范 https://google.aip.dev/126
@@ -1339,4 +1340,6 @@ message GlobalSettingCategory {
 message UpdateGlobalSetting {
   string setting_key = 1;
   string setting_value = 2;
+  string description = 3;
+  google.protobuf.FieldMask update_mask = 4;
 }

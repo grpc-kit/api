@@ -6,6 +6,18 @@ option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "known/admin/v1/admin.common.proto";
 
+message GlobalSettingInput {
+  string setting_key = 1;
+  string setting_value = 2;
+  string value_type = 3;
+  string description = 4;
+}
+
+message CreateGlobalSettingRequest {
+  string category = 1;
+  GlobalSettingInput setting = 2;
+}
+
 message GetGlobalSettingsRequest {
   string category = 1;
 }
@@ -23,4 +35,9 @@ message UpdateGlobalSettingsRequest {
 
 message UpdateGlobalSettingsResponse {
   GlobalSettingCategory category = 1;
+}
+
+message DeleteGlobalSettingRequest {
+  string category = 1;
+  string setting_key = 2;
 }
