@@ -14,6 +14,9 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetLocalConfigs
     get: "/builtin/admin/api/v1/local/configs/{name}"
 
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateGlobalSetting
+    post: "/builtin/admin/api/v1/global/settings/{category}"
+    body: "setting"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetGlobalSettings
     get: "/builtin/admin/api/v1/global/settings/{category}"
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListGlobalSettings
@@ -21,6 +24,8 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateGlobalSettings
     patch: "/builtin/admin/api/v1/global/settings/{category}"
     body: "updates"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteGlobalSetting
+    delete: "/builtin/admin/api/v1/global/settings/{category}/{setting_key}"
 
     # 认证鉴权
     ## 创建认证令牌
@@ -182,10 +187,16 @@ http:
     ## 删除部门
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteDepartment
     delete: "/builtin/admin/api/v1/departments/{id}"
-    ## 更新部门
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UndeleteDepartment
+    post: "/builtin/admin/api/v1/departments/{id}:undelete"
+    body: "*"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ExpungeDepartment
+    post: "/builtin/admin/api/v1/departments/{id}:expunge"
+    body: "*"
+  ## 更新部门
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateDepartment
     patch: "/builtin/admin/api/v1/departments/{department.id}"
-    body: "department"
+    body: "*"
     ## 获取部门成员
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListDepartmentMembers
     get: "/builtin/admin/api/v1/departments/{parent}/members"
@@ -202,9 +213,29 @@ http:
     delete: "/builtin/admin/api/v1/departments/{department_id}/members/{user_id}"
 
     # 用户管理
+    ## 获取当前认证用户的个人资料
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetCurrentUser
+    get: "/builtin/admin/api/v1/self/user"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateCurrentUser
+    patch: "/builtin/admin/api/v1/self/user"
+    body: "*"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ChangeCurrentUserPassword
+    put: "/builtin/admin/api/v1/self/user/security/password"
+    body: "*"
     ## 用户列表
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListUsers
     get: "/builtin/admin/api/v1/users"
+    ## 软删除用户到回收站
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteUser
+    delete: "/builtin/admin/api/v1/users/{id}"
+    ## 从回收站恢复用户
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UndeleteUser
+    post: "/builtin/admin/api/v1/users/{id}:undelete"
+    body: "*"
+    ## 永久删除回收站用户
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ExpungeUser
+    post: "/builtin/admin/api/v1/users/{id}:expunge"
+    body: "*"
     ## 创建用户
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.CreateUser
     post: "/builtin/admin/api/v1/users"
@@ -212,14 +243,20 @@ http:
     ## 更新用户
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUser
     patch: "/builtin/admin/api/v1/users/{user.id}"
-    body: "user"
+    body: "*"
     ## 获取用户
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetUser
     get: "/builtin/admin/api/v1/users/{id}"
+    ## 获取用户认证身份绑定
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ListUserAuthBindings
+    get: "/builtin/admin/api/v1/users/{user_id}/auth-bindings"
     ## 更新用户密码
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateUserPassword
     put: "/builtin/admin/api/v1/users/{user_id}/password"
     body: "*"
+    ## 管理员重置指定用户 MFA
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteUserMFA
+    delete: "/builtin/admin/api/v1/users/{user_id}/security/mfa"
 
     # MFA 多因素认证
     ## 登录 MFA 验证
@@ -235,16 +272,15 @@ http:
     post: "/builtin/admin/api/v1/auth/mfa/setup/confirm"
     body: "*"
     ## 设置 MFA（获取密钥和二维码）
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.SetupUserMFA
-    post: "/builtin/admin/api/v1/users/{user_id}/mfa/setup"
-    body: "*"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.SetupCurrentUserMFA
+    post: "/builtin/admin/api/v1/self/user/security/mfa/setup"
     ## 确认开启 MFA
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ConfirmUserMFA
-    post: "/builtin/admin/api/v1/auth/mfa/confirm"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ConfirmCurrentUserMFA
+    post: "/builtin/admin/api/v1/self/user/security/mfa/setup:confirm"
     body: "*"
     ## 关闭 MFA
-  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DisableUserMFA
-    post: "/builtin/admin/api/v1/users/{user_id}/mfa/disable"
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DisableCurrentUserMFA
+    post: "/builtin/admin/api/v1/self/user/security/mfa:disable"
     body: "*"
 
     # 群组管理
@@ -259,9 +295,17 @@ http:
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UpdateGroup
     patch: "/builtin/admin/api/v1/groups/{group.id}"
     body: "group"
-    ## 删除群组
+    ## 软删除群组到回收站
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.DeleteGroup
     delete: "/builtin/admin/api/v1/groups/{id}"
+    ## 从回收站恢复群组
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.UndeleteGroup
+    post: "/builtin/admin/api/v1/groups/{id}:undelete"
+    body: "*"
+    ## 永久删除回收站群组
+  - selector: grpc_kit.api.known.admin.v1.KnownAdmin.ExpungeGroup
+    post: "/builtin/admin/api/v1/groups/{id}:expunge"
+    body: "*"
     ## 群组详情
   - selector: grpc_kit.api.known.admin.v1.KnownAdmin.GetGroup
     get: "/builtin/admin/api/v1/groups/{id}"

@@ -56,6 +56,10 @@ message ListGroupsRequest {
   int32 group_status = 10;
   string code = 11;
   string display_name = 12;
+
+  // 是否允许结果包含已软删除的群组。默认 false 时仅返回未删除群组。
+  // 回收站查询应同时设置 show_deleted=true 和 filter="deleted_at != null"。
+  bool show_deleted = 13;
 }
 
 message ListGroupsResponse {
@@ -81,6 +85,16 @@ message UpdateGroupRequest {
 }
 
 message DeleteGroupRequest {
+  int64 id = 1;
+}
+
+// UndeleteGroup restores a soft-deleted group in DISABLED state.
+message UndeleteGroupRequest {
+  int64 id = 1;
+}
+
+// ExpungeGroup permanently removes a soft-deleted group and its core bindings.
+message ExpungeGroupRequest {
   int64 id = 1;
 }
 

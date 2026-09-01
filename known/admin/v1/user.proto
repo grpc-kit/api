@@ -6,6 +6,7 @@ package grpc_kit.api.known.admin.v1;
 option go_package = "github.com/grpc-kit/pkg/api/known/admin/v1;adminv1";
 
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
 
 import "known/admin/v1/admin.common.proto";
 
@@ -38,8 +39,9 @@ message ListUsersRequest {
     int32 offset = 8;
   }
 
-  // 过滤条件，采用 AIP-160 定义的标准 filter 语法。
-  // 示例: `email="alice@example.com" AND state="ACTIVE"`
+  // 过滤条件。当前最小实现支持 `deleted_at != null`，用于在
+  // show_deleted=true 时请求仅包含软删除用户的回收站列表。
+  // 其他字段过滤继续使用下方兼容字段，后续再统一扩展 AIP-160 语法。
   string filter = 4;
 
   // 排序规则，指定结果返回顺序。
@@ -99,6 +101,125 @@ message GetUserRequest {
   int64 id = 1;
   // 用户名，系统登录凭证，通常唯一
   string username = 2;
+}
+
+// ListUserAuthBindingsRequest selects the managed user whose authentication
+// identities should be returned. Authorization is enforced by the method's
+// IAM policy before the handler runs.
+message ListUserAuthBindingsRequest {
+  int64 user_id = 1;
+}
+
+message ListUserAuthBindingsResponse {
+  repeated UserAuthBinding bindings = 1;
+}
+
+// UserAuthBinding is a read-only administrator projection. It deliberately
+// excludes password hashes, MFA secrets, external tokens and provider secrets.
+message UserAuthBinding {
+  int64 id = 1;
+  int64 user_id = 2;
+
+  int64 provider_id = 3;
+  string provider_code = 4;
+  string provider_display_name = 5;
+  AuthProvider.Type provider_type = 6;
+  AuthProvider.Status provider_status = 7;
+  string provider_icon_url = 8;
+
+  string provider_user_id = 9;
+  string provider_union_id = 10;
+
+  // Whether the user-level credential required by this provider is configured.
+  // Currently this is populated for LOCAL identities only and is absent for
+  // providers that do not have a user-level credential in this model.
+  optional bool credential_configured = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
+// DeleteUser moves a user into the recycle bin. The resource remains
+// recoverable through UndeleteUser until it is explicitly expunged.
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+// UndeleteUser restores a soft-deleted user in DISABLED state.
+message UndeleteUserRequest {
+  int64 id = 1;
+}
+
+// ExpungeUser permanently removes a soft-deleted user and its core
+// dependent data. This operation cannot target an active user.
+message ExpungeUserRequest {
+  int64 id = 1;
+}
+
+// DeleteUserMFARequest removes the MFA enrollment for a managed user.
+// Authorization is enforced by the configured policy layer.
+message DeleteUserMFARequest {
+  int64 user_id = 1;
+}
+
+// GetCurrentUserRequest intentionally has no target-user fields. The
+// authenticated subject in the request context is the only lookup key.
+message GetCurrentUserRequest {}
+
+// CurrentUserProfile is the self-service projection used by the personal
+// center. It deliberately excludes administrator-only audit, identity and
+// membership fields from User.
+message CurrentUserProfile {
+  int64 id = 1;
+  string username = 2;
+  string nickname = 3;
+  string profile = 4;
+  string picture = 5;
+  string website = 6;
+  string timezone = 7;
+  string locale = 8;
+  User.Type type = 9;
+  User.Status status = 10;
+  User.Gender gender = 11;
+  google.protobuf.Timestamp birthday = 12;
+  string email = 13;
+  bool email_verified = 14;
+  PhoneNumber phone_number = 15;
+  bool phone_number_verified = 16;
+  bool mfa_enabled = 17;
+  google.protobuf.Timestamp created_at = 18;
+  google.protobuf.Timestamp updated_at = 19;
+  string etag = 20;
+  // Whether this account has an active local-password identity that can be
+  // changed from the personal center.
+  bool password_change_supported = 21;
+}
+
+// CurrentUserProfileUpdate contains the editable portion of the current
+// subject's profile. Fields are applied only when named by update_mask.
+message CurrentUserProfileUpdate {
+  string nickname = 1;
+  string profile = 2;
+  string picture = 3;
+  string website = 4;
+  string timezone = 5;
+  string locale = 6;
+  User.Gender gender = 7;
+  google.protobuf.Timestamp birthday = 8;
+}
+
+message UpdateCurrentUserRequest {
+  CurrentUserProfileUpdate profile = 1;
+  google.protobuf.FieldMask update_mask = 2;
+  // The etag returned by GetCurrentUser. A stale value is rejected with 409.
+  string etag = 3;
+}
+
+message ChangeCurrentUserPasswordRequest {
+  // The browser-side SHA-256 value of the current password. This preserves
+  // the existing login protocol; it is never stored directly.
+  string current_password_hash = 1;
+  // The browser-side SHA-256 value of the replacement password.
+  string new_password_hash = 2;
 }
 
 //message CreateUserIdentityRequest {

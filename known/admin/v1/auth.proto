@@ -28,20 +28,47 @@ message CreateAuthLoginRequest {
   string provider_code = 10;
 }
 
-// CreateAuthTokenRequest 用于创建 token，仅管理员或特定用户可建
+// CreateAuthTokenRequest 用于创建 token，签发给调用方自己（已持有 access token）。
+// 调用方身份由拦截器校验 access token 后从 context 注入，请求体不再携带任何身份凭证。
+// tenant/roles/groups 按授权决策填入：留空则对应声明不写入令牌。
+// username/email 仅 superadmin 可自定义（覆盖令牌展示字段，subject 不变）；
+// 非 superadmin 传入将被忽略，强制使用调用方自身值。
 message CreateAuthTokenRequest {
-  // Appid 关联应用标识
-  string appid = 1;
-  // Username 系统识别的用户名全局唯一
-  string username = 2;
-  // Email 用户邮箱地址
-  string email = 3;
-  // PhoneNumber 用户手机号
-  string phone_number = 4;
+  // --- OAuth2 客户端与授权范围 ---
+  // ClientId OAuth2 客户端标识，作为 access token 的 client_id 声明。
+  string client_id = 1;
+  // Scope 授权范围，空格分隔。留空则不签发 scope 声明。
+  string scope = 2;
+
+  // --- 令牌声明 Claims（授权字段）---
+  // Tenant 租户标识。superadmin 可自由指定；其他角色仅可设为自身 tenant。
+  // 留空则不写入 tenant 声明。
+  string tenant = 3;
+  // Roles 角色 code 列表。superadmin 可手工输入任意值或从 DB 现有条目选择；
+  // 其他角色仅可在自身 roles 子集内选择，留空则不写入 roles 声明。
+  repeated string roles = 4;
+  // Groups 用户组 code 列表。superadmin 可手工输入任意值或从 DB 现有条目选择；
+  // 其他角色仅可在自身 groups 子集内选择，留空则不写入 groups 声明。
+  repeated string groups = 5;
+
+  // --- 令牌身份展示字段（仅 superadmin 可自定义；非 superadmin 传入将被忽略）---
+  // Username 令牌的 preferred_username 声明。superadmin 留空则不写入该声明；
+  // 非 superadmin 留空则使用调用方自身用户名。
+  string username = 6;
+  // Email 令牌的 email 声明。superadmin 留空则不写入该声明；
+  // 非 superadmin 留空则使用调用方自身邮箱。
+  string email = 7;
+  // EmailVerified 仅在设置了 email 时生效（superadmin 可选）。true 则令牌携带
+  // email_verified=true；email 为空时不写入 email/email_verified 声明。
+  bool email_verified = 9;
+  // Subject 目标 user_id（仅 superadmin 可委托签发）。留空则签发给调用方自身；
+  // 非空则签发给指定 user_id（委托签发，sub=目标 user_id，使用目标用户密钥/身份）。
+  // 非 superadmin 传入将被忽略。
+  string subject = 10;
+
+  // --- 令牌生命周期 ---
   // ExpiresIn 控制生成 access_token 的有效时长，默认 24 * 60 * 60 秒
-  int32 expires_in = 7;
-  // PasswordHash 用户密码在本地使用 sha256 哈希结果
-  string password_hash = 9;
+  int32 expires_in = 8;
 }
 
 message ListAuthProvidersRequest {
@@ -151,14 +178,12 @@ message VerifyAuthMFARequest {
   string totp_code = 2;
 }
 
-// SetupUserMFARequest 初始化用户 MFA 设置（生成密钥 + 二维码 URI）
-message SetupUserMFARequest {
-  // 目标用户 ID
-  int64 user_id = 1;
-}
+// SetupCurrentUserMFARequest initializes MFA for the authenticated subject.
+// It intentionally has no target-user field.
+message SetupCurrentUserMFARequest {}
 
-// SetupUserMFAResponse 返回 TOTP 密钥和 otpauth URI 供前端展示
-message SetupUserMFAResponse {
+// SetupCurrentUserMFAResponse returns the TOTP secret and QR URI once.
+message SetupCurrentUserMFAResponse {
   // Base32 编码的 TOTP 密钥（仅此次返回，后续不再可见）
   string secret = 1;
   // otpauth://totp/... 格式的 URI，前端可据此生成二维码
@@ -167,24 +192,22 @@ message SetupUserMFAResponse {
   string challenge_id = 3;
 }
 
-// ConfirmUserMFARequest 确认开启 MFA（用户扫码后输入验证码确认）
-message ConfirmUserMFARequest {
-  // SetupUserMFA 返回的 challenge_id
+// ConfirmCurrentUserMFARequest confirms setup for the authenticated subject.
+message ConfirmCurrentUserMFARequest {
+  // SetupCurrentUserMFA returns this challenge_id.
   string challenge_id = 1;
   // 用户从验证器应用获取的 6 位 TOTP 验证码
   string totp_code = 2;
 }
 
-// ConfirmUserMFAResponse 确认成功后返回恢复码
-message ConfirmUserMFAResponse {
+// ConfirmCurrentUserMFAResponse returns recovery codes once after confirmation.
+message ConfirmCurrentUserMFAResponse {
   // 恢复码列表（一次性展示，用户必须安全保存）
   repeated string recovery_codes = 1;
 }
 
-// DisableUserMFARequest 关闭用户 MFA
-message DisableUserMFARequest {
-  // 目标用户 ID
-  int64 user_id = 1;
+// DisableCurrentUserMFARequest disables MFA for the authenticated subject.
+message DisableCurrentUserMFARequest {
   // 当前有效的 6 位 TOTP 验证码（或恢复码）
   string totp_code = 2;
 }

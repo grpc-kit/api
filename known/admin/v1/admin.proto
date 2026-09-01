@@ -29,9 +29,11 @@ service KnownAdmin {
   rpc GetLocalConfigs(GetLocalConfigsRequest) returns (LocalConfigs);
 
   // 全局设置
+  rpc CreateGlobalSetting(CreateGlobalSettingRequest) returns (GlobalSetting);
   rpc GetGlobalSettings(GetGlobalSettingsRequest) returns (GlobalSettingCategory);
   rpc ListGlobalSettings(ListGlobalSettingsRequest) returns (ListGlobalSettingsResponse);
   rpc UpdateGlobalSettings(UpdateGlobalSettingsRequest) returns (UpdateGlobalSettingsResponse);
+  rpc DeleteGlobalSetting(DeleteGlobalSettingRequest) returns (google.protobuf.Empty);
 
   // 认证鉴权
   rpc UpsertAuthProviders(UpsertAuthProvidersRequest) returns(UpsertAuthProvidersResponse);
@@ -52,9 +54,9 @@ service KnownAdmin {
   rpc VerifyAuthMFA(VerifyAuthMFARequest) returns (AuthToken);
   rpc StartAuthMFASetup(StartAuthMFASetupRequest) returns (StartAuthMFASetupResponse);
   rpc ConfirmAuthMFASetup(ConfirmAuthMFASetupRequest) returns (AuthToken);
-  rpc SetupUserMFA(SetupUserMFARequest) returns (SetupUserMFAResponse);
-  rpc ConfirmUserMFA(ConfirmUserMFARequest) returns (ConfirmUserMFAResponse);
-  rpc DisableUserMFA(DisableUserMFARequest) returns (google.protobuf.Empty);
+  rpc SetupCurrentUserMFA(SetupCurrentUserMFARequest) returns (SetupCurrentUserMFAResponse);
+  rpc ConfirmCurrentUserMFA(ConfirmCurrentUserMFARequest) returns (ConfirmCurrentUserMFAResponse);
+  rpc DisableCurrentUserMFA(DisableCurrentUserMFARequest) returns (google.protobuf.Empty);
 
   // 服务字典管理
   rpc ListServices(ListServicesRequest) returns(ListServicesResponse);
@@ -98,7 +100,9 @@ service KnownAdmin {
   // 部门管理
   rpc CreateDepartment(CreateDepartmentRequest) returns(Department);
   rpc ListDepartments(ListDepartmentsRequest) returns(ListDepartmentsResponse);
-  rpc DeleteDepartment(DeleteDepartmentRequest) returns(google.protobuf.Empty);
+  rpc DeleteDepartment(DeleteDepartmentRequest) returns(Department);
+  rpc UndeleteDepartment(UndeleteDepartmentRequest) returns(Department);
+  rpc ExpungeDepartment(ExpungeDepartmentRequest) returns(google.protobuf.Empty);
   rpc UpdateDepartment(UpdateDepartmentRequest) returns(Department);
   rpc ListDepartmentMembers(ListDepartmentMembersRequest) returns(ListDepartmentMembersResponse);
   rpc CreateDepartmentMembers(CreateDepartmentMembersRequest) returns(CreateDepartmentMembersResponse);
@@ -106,18 +110,28 @@ service KnownAdmin {
   rpc DeleteDepartmentMember(DeleteDepartmentMemberRequest) returns(google.protobuf.Empty);
 
   // 用户相关
+  rpc GetCurrentUser(GetCurrentUserRequest) returns(CurrentUserProfile);
+  rpc UpdateCurrentUser(UpdateCurrentUserRequest) returns(CurrentUserProfile);
+  rpc ChangeCurrentUserPassword(ChangeCurrentUserPasswordRequest) returns(google.protobuf.Empty);
   rpc GetUser(GetUserRequest) returns(User);
+  rpc ListUserAuthBindings(ListUserAuthBindingsRequest) returns(ListUserAuthBindingsResponse);
   rpc CreateUser(CreateUserRequest) returns(User);
   rpc UpdateUser(UpdateUserRequest) returns(User);
   rpc ListUsers(ListUsersRequest) returns(ListUsersResponse);
+  rpc DeleteUser(DeleteUserRequest) returns(User);
+  rpc UndeleteUser(UndeleteUserRequest) returns(User);
+  rpc ExpungeUser(ExpungeUserRequest) returns(google.protobuf.Empty);
   rpc UpdateUserPassword(UpdateUserPasswordRequest) returns(UpdateUserPasswordResponse);
+  rpc DeleteUserMFA(DeleteUserMFARequest) returns(google.protobuf.Empty);
 
   // rpc CreateUserIdentity(CreateUserIdentityRequest) returns(User);
   // 群组相关
   rpc CreateGroup(CreateGroupRequest) returns(Group);
   rpc ListGroups(ListGroupsRequest) returns(ListGroupsResponse);
   rpc UpdateGroup(UpdateGroupRequest) returns(Group);
-  rpc DeleteGroup(DeleteGroupRequest) returns(google.protobuf.Empty);
+  rpc DeleteGroup(DeleteGroupRequest) returns(Group);
+  rpc UndeleteGroup(UndeleteGroupRequest) returns(Group);
+  rpc ExpungeGroup(ExpungeGroupRequest) returns(google.protobuf.Empty);
   rpc ListGroupMembers(ListGroupMembersRequest) returns(ListGroupMembersResponse);
   rpc CreateGroupMembers(CreateGroupMembersRequest) returns(CreateGroupMembersResponse);
   rpc DeleteGroupMember(DeleteGroupMemberRequest) returns(google.protobuf.Empty);
